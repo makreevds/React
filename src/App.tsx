@@ -14,24 +14,31 @@ function App() {
 
   useEffect(() => {
     const tg = window.Telegram.WebApp;
+  
     tg.ready();
+  
+    // 🔥 ПЫТАЕМСЯ ВКЛЮЧИТЬ FULLSCREEN
+    if (tg.requestFullscreen) {
+      tg.requestFullscreen();
+    }
+  
     tg.expand();
-    
-    // 1. Запрещаем свайп вниз (чтобы не закрывалось случайно)
+  
+    // Запрещаем свайп вниз
     if (tg.disableVerticalSwipes) {
       tg.disableVerticalSwipes();
     }
-
-    // 2. Включаем подтверждение закрытия (опционально)
-    // Если пользователь потянет вниз, Telegram спросит: "Закрыть приложение?"
+  
+    // Подтверждение закрытия
     tg.enableClosingConfirmation();
-
-    // 3. Устанавливаем цвета (чтобы шапка была в цвет приложения)
-    tg.setHeaderColor('secondary_bg_color'); 
+  
+    // Цвета
+    tg.setHeaderColor('secondary_bg_color');
     tg.setBackgroundColor('bg_color');
-
+  
     setUserData(tg.initDataUnsafe?.user);
   }, []);
+  
 
   const onClose = () => {
     window.Telegram.WebApp.close(); // Функция закрытия приложения
