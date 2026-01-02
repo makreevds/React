@@ -1,5 +1,6 @@
 // Компонент страницы со счетчиком
 import { useState } from 'react'
+import './CounterPage.css'
 
 interface CounterPageProps {
   onBack: () => void; // Функция для возврата на главную страницу
@@ -20,57 +21,20 @@ export function CounterPage({ onBack }: CounterPageProps) {
   };
 
   return (
-    <div className="counter-page" style={{ 
-      padding: '20px', 
-      textAlign: 'center',
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center'
-    }}>
-      <h1 style={{ marginBottom: '30px' }}>Счетчик</h1>
+    <div className="counter-page">
+      <h1>Счетчик</h1>
       
       {/* Отображение текущего значения счетчика */}
-      <div style={{
-        fontSize: '48px',
-        fontWeight: 'bold',
-        marginBottom: '40px',
-        padding: '20px',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        borderRadius: '15px',
-        color: 'white',
-        minWidth: '120px'
-      }}>
+      <div className="counter-display">
         {count}
       </div>
 
       {/* Кнопки управления счетчиком */}
-      <div style={{ 
-        display: 'flex', 
-        gap: '15px', 
-        marginBottom: '30px',
-        flexWrap: 'wrap',
-        justifyContent: 'center'
-      }}>
+      <div className="counter-controls">
         {/* Кнопка уменьшения */}
         <button
           onClick={decrement}
-          style={{
-            background: '#ff6b6b',
-            color: 'white',
-            padding: '15px 30px',
-            border: 'none',
-            borderRadius: '10px',
-            fontSize: '20px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            minWidth: '120px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            transition: 'transform 0.2s'
-          }}
-          onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
-          onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          className="btn-counter btn-decrement"
         >
           ➖ Уменьшить
         </button>
@@ -78,21 +42,7 @@ export function CounterPage({ onBack }: CounterPageProps) {
         {/* Кнопка увеличения */}
         <button
           onClick={increment}
-          style={{
-            background: '#51cf66',
-            color: 'white',
-            padding: '15px 30px',
-            border: 'none',
-            borderRadius: '10px',
-            fontSize: '20px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            minWidth: '120px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            transition: 'transform 0.2s'
-          }}
-          onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
-          onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          className="btn-counter btn-increment"
         >
           ➕ Увеличить
         </button>
@@ -101,20 +51,7 @@ export function CounterPage({ onBack }: CounterPageProps) {
       {/* Кнопка возврата на главную страницу */}
       <button
         onClick={onBack}
-        style={{
-          background: '#4dabf7',
-          color: 'white',
-          padding: '12px 24px',
-          border: 'none',
-          borderRadius: '10px',
-          fontSize: '16px',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          transition: 'transform 0.2s'
-        }}
-        onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
-        onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+        className="btn-back"
       >
         ← Назад на главную
       </button>

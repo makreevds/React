@@ -106,40 +106,24 @@ function App() {
         <UserCard user={userData} />  {/* ИСПОЛЬЗУЕМ КАК ТЕГ */}
       </div>
 
-      {/* Кнопка для перехода на страницу со счетчиком */}
-      <button 
-        onClick={goToCounter} 
-        style={{ 
-          marginTop: '20px',
-          background: '#4dabf7', 
-          color: 'white', 
-          padding: '12px 24px', 
-          border: 'none', 
-          borderRadius: '10px', 
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          marginRight: '10px'
-        }}
-      >
-        🔢 Открыть счетчик
-      </button>
+      {/* Кнопки */}
+      <div className="button-group">
+        {/* Кнопка для перехода на страницу со счетчиком */}
+        <button 
+          onClick={goToCounter} 
+          className="btn btn-primary"
+        >
+          🔢 Открыть счетчик
+        </button>
 
-      {/* Кнопка закрытия */}
-      <button 
-        onClick={onClose} 
-        style={{ 
-          marginTop: '20px',
-          background: 'red', 
-          color: 'white', 
-          padding: '12px 24px', 
-          border: 'none', 
-          borderRadius: '10px', 
-          fontWeight: 'bold',
-          cursor: 'pointer' 
-        }}
-      >
-        Закрыть приложение
-      </button>
+        {/* Кнопка закрытия */}
+        <button 
+          onClick={onClose} 
+          className="btn btn-danger"
+        >
+          Закрыть приложение
+        </button>
+      </div>
     </div>
   )
 }

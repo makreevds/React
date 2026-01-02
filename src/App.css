@@ -1,42 +1,59 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* === СТИЛИ ГЛАВНОЙ СТРАНИЦЫ === */
+
+.App {
+  padding: var(--spacing-lg);
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.App h1 {
+  margin-bottom: var(--spacing-xl);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Кнопки */
+.btn {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: var(--font-size-md);
+  transition: transform var(--transition-normal), background-color var(--transition-normal);
+  box-shadow: var(--shadow-md);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.btn:hover {
+  transform: translateY(-2px);
 }
 
-.card {
-  padding: 2em;
+.btn:active {
+  transform: scale(0.95);
 }
 
-.read-the-docs {
-  color: #888;
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  margin-right: var(--spacing-sm);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn-danger {
+  background: var(--color-error);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #cc0000;
+}
+
+/* Контейнер для кнопок */
+.button-group {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: var(--spacing-lg);
 }

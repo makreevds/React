@@ -1,4 +1,5 @@
 // src/UserCard.tsx
+import './UserCard.css'
 
 // Мы описываем, что этот компонент ожидает получить данные 'user'
 export function UserCard({ user }: { user: any }) {
@@ -10,7 +11,7 @@ export function UserCard({ user }: { user: any }) {
     // Если данные есть, рисуем красивый список
     return (
       <div className="card">
-        <ul style={{ listStyle: 'none', padding: 0, textAlign: 'left' }}>
+        <ul className="user-card-list">
           <li><b>👤 Имя:</b> {user.first_name}</li>
           <li><b>🆔 ID:</b> {user.id}</li>
           <li><b>🌐 Ник:</b> @{user.username || 'скрыт'}</li>
