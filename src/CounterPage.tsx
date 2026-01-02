@@ -1,12 +1,10 @@
 // Компонент страницы со счетчиком
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './CounterPage.css'
 
-interface CounterPageProps {
-  onBack: () => void; // Функция для возврата на главную страницу
-}
-
-export function CounterPage({ onBack }: CounterPageProps) {
+export function CounterPage() {
+  const navigate = useNavigate();
   // Состояние счетчика: начальное значение 0
   const [count, setCount] = useState<number>(0);
 
@@ -50,7 +48,7 @@ export function CounterPage({ onBack }: CounterPageProps) {
 
       {/* Кнопка возврата на главную страницу */}
       <button
-        onClick={onBack}
+        onClick={() => navigate('/')}
         className="btn-back"
       >
         ← Назад на главную
