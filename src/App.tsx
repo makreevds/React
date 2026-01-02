@@ -32,9 +32,16 @@ function App() {
   
     // --- НАСТРОЙКИ ЭКРАНА ---
     
-    // Включаем настоящий Fullscreen (если версия Telegram это поддерживает)
-    if (tg.requestFullscreen) {
-      tg.requestFullscreen();
+// --- УМНЫЙ FULLSCREEN ---
+    
+    // Получаем тип платформы (android, ios, desktop, web и т.д.)
+    const platform = tg.platform;
+
+    // Включаем полноэкранный режим ТОЛЬКО если это мобилка
+    if (platform === 'ios' || platform === 'android') {
+      if (tg.requestFullscreen) {
+        tg.requestFullscreen();
+      }
     }
   
     // Принудительно разворачиваем "шторку" на максимум
