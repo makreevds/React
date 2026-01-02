@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { UserCard } from './UserCard' // Теперь ошибка должна исчезнуть
 import './App.css'
 
 // 1. ПОДГОТОВКА: Объясняем TypeScript, что объект 'window.Telegram' существует.
@@ -72,17 +73,8 @@ function App() {
       <h1>Привет, {userData ? userData.first_name : 'Пользователь'}!</h1>
       
       <div className="card">
-        {/* Проверка: если данные загрузились, рисуем список */}
-        {userData ? (
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            <li><b>Твой ID:</b> {userData.id}</li>
-            <li><b>Никнейм:</b> {userData.username || 'не указан'}</li>
-            <li><b>Язык:</b> {userData.language_code}</li>
-          </ul>
-        ) : (
-          // Если данных нет (например, зашли через обычный браузер)
-          <p>Данные пользователя недоступны. Пожалуйста, откройте через Telegram Bot.</p>
-        )}
+        {/* Используем компонент UserCard для отображения данных пользователя */}
+        <UserCard user={userData} />  {/* ИСПОЛЬЗУЕМ КАК ТЕГ */}
       </div>
 
       {/* Кнопка закрытия */}
