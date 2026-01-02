@@ -12,12 +12,23 @@ function App() {
   const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
-    // Инициализируем Telegram Web App
     const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
     
-    tg.ready(); // Сообщаем Telegram, что приложение готово
-    tg.expand(); // <--- ВОТ ЭТА СТРОЧКА развернет приложение на весь экран сразу
-    
+    // 1. Запрещаем свайп вниз (чтобы не закрывалось случайно)
+    if (tg.disableVerticalSwipes) {
+      tg.disableVerticalSwipes();
+    }
+
+    // 2. Включаем подтверждение закрытия (опционально)
+    // Если пользователь потянет вниз, Telegram спросит: "Закрыть приложение?"
+    tg.enableClosingConfirmation();
+
+    // 3. Устанавливаем цвета (чтобы шапка была в цвет приложения)
+    tg.setHeaderColor('secondary_bg_color'); 
+    tg.setBackgroundColor('bg_color');
+
     setUserData(tg.initDataUnsafe?.user);
   }, []);
 
