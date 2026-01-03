@@ -2,14 +2,38 @@
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 16px;
-  color: var(--tg-theme-text-color, var(--theme-current-text));
+  color: var(--theme-current-text, var(--theme-text-color));
+}
+
+/* Явные правила для светлой темы */
+html.theme-light .wishes-page h2,
+body.theme-light .wishes-page h2 {
+  color: var(--theme-text-color);
+}
+
+/* Явные правила для темной темы */
+html.theme-dark .wishes-page h2,
+body.theme-dark .wishes-page h2 {
+  color: var(--theme-text-color-dark);
 }
 
 .info-section {
   margin-bottom: 32px;
   padding: 16px;
-  background: var(--tg-theme-secondary-bg-color, var(--theme-current-secondary-bg));
+  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
   border-radius: var(--radius-md);
+}
+
+/* Явные правила для светлой темы */
+html.theme-light .info-section,
+body.theme-light .info-section {
+  background: var(--theme-secondary-bg);
+}
+
+/* Явные правила для темной темы */
+html.theme-dark .info-section,
+body.theme-dark .info-section {
+  background: var(--theme-secondary-bg-dark);
 }
 
 .info-grid {
@@ -23,8 +47,20 @@
   flex-direction: column;
   gap: 4px;
   padding: 12px;
-  background: var(--tg-theme-bg-color, var(--theme-current-bg));
+  background: var(--theme-current-bg, var(--theme-bg-color));
   border-radius: 8px;
+}
+
+/* Явные правила для светлой темы */
+html.theme-light .info-item,
+body.theme-light .info-item {
+  background: var(--theme-bg-color);
+}
+
+/* Явные правила для темной темы */
+html.theme-dark .info-item,
+body.theme-dark .info-item {
+  background: var(--theme-bg-color-dark);
 }
 
 .info-item.full-width {
@@ -34,15 +70,39 @@
 .info-label {
   font-size: 12px;
   font-weight: 500;
-  color: var(--tg-theme-hint-color, var(--theme-current-hint));
+  color: var(--theme-current-hint, var(--theme-hint-color));
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
+/* Явные правила для светлой темы */
+html.theme-light .info-label,
+body.theme-light .info-label {
+  color: var(--theme-hint-color);
+}
+
+/* Явные правила для темной темы */
+html.theme-dark .info-label,
+body.theme-dark .info-label {
+  color: var(--theme-hint-color-dark);
+}
+
 .info-value {
   font-size: 14px;
-  color: var(--tg-theme-text-color, var(--theme-current-text));
+  color: var(--theme-current-text, var(--theme-text-color));
   word-break: break-word;
+}
+
+/* Явные правила для светлой темы */
+html.theme-light .info-value,
+body.theme-light .info-value {
+  color: var(--theme-text-color);
+}
+
+/* Явные правила для темной темы */
+html.theme-dark .info-value,
+body.theme-dark .info-value {
+  color: var(--theme-text-color-dark);
 }
 
 .info-value.hash {
@@ -67,7 +127,7 @@
   font-size: 11px;
   line-height: 1.5;
   padding: 12px;
-  background: var(--theme-current-hint-light);
+  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
   border-radius: 6px;
   overflow-x: auto;
   white-space: pre-wrap;
@@ -76,10 +136,38 @@
   overflow-y: auto;
 }
 
+/* Явные правила для светлой темы */
+html.theme-light .json-output,
+html.theme-light .info-value.json,
+body.theme-light .json-output,
+body.theme-light .info-value.json {
+  background: var(--theme-hint-color-light);
+}
+
+/* Явные правила для темной темы */
+html.theme-dark .json-output,
+html.theme-dark .info-value.json,
+body.theme-dark .json-output,
+body.theme-dark .info-value.json {
+  background: var(--theme-hint-color-light-dark);
+}
+
 .placeholder-text {
-  color: var(--tg-theme-hint-color, var(--theme-current-hint));
+  color: var(--theme-current-hint, var(--theme-hint-color));
   font-size: 14px;
   text-align: center;
   padding: 24px;
+}
+
+/* Явные правила для светлой темы */
+html.theme-light .placeholder-text,
+body.theme-light .placeholder-text {
+  color: var(--theme-hint-color);
+}
+
+/* Явные правила для темной темы */
+html.theme-dark .placeholder-text,
+body.theme-dark .placeholder-text {
+  color: var(--theme-hint-color-dark);
 }
 
