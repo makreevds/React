@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { HomePage } from './HomePage'
 import { WishesPage } from './WishesPage'
 import { FriendsPage } from './FriendsPage'
 import { SettingsPage } from './SettingsPage'
@@ -15,9 +14,6 @@ declare global {
 
 
 function App() {
-  // === СОСТОЯНИЕ ===
-  const [userData, setUserData] = useState<any>(null);
-
   // === ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP ===
   useEffect(() => {
     const tg = window.Telegram.WebApp;
@@ -41,17 +37,7 @@ function App() {
     // Настройка цветовой схемы
     tg.setHeaderColor('secondary_bg_color');
     tg.setBackgroundColor('bg_color');
-    
-    // Загрузка данных пользователя
-    if (tg.initDataUnsafe?.user) {
-      setUserData(tg.initDataUnsafe.user);
-    }
   }, []);
-
-  // === ОБРАБОТЧИКИ СОБЫТИЙ ===
-  const handleClose = () => {
-    window.Telegram.WebApp.close();
-  };
 
   // === РОУТИНГ ===
   return (
@@ -59,7 +45,7 @@ function App() {
       <Routes>
         <Route 
           path="/" 
-          element={<HomePage userData={userData} onClose={handleClose} />} 
+          element={<FriendsPage />} 
         />
         <Route 
           path="/wishes" 
