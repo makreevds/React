@@ -17,7 +17,7 @@
 
   z-index: 1000;
 
-  border-radius: 0 0 40px 40px;
+  border-radius: 0 0 0 0;
 
   /* отключаем обычный border */
   border: none;
@@ -29,11 +29,11 @@
   content: '';
   position: absolute;
   inset: 0; /* растягиваем на весь блок */
-  border-radius: 0 0 40px 40px;
+  border-radius: 0 0 0 0;
   border-top: none;
   border-bottom: 1px solid var(--tg-accent-theme);
-  border-left: 1px solid var(--tg-accent-theme);
-  border-right: 1px solid var(--tg-accent-theme);
+  /* border-left: 1px solid var(--tg-accent-theme);
+  border-right: 1px solid var(--tg-accent-theme); */
   pointer-events: none; /* чтобы не мешать клику */
 }
 
