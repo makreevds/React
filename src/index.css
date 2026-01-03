@@ -48,6 +48,10 @@ html, body {
   --tg-theme-button-color: #0088cc;
   --tg-theme-button-text-color: #fff;
 
+  /* Еще мои параметры */
+  --opacity-nav-head: 0.5;
+  --blur-nav-head: 5px;
+
   /* Светлая тема */
   --theme-bg-color: #ffffff;
   --theme-text-color: #000000;

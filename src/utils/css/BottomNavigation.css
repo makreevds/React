@@ -8,8 +8,8 @@
   display: flex;
   justify-content: space-around;
 
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, var(--opacity-nav-head));
+  backdrop-filter: var(--blur-nav-head);
   -webkit-backdrop-filter: blur(12px);
 
   border-radius: 40px;
@@ -76,17 +76,17 @@
 /* dark theme */
 @media (prefers-color-scheme: dark) {
   :root:not(.theme-light) .bottom-navigation {
-    background: rgba(20, 20, 20, 0.7);
+    background: rgba(20, 20, 20, var(--opacity-nav-head));
     border-color: rgba(255, 255, 255, 0.08);
   }
 }
 
 .theme-dark .bottom-navigation {
-  background: rgba(20, 20, 20, 0.7);
+  background: rgba(20, 20, 20, var(--opacity-nav-head));
   border-color: rgba(255, 255, 255, 0.08);
 }
 
 .theme-light .bottom-navigation {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, var(--opacity-nav-head));
   border-color: var(--tg-accent-theme);
 }
