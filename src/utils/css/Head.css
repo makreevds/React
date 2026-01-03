@@ -15,10 +15,26 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
-  border-bottom: 1px solid var(--tg-accent-theme);
   z-index: 1000;
 
   border-radius: 0 0 40px 40px;
+
+  /* отключаем обычный border */
+  border: none;
+}
+
+/* псевдоэлемент для чистого бордера */
+.head::before {
+  width: 100%;
+  content: '';
+  position: absolute;
+  inset: 0; /* растягиваем на весь блок */
+  border-radius: 0 0 40px 40px;
+  border-top: none;
+  border-bottom: 1px solid var(--tg-accent-theme);
+  border-left: 1px solid var(--tg-accent-theme);
+  border-right: 1px solid var(--tg-accent-theme);
+  pointer-events: none; /* чтобы не мешать клику */
 }
 
 .head-title {
