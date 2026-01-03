@@ -3,32 +3,40 @@
   top: 0;
   left: 0;
   right: 0;
-  /* Учитываем safe-area-inset-top (челка) и высоту Telegram кнопки закрытия */
+
   height: calc(env(safe-area-inset-top, 0px) + var(--head-height));
   padding-top: env(safe-area-inset-top, 0px);
-  /* Полупрозрачный фон с эффектом размытия */
-  background-color: var(--tg-theme-accent-text-color); /* var(--color-primary) с прозрачностью */
-  opacity: 0.5;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   z-index: 1000;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Для устройств с челкой или без safe-area */
-@supports (padding: max(0px)) {
+/* Заголовок */
+.head-title {
+  height: var(--head-height);
+  display: flex;
+  align-items: center;
+
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+
+  color: var(--tg-theme-text-color);
+  user-select: none;
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
   .head {
-    /* Минимум для Telegram кнопки, плюс safe-area если есть */
-    padding-top: max(env(safe-area-inset-top, 0px), 0px);
-    height: calc(max(env(safe-area-inset-top, 0px), 0px) + var(--head-height));
+    background: rgba(20, 20, 20, 0.65);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
   }
 }
-
-@media (prefers-color-scheme: light) {
-  .head {
-    background-color: rgba(255, 255, 255, 0.8);
-    border-bottom-color: rgba(0, 0, 0, 0.1);
-  }
-}
-
