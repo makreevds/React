@@ -16,11 +16,17 @@ const THEME_STORAGE_KEY = 'app-theme'
 export function ThemeProvider({ children }: { children: ReactNode }) {
   // Определяем начальную тему из localStorage или null (системная тема)
   const getInitialTheme = (): Theme | null => {
-    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      return savedTheme
+    try {
+      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY)
+      // Строгая проверка: только 'light' или 'dark' считаются валидными
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        return savedTheme as Theme
+      }
+    } catch (e) {
+      // Если ошибка доступа к localStorage, игнорируем
+      console.warn('Failed to read theme from localStorage:', e)
     }
-    // Если нет сохраненной темы, возвращаем null - будет использоваться системная
+    // Если нет сохраненной темы или она невалидна, возвращаем null - будет использоваться системная
     return null
   }
 
@@ -31,21 +37,34 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const root = document.documentElement
     const body = document.body
     
-    // Удаляем все классы темы
+    // Всегда сначала удаляем все классы темы
     root.classList.remove('theme-dark', 'theme-light')
     body.classList.remove('theme-dark', 'theme-light')
     
     if (theme === 'dark') {
       root.classList.add('theme-dark')
       body.classList.add('theme-dark')
-      localStorage.setItem(THEME_STORAGE_KEY, 'dark')
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, 'dark')
+      } catch (e) {
+        console.warn('Failed to save theme to localStorage:', e)
+      }
     } else if (theme === 'light') {
       root.classList.add('theme-light')
       body.classList.add('theme-light')
-      localStorage.setItem(THEME_STORAGE_KEY, 'light')
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, 'light')
+      } catch (e) {
+        console.warn('Failed to save theme to localStorage:', e)
+      }
     } else {
       // Если theme === null, удаляем из localStorage - будет использоваться системная тема
-      localStorage.removeItem(THEME_STORAGE_KEY)
+      // Классы темы уже удалены выше, так что ничего не нужно добавлять
+      try {
+        localStorage.removeItem(THEME_STORAGE_KEY)
+      } catch (e) {
+        console.warn('Failed to remove theme from localStorage:', e)
+      }
     }
   }, [theme])
 
