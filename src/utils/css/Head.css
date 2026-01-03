@@ -7,7 +7,8 @@
   height: calc(env(safe-area-inset-top, 0px) + var(--head-height));
   padding-top: env(safe-area-inset-top, 0px);
   /* Полупрозрачный фон с эффектом размытия */
-  background-color: rgba(77, 171, 247, 0.8); /* var(--color-primary) с прозрачностью */
+  background-color: var(--tg-theme-accent-text-color); /* var(--color-primary) с прозрачностью */
+  opacity: 0.5;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   z-index: 1000;
