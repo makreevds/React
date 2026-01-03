@@ -44,7 +44,7 @@ html, body {
 
   /* === THEME COLORS === */
 
-  --tg-accent-theme: #63ff7a;
+  
 
   /* Светлая тема */
   --theme-bg-color: #ffffff;
@@ -170,6 +170,7 @@ body.theme-light {
   --theme-current-secondary-bg: var(--theme-secondary-bg);
   --theme-current-hint: var(--theme-hint-color);
   --theme-current-hint-light: var(--theme-hint-color-light);
+  --tg-accent-theme: #000000;
 }
 
 /* Темная тема */
@@ -182,6 +183,7 @@ body.theme-dark {
   --theme-current-secondary-bg: var(--theme-secondary-bg-dark);
   --theme-current-hint: var(--theme-hint-color-dark);
   --theme-current-hint-light: var(--theme-hint-color-light-dark);
+  --tg-accent-theme: #ffffff;
 }
 
 /* Поддержка системной темы через media query (если класс темы не установлен) */
