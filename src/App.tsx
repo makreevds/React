@@ -13,6 +13,7 @@ declare global {
   }
 }
 
+
 function App() {
   // === СОСТОЯНИЕ ===
   const [userData, setUserData] = useState<any>(null);
