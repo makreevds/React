@@ -48,6 +48,10 @@ html, body {
   --tg-theme-button-color: #0088cc;
   --tg-theme-button-text-color: #fff;
 
+  /* Собственные переменные для кнопок (не зависят от темы Telegram) */
+  --app-button-color: #0088cc;
+  --app-button-text-color: #fff;
+
   /* Еще мои параметры */
   --opacity-nav-head: 0.5;
   --blur-nav-head: 5px;
@@ -167,6 +171,8 @@ body:not(.theme-light):not(.theme-dark) {
   --theme-current-hint: var(--theme-hint-color);
   --theme-current-hint-light: var(--theme-hint-color-light);
   --tg-accent-theme: #000000;
+  --app-button-color: #0088cc;
+  --app-button-text-color: #fff;
 }
 
 html.theme-light,
@@ -179,6 +185,8 @@ body.theme-light {
   --theme-current-hint: var(--theme-hint-color);
   --theme-current-hint-light: var(--theme-hint-color-light);
   --tg-accent-theme: #000000;
+  --app-button-color: #0088cc;
+  --app-button-text-color: #fff;
 }
 
 /* Темная тема */
@@ -192,6 +200,8 @@ body.theme-dark {
   --theme-current-hint: var(--theme-hint-color-dark);
   --theme-current-hint-light: var(--theme-hint-color-light-dark);
   --tg-accent-theme: #ffffff;
+  --app-button-color: #0088cc;
+  --app-button-text-color: #fff;
 }
 
 /* Поддержка системной темы через media query (если класс темы не установлен) */
@@ -206,6 +216,8 @@ body.theme-dark {
     --theme-current-hint: var(--theme-hint-color-dark);
     --theme-current-hint-light: var(--theme-hint-color-light-dark);
     --tg-accent-theme: #ffffff;
+    --app-button-color: #0088cc;
+    --app-button-text-color: #fff;
   }
 }
 
