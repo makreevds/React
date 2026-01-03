@@ -8,35 +8,28 @@
   padding-top: env(safe-area-inset-top, 0px);
 
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
 
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--tg-theme-accent-text-color);
   z-index: 1000;
 }
 
-/* Заголовок */
 .head-title {
-  height: var(--head-height);
-  display: flex;
-  align-items: center;
-
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.2px;
-
   color: var(--tg-theme-text-color);
   user-select: none;
 }
 
-/* Темная тема */
+/* тёмная тема */
 @media (prefers-color-scheme: dark) {
   .head {
-    background: rgba(20, 20, 20, 0.65);
-    border-bottom-color: rgba(255, 255, 255, 0.08);
+    background: rgba(20, 20, 20, 0.7);
   }
 }
