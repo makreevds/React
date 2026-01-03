@@ -30,7 +30,7 @@ export function FriendsPage() {
                 <div className="friend-name">{friend.name}</div>
                 <div className="friend-username">{friend.username}</div>
              </div>
-             <button className="view-btn">Отписаться</button>
+             <button className="unsubscribe-btn">Отписаться</button>
           </div>
         ))}
       </div>

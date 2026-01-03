@@ -44,7 +44,9 @@ html, body {
 
   /* === THEME COLORS === */
 
-  
+  /* Цвета мои */
+  --tg-theme-button-color: #0088cc;
+  --tg-theme-button-text-color: #fff;
 
   /* Светлая тема */
   --theme-bg-color: #ffffff;
