@@ -1,5 +1,7 @@
 .wishes-page {
   padding: var(--spacing-xl);
+  /* Отступ сверху: высота Head (60px + safe-area-inset-top) + обычный padding */
+  padding-top: calc(env(safe-area-inset-top, 0px) + 60px + var(--spacing-xl));
   min-height: calc(100vh - 80px);
   padding-bottom: 100px;
 }

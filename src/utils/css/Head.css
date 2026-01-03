@@ -1,0 +1,30 @@
+.head {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* Учитываем safe-area-inset-top (челка) и высоту Telegram кнопки закрытия (60px) */
+  height: calc(env(safe-area-inset-top, 0px) + 60px);
+  padding-top: env(safe-area-inset-top, 0px);
+  background-color: var(--bg-color, #1a1a1a);
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Для устройств с челкой или без safe-area */
+@supports (padding: max(0px)) {
+  .head {
+    /* Минимум 60px для Telegram кнопки, плюс safe-area если есть */
+    padding-top: max(env(safe-area-inset-top, 0px), 0px);
+    height: calc(max(env(safe-area-inset-top, 0px), 0px) + 60px);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .head {
+    background-color: var(--bg-color, #ffffff);
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+  }
+}
+

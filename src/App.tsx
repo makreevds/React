@@ -4,6 +4,7 @@ import { WishesPage } from './pages/tsx/WishesPage'
 import { FriendsPage } from './pages/tsx/FriendsPage'
 import { SettingsPage } from './pages/tsx/SettingsPage'
 import { BottomNavigation } from './utils/tsx/BottomNavigation'
+import { Head } from './utils/tsx/Head'
 
 // Объявляем глобальный тип для Telegram WebApp API
 declare global {
@@ -42,6 +43,7 @@ function App() {
   // === РОУТИНГ ===
   return (
     <>
+      <Head />
       <Routes>
         <Route 
           path="/" 
