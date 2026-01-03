@@ -17,6 +17,8 @@
 
   border-bottom: 1px solid var(--tg-accent-theme);
   z-index: 1000;
+
+  border-radius: 0 0 40px 40px;
 }
 
 .head-title {

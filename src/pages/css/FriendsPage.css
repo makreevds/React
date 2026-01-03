@@ -1,7 +1,4 @@
 /* Новые элементы под твой стиль */
-.friends-list {
-  margin-bottom: 30px;
-}
 
 .friend-row {
   display: flex;
@@ -34,11 +31,22 @@
 .invite-main-btn {
   width: 100%;
   padding: 14px;
-  background: transparent;
-  border: 1px dashed var(--tg-theme-hint-color, #ccc);
-  color: var(--tg-theme-button-color, #0088cc);
+  background: var(--tg-theme-button-color, #0088cc);
+  color: var(--tg-theme-button-text-color, #fff);
   border-radius: 12px;
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
 }
+
+.invite-section {
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+  padding-top: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
+}
+
+/* .placeholder-text {
+  padding-top: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+} */

@@ -30,16 +30,16 @@ export function FriendsPage() {
                 <div className="friend-name">{friend.name}</div>
                 <div className="friend-username">{friend.username}</div>
              </div>
-             <button className="view-btn">Посмотреть</button>
+             <button className="view-btn">Отписаться</button>
           </div>
         ))}
       </div>
 
       {/* Секция приглашения, если кого-то нет */}
       <div className="invite-section">
-        <p className="placeholder-text">
-          Не видишь своих друзей? Пригласи их, чтобы видеть их списки желаний.
-        </p>
+        {/* <p className="placeholder-text">
+          Пригласи друзей!
+        </p> */}
         <button className="invite-main-btn" onClick={handleInvite}>
           Пригласить друзей
         </button>

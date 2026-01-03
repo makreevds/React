@@ -1,8 +1,9 @@
 .bottom-navigation {
   position: fixed;
   bottom: env(safe-area-inset-bottom, 0px);
-  left: 12px;
-  right: 12px;
+  /* left: 12px;
+  right: 12px; */
+  width: 100%;
 
   height: 64px;
   display: flex;
@@ -12,7 +13,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
-  border-radius: 40px;
+  border-radius: 40px 40px 0 0;
 
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 
@@ -24,10 +25,11 @@
 
 /* псевдоэлемент для чистого бордера */
 .bottom-navigation::before {
+  width: 100%;
   content: '';
   position: absolute;
   inset: 0; /* растягиваем на весь блок */
-  border-radius: 40px;
+  border-radius: 40px 40px 0 0;
   border: 1px solid var(--tg-accent-theme);
   pointer-events: none; /* чтобы не мешать клику */
 }
