@@ -164,10 +164,6 @@ export function WishesPage() {
               <span className="info-label">Разрешена переписка:</span>
               <span className="info-value">{formatValue(userInfo.allows_write_to_pm)}</span>
             </div>
-            <div className="info-item">
-              <span className="info-label">Бот:</span>
-              <span className="info-value">{formatValue(userInfo.is_bot)}</span>
-            </div>
           </div>
         </section>
       )}
@@ -205,24 +201,6 @@ export function WishesPage() {
                 <span className="info-value">{webAppInfo.viewportHeight}px</span>
               </div>
             )}
-            {webAppInfo.viewportStableHeight && (
-              <div className="info-item">
-                <span className="info-label">Стабильная высота:</span>
-                <span className="info-value">{webAppInfo.viewportStableHeight}px</span>
-              </div>
-            )}
-            {webAppInfo.headerColor && (
-              <div className="info-item">
-                <span className="info-label">Цвет заголовка:</span>
-                <span className="info-value">{webAppInfo.headerColor}</span>
-              </div>
-            )}
-            {webAppInfo.backgroundColor && (
-              <div className="info-item">
-                <span className="info-label">Цвет фона:</span>
-                <span className="info-value">{webAppInfo.backgroundColor}</span>
-              </div>
-            )}
             <div className="info-item">
               <span className="info-label">Подтверждение закрытия:</span>
               <span className="info-value">{formatValue(webAppInfo.isClosingConfirmationEnabled)}</span>
@@ -236,28 +214,10 @@ export function WishesPage() {
         <section className="info-section">
           <h2>🔐 InitData</h2>
           <div className="info-grid">
-            {initData.chat_type && (
-              <div className="info-item">
-                <span className="info-label">Тип чата:</span>
-                <span className="info-value">{initData.chat_type}</span>
-              </div>
-            )}
-            {initData.chat_instance && (
-              <div className="info-item">
-                <span className="info-label">Экземпляр чата:</span>
-                <span className="info-value">{initData.chat_instance}</span>
-              </div>
-            )}
             {initData.start_param && (
               <div className="info-item">
                 <span className="info-label">Стартовый параметр:</span>
                 <span className="info-value">{initData.start_param}</span>
-              </div>
-            )}
-            {initData.can_send_after !== undefined && (
-              <div className="info-item">
-                <span className="info-label">Можно отправить после:</span>
-                <span className="info-value">{initData.can_send_after} сек</span>
               </div>
             )}
             {initData.auth_date && (
