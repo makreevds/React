@@ -152,9 +152,9 @@ p {
    THEME STYLES
 ================================ */
 
-/* Светлая тема (по умолчанию) */
-html,
-body {
+/* Системная тема по умолчанию (светлая) */
+html:not(.theme-light):not(.theme-dark),
+body:not(.theme-light):not(.theme-dark) {
   background-color: var(--theme-bg-color);
   color: var(--theme-text-color);
   --theme-current-bg: var(--theme-bg-color);
@@ -162,6 +162,7 @@ body {
   --theme-current-secondary-bg: var(--theme-secondary-bg);
   --theme-current-hint: var(--theme-hint-color);
   --theme-current-hint-light: var(--theme-hint-color-light);
+  --tg-accent-theme: #000000;
 }
 
 html.theme-light,
@@ -200,6 +201,7 @@ body.theme-dark {
     --theme-current-secondary-bg: var(--theme-secondary-bg-dark);
     --theme-current-hint: var(--theme-hint-color-dark);
     --theme-current-hint-light: var(--theme-hint-color-light-dark);
+    --tg-accent-theme: #ffffff;
   }
 }
 

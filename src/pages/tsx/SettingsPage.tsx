@@ -11,9 +11,9 @@ export function SettingsPage() {
       <div className="settings-section">
         <div className="setting-item">
           <div className="setting-info">
-            <span className="setting-label">Темная тема</span>
+            <span className="setting-label">Тема</span>
             <span className="setting-description">
-              {theme === 'dark' ? 'Включена' : 'Выключена'}
+              {theme === 'dark' ? 'Темная' : theme === 'light' ? 'Светлая' : 'Системная'}
             </span>
           </div>
           <button 
