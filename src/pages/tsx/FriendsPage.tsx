@@ -5,7 +5,14 @@ export function FriendsPage() {
 
   // Тот самый метод для приглашения
   const handleInvite = () => {
-    const inviteLink = `https://t.me/react_my_test_bot/app`; 
+    // Получаем ID текущего пользователя
+    const userId = tg.initDataUnsafe?.user?.id;
+    
+    // Формируем ссылку с параметром start, содержащим ID пригласившего
+    const inviteLink = userId 
+      ? `https://t.me/react_my_test_bot?start=${userId}`
+      : `https://t.me/react_my_test_bot/app`;
+    
     const message = "Зацени мой вишлист в Telegram! Добавляй свои желания тоже 🎁";
     
     // Открываем нативное окно шеринга

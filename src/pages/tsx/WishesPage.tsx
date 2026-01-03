@@ -272,27 +272,6 @@ export function WishesPage() {
                 <span className="info-value hash">{initData.hash}</span>
               </div>
             )}
-            {initData.chat && (
-              <div className="info-item full-width">
-                <span className="info-label">Информация о чате:</span>
-                <pre className="info-value json">{JSON.stringify(initData.chat, null, 2)}</pre>
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* Theme Params */}
-      {webAppInfo?.themeParams && (
-        <section className="info-section">
-          <h2>🎨 Параметры темы</h2>
-          <div className="info-grid">
-            {Object.entries(webAppInfo.themeParams).map(([key, value]) => (
-              <div key={key} className="info-item">
-                <span className="info-label">{key}:</span>
-                <span className="info-value">{formatValue(value)}</span>
-              </div>
-            ))}
           </div>
         </section>
       )}
