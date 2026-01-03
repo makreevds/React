@@ -28,43 +28,42 @@
   color: var(--theme-current-hint, var(--theme-hint-color));
 }
 
-/* Theme Toggle Switch */
-.theme-toggle {
-  position: relative;
-  width: 52px;
-  height: 32px;
+/* Theme Segmented Control */
+.theme-segmented-control {
+  display: flex;
   background: var(--theme-current-hint-light, var(--theme-hint-color-light));
-  border-radius: 16px;
-  transition: background-color var(--transition-normal);
-  cursor: pointer;
+  border-radius: 10px;
+  padding: 3px;
+  gap: 3px;
   flex-shrink: 0;
 }
 
-.theme-toggle.active {
-  background: var(--tg-theme-accent-text-color, #4dabf7);
+.theme-segment {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
 }
 
-.theme-toggle-slider {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 24px;
-  height: 24px;
-  background: white;
-  border-radius: 50%;
-  transition: transform var(--transition-normal);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.theme-segment:hover {
+  color: var(--theme-current-text, var(--theme-text-color));
 }
 
-.theme-toggle.active .theme-toggle-slider {
-  transform: translateX(20px);
+.theme-segment.active {
+  background: var(--theme-current-bg, var(--theme-bg-color));
+  color: var(--theme-current-text, var(--theme-text-color));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.theme-toggle:active .theme-toggle-slider {
-  transform: scale(0.9);
-}
-
-.theme-toggle.active:active .theme-toggle-slider {
-  transform: translateX(20px) scale(0.9);
+.theme-segment:active {
+  transform: scale(0.95);
 }
 

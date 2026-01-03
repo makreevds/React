@@ -2,7 +2,7 @@ import '../css/SettingsPage.css'
 import { useTheme } from '../../contexts/ThemeContext'
 
 export function SettingsPage() {
-  const { theme, toggleTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
 
   return (
     <div className="page-container">
@@ -16,13 +16,29 @@ export function SettingsPage() {
               {theme === 'dark' ? 'Темная' : theme === 'light' ? 'Светлая' : 'Системная'}
             </span>
           </div>
-          <button 
-            className={`theme-toggle ${theme === 'dark' ? 'active' : ''}`}
-            onClick={toggleTheme}
-            aria-label="Переключить тему"
-          >
-            <span className="theme-toggle-slider"></span>
-          </button>
+          <div className="theme-segmented-control">
+            <button
+              className={`theme-segment ${theme === 'light' ? 'active' : ''}`}
+              onClick={() => setTheme('light')}
+              aria-label="Светлая тема"
+            >
+              Светлая
+            </button>
+            <button
+              className={`theme-segment ${theme === null ? 'active' : ''}`}
+              onClick={() => setTheme(null)}
+              aria-label="Системная тема"
+            >
+              Системная
+            </button>
+            <button
+              className={`theme-segment ${theme === 'dark' ? 'active' : ''}`}
+              onClick={() => setTheme('dark')}
+              aria-label="Темная тема"
+            >
+              Темная
+            </button>
+          </div>
         </div>
       </div>
     </div>
