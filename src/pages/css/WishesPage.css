@@ -1,0 +1,108 @@
+.wishes-page {
+  padding-bottom: 80px; /* место для bottom navigation */
+}
+
+.wishes-page h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: var(--tg-theme-text-color, var(--theme-text-color));
+}
+
+.wishes-page h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--tg-theme-text-color, var(--theme-text-color));
+}
+
+.info-section {
+  margin-bottom: 32px;
+  padding: 16px;
+  background: var(--tg-theme-secondary-bg-color, var(--theme-secondary-bg));
+  border-radius: var(--radius-md);
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  background: var(--tg-theme-bg-color, var(--theme-bg-color));
+  border-radius: 8px;
+}
+
+.info-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.info-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--tg-theme-hint-color, var(--theme-hint-color));
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 14px;
+  color: var(--tg-theme-text-color, var(--theme-text-color));
+  word-break: break-word;
+}
+
+.info-value.hash {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.info-link {
+  color: var(--tg-theme-link-color, var(--tg-accent-theme, #0088cc));
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.info-link:hover {
+  text-decoration: underline;
+}
+
+.json-output,
+.info-value.json {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  .json-output,
+  .info-value.json {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.theme-dark .json-output,
+.theme-dark .info-value.json {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.placeholder-text {
+  color: var(--tg-theme-hint-color, var(--theme-hint-color));
+  font-size: 14px;
+  text-align: center;
+  padding: 24px;
+}
+
