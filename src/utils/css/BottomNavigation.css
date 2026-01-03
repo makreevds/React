@@ -28,7 +28,7 @@
   position: absolute;
   inset: 0; /* растягиваем на весь блок */
   border-radius: 40px;
-  border: 1px solid var(--tg-theme-accent-text-color);
+  border: 1px solid var(--tg-accent-theme);
   pointer-events: none; /* чтобы не мешать клику */
 }
 
@@ -47,7 +47,7 @@
 }
 
 .nav-item.active {
-  color: var(--tg-theme-accent-text-color);
+  color: var(--tg-accent-theme);
 }
 
 /* icon */
@@ -88,5 +88,5 @@
 
 .theme-light .bottom-navigation {
   background: rgba(255, 255, 255, 0.85);
-  border-color: var(--tg-theme-accent-text-color);
+  border-color: var(--tg-accent-theme);
 }

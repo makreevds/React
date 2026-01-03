@@ -43,6 +43,9 @@ html, body {
   text-rendering: optimizeLegibility;
 
   /* === THEME COLORS === */
+
+  --tg-accent-theme: #63ff7a;
+
   /* Светлая тема */
   --theme-bg-color: #ffffff;
   --theme-text-color: #000000;

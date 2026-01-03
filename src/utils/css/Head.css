@@ -15,7 +15,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
-  border-bottom: 1px solid var(--tg-theme-accent-text-color);
+  border-bottom: 1px solid var(--tg-accent-theme);
   z-index: 1000;
 }
 
@@ -23,7 +23,7 @@
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.2px;
-  color: var(--tg-theme-accent-text-color);
+  color: var(--tg-accent-theme);
   user-select: none;
 }
 
