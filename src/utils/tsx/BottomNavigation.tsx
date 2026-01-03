@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import './BottomNavigation.css'
+import '../css/BottomNavigation.css'
 
 export function BottomNavigation() {
   return (
@@ -30,3 +30,4 @@ export function BottomNavigation() {
     </nav>
   );
 }
+

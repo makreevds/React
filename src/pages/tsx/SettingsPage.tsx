@@ -1,4 +1,4 @@
-import './SettingsPage.css'
+import '../css/SettingsPage.css'
 
 export function SettingsPage() {
   return (
@@ -8,3 +8,4 @@ export function SettingsPage() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import './FriendsPage.css'
+import '../css/FriendsPage.css'
 
 export function FriendsPage() {
   return (
@@ -8,3 +8,4 @@ export function FriendsPage() {
     </div>
   );
 }
+

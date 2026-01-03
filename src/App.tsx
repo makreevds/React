@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { WishesPage } from './WishesPage'
-import { FriendsPage } from './FriendsPage'
-import { SettingsPage } from './SettingsPage'
-import { BottomNavigation } from './BottomNavigation'
+import { WishesPage } from './pages/tsx/WishesPage'
+import { FriendsPage } from './pages/tsx/FriendsPage'
+import { SettingsPage } from './pages/tsx/SettingsPage'
+import { BottomNavigation } from './utils/tsx/BottomNavigation'
 
 // Объявляем глобальный тип для Telegram WebApp API
 declare global {

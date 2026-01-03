@@ -1,4 +1,4 @@
-import './WishesPage.css'
+import '../css/WishesPage.css'
 
 export function WishesPage() {
   return (
@@ -8,3 +8,4 @@ export function WishesPage() {
     </div>
   );
 }
+
