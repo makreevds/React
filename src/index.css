@@ -6,11 +6,10 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent; /* убираем фиолетовые моргания */
 }
 
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
 
@@ -24,6 +23,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   -webkit-touch-callout: none;
+  user-select: none;
+
+  /* === Фон страницы === */
+  background-color: var(--tg-theme-bg-color, #ffffff);
+  color: var(--tg-theme-text-color, #213547);
+
+  /* предотвращаем pull-to-refresh фон */
+  overscroll-behavior: contain;
 }
 
 /* ===============================
@@ -32,10 +39,6 @@ body {
 
 :root {
   color-scheme: light dark;
-
-  /* Telegram-based defaults */
-  color: var(--tg-theme-text-color, #213547);
-  background-color: var(--tg-theme-bg-color, #ffffff);
 
   line-height: 1.5;
   font-weight: 400;
@@ -86,7 +89,7 @@ body {
 }
 
 /* ===============================
-   LINKS (NavLink safe)
+   LINKS
 ================================ */
 
 a {
@@ -123,12 +126,7 @@ button:focus-visible {
    TYPOGRAPHY
 ================================ */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   margin: 0;
   font-weight: 600;
 }
@@ -138,7 +136,16 @@ p {
 }
 
 /* ===============================
-   DARK MODE FALLBACK
+   SCROLL CONTAINERS (iOS smooth)
+================================ */
+
+.scroll-container {
+  -webkit-overflow-scrolling: touch;
+  background-color: var(--tg-theme-bg-color, #ffffff);
+}
+
+/* ===============================
+   DARK MODE
 ================================ */
 
 @media (prefers-color-scheme: dark) {
