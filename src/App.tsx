@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import { WishesPage } from './pages/tsx/WishesPage'
 import { FriendsPage } from './pages/tsx/FriendsPage'
 import { SettingsPage } from './pages/tsx/SettingsPage'
+import { FeedPage } from './pages/tsx/FeedPage'
 import { BottomNavigation } from './utils/tsx/BottomNavigation'
 import { Head } from './utils/tsx/Head'
 
@@ -56,6 +57,10 @@ function App() {
         <Route 
           path="/friends" 
           element={<FriendsPage />} 
+        />
+        <Route 
+          path="/feed" 
+          element={<FeedPage />} 
         />
         <Route 
           path="/settings" 
