@@ -63,6 +63,12 @@ html, body {
   /* === SIZES === */
   --head-height: 48px;
 
+  /* === FONT SIZES === */
+  --font-size-sm: 13px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 24px;
+
   /* === RADIUS === */
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -148,9 +154,32 @@ p {
    DARK MODE
 ================================ */
 
+/* Поддержка системной темы через media query */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.theme-light) {
     background-color: var(--tg-theme-bg-color, #121212);
     color: var(--tg-theme-text-color, #ffffff);
   }
+}
+
+/* Явная темная тема через класс */
+:root.theme-dark {
+  background-color: var(--tg-theme-bg-color, #121212);
+  color: var(--tg-theme-text-color, #ffffff);
+}
+
+/* Явная светлая тема через класс */
+:root.theme-light {
+  background-color: var(--tg-theme-bg-color, #ffffff);
+  color: var(--tg-theme-text-color, #213547);
+}
+
+body.theme-dark {
+  background-color: var(--tg-theme-bg-color, #121212);
+  color: var(--tg-theme-text-color, #ffffff);
+}
+
+body.theme-light {
+  background-color: var(--tg-theme-bg-color, #ffffff);
+  color: var(--tg-theme-text-color, #213547);
 }

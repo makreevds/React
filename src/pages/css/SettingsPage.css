@@ -1,18 +1,93 @@
 .settings-page {
-  /* padding: var(--spacing-xl); */
+  padding: var(--spacing-xl);
   /* Отступ сверху: высота Head + safe-area-inset-top + обычный padding */
-  padding-top: calc(env(safe-area-inset-top, 0px) + var(--head-height));
-  /* min-height: calc(100vh - 80px); */
-  /* padding-bottom: 100px; */
+  padding-top: calc(env(safe-area-inset-top, 0px) + var(--head-height) + var(--spacing-xl));
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
+  min-height: 100vh;
 }
 
 .settings-page h1 {
   font-size: var(--font-size-xl);
   margin-bottom: var(--spacing-lg);
+  color: var(--tg-theme-text-color, #213547);
 }
 
 .placeholder-text {
   color: rgba(255, 255, 255, 0.6);
   font-size: var(--font-size-md);
+}
+
+/* Settings Section */
+.settings-section {
+  margin-top: var(--spacing-xl);
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--tg-theme-secondary-bg-color, rgba(0, 0, 0, 0.05));
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-sm);
+  transition: background-color var(--transition-normal);
+}
+
+.setting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.setting-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--tg-theme-text-color, #213547);
+}
+
+.setting-description {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color, rgba(0, 0, 0, 0.5));
+}
+
+/* Theme Toggle Switch */
+.theme-toggle {
+  position: relative;
+  width: 52px;
+  height: 32px;
+  background: var(--tg-theme-hint-color, rgba(0, 0, 0, 0.2));
+  border-radius: 16px;
+  transition: background-color var(--transition-normal);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.theme-toggle.active {
+  background: var(--tg-theme-accent-text-color, #4dabf7);
+}
+
+.theme-toggle-slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  transition: transform var(--transition-normal);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle.active .theme-toggle-slider {
+  transform: translateX(20px);
+}
+
+.theme-toggle:active .theme-toggle-slider {
+  transform: scale(0.9);
+}
+
+.theme-toggle.active:active .theme-toggle-slider {
+  transform: translateX(20px) scale(0.9);
 }
 

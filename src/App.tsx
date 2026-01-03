@@ -6,6 +6,7 @@ import { SettingsPage } from './pages/tsx/SettingsPage'
 import { FeedPage } from './pages/tsx/FeedPage'
 import { BottomNavigation } from './utils/tsx/BottomNavigation'
 import { Head } from './utils/tsx/Head'
+import { ThemeProvider } from './contexts/ThemeContext'
 
 // Объявляем глобальный тип для Telegram WebApp API
 declare global {
@@ -43,7 +44,7 @@ function App() {
 
   // === РОУТИНГ ===
   return (
-    <>
+    <ThemeProvider>
       <Head />
       <Routes>
         <Route 
@@ -68,7 +69,7 @@ function App() {
         />
       </Routes>
       <BottomNavigation />
-    </>
+    </ThemeProvider>
   );
 }
 

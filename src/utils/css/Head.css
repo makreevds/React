@@ -29,7 +29,15 @@
 
 /* тёмная тема */
 @media (prefers-color-scheme: dark) {
-  .head {
+  :root:not(.theme-light) .head {
     background: rgba(20, 20, 20, 0.7);
   }
+}
+
+.theme-dark .head {
+  background: rgba(20, 20, 20, 0.7);
+}
+
+.theme-light .head {
+  background: rgba(255, 255, 255, 0.85);
 }
