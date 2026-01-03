@@ -1,12 +1,10 @@
 .bottom-navigation {
   position: fixed;
-  bottom: 0;
-  /* left: 12px;
-  right: 12px; */
-  width: 100%;
+  bottom: env(safe-area-inset-bottom, 0px);
+  left: 12px;
+  right: 12px;
 
-  height: calc(64px + env(safe-area-inset-bottom, 0px));
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  height: 64px;
   display: flex;
   justify-content: space-around;
 
@@ -26,15 +24,11 @@
 
 /* псевдоэлемент для чистого бордера */
 .bottom-navigation::before {
-  width: 100%;
   content: '';
   position: absolute;
   inset: 0; /* растягиваем на весь блок */
   border-radius: 40px;
-  border-top: 1px solid var(--tg-accent-theme);
-  border-bottom: none;
-  border-left: 1px solid var(--tg-accent-theme);
-  border-right: 1px solid var(--tg-accent-theme);
+  border: 1px solid var(--tg-theme-accent-text-color);
   pointer-events: none; /* чтобы не мешать клику */
 }
 
