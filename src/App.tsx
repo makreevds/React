@@ -24,57 +24,22 @@ function App() {
     // Уведомляем Telegram о готовности приложения
     tg.ready();
     
-    // === ЛОГИРОВАНИЕ ПРИГЛАШЕНИЯ ===
-    // Получаем параметр start_param (ID пригласившего)
-    const startParam = tg.initDataUnsafe?.start_param;
-    const currentUserId = tg.initDataUnsafe?.user?.id;
-    const currentUsername = tg.initDataUnsafe?.user?.username;
-    const timestamp = new Date().toISOString();
-    
-    // URL PHP скрипта для логирования (замените на путь к вашему log.php на VPS)
-    const LOG_URL = import.meta.env.VITE_LOG_URL || '/log.php';
+    // === ОПРЕДЕЛЕНИЕ ПРИГЛАСИВШЕГО ===
+    // Когда пользователь переходит по ссылке вида: https://t.me/bot?start=123456
+    // Telegram передает параметр start в initDataUnsafe.start_param
+    const startParam = tg.initDataUnsafe?.start_param; // ID пригласившего
+    const currentUserId = tg.initDataUnsafe?.user?.id; // ID текущего пользователя
+    const currentUsername = tg.initDataUnsafe?.user?.username; // Username текущего пользователя
     
     if (startParam) {
-      console.log('🎁 Пользователь перешел по ссылке приглашения!');
+      // Пользователь перешел по ссылке приглашения
+      console.log('🎁 Пользователь приглашен!');
       console.log('📋 ID пригласившего:', startParam);
-      console.log('👤 ID текущего пользователя:', currentUserId);
-      console.log('👤 Username текущего пользователя:', currentUsername);
-      console.log('📅 Дата и время:', timestamp);
+      console.log('👤 ID нового пользователя:', currentUserId);
+      console.log('👤 Username нового пользователя:', currentUsername);
       
-      // Отправляем данные на сервер для записи в txt файл
-      fetch(LOG_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          inviterId: startParam,
-          userId: currentUserId,
-          username: currentUsername,
-          timestamp: timestamp,
-        }),
-      }).catch(error => {
-        console.error('❌ Ошибка при отправке лога:', error);
-      });
-    } else {
-      console.log('ℹ️ Пользователь открыл приложение напрямую (без приглашения)');
-      console.log('👤 ID текущего пользователя:', currentUserId);
-      console.log('👤 Username текущего пользователя:', currentUsername);
-      
-      // Логируем обычный вход
-      fetch(LOG_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: currentUserId,
-          username: currentUsername,
-          timestamp: timestamp,
-        }),
-      }).catch(error => {
-        console.error('❌ Ошибка при отправке лога:', error);
-      });
+      // Здесь можно отправить данные на сервер для логирования
+      // Например: fetch('/api/log-invite', { method: 'POST', body: JSON.stringify({ inviterId: startParam, userId: currentUserId }) })
     }
     
     // Настройка полноэкранного режима для мобильных устройств
