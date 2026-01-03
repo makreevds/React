@@ -1,9 +1,9 @@
 .settings-page {
-  padding: var(--spacing-xl);
+  /* padding: var(--spacing-xl); */
   /* Отступ сверху: высота Head + safe-area-inset-top + обычный padding */
-  padding-top: calc(env(safe-area-inset-top, 0px) + var(--head-height) + var(--spacing-xl));
-  min-height: calc(100vh - 80px);
-  padding-bottom: 100px;
+  padding-top: calc(env(safe-area-inset-top, 0px) + var(--head-height));
+  /* min-height: calc(100vh - 80px); */
+  /* padding-bottom: 100px; */
 }
 
 .settings-page h1 {
