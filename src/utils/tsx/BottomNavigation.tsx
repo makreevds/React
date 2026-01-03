@@ -16,6 +16,14 @@ const IconFriends = () => (
   </svg>
 )
 
+const IconFeed = () => (
+  <svg viewBox="0 0 24 24" fill="none">
+    <path d="M4 4h16"/>
+    <path d="M4 10h16"/>
+    <path d="M4 16h10"/>
+  </svg>
+)
+
 const IconSettings = () => (
   <svg viewBox="0 0 24 24" fill="none">
     <circle cx="12" cy="12" r="3"/>
@@ -34,6 +42,11 @@ export function BottomNavigation() {
       <NavLink to="/friends" className="nav-item">
         <span className="nav-icon"><IconFriends /></span>
         <span className="nav-label">Друзья</span>
+      </NavLink>
+
+      <NavLink to="/feed" className="nav-item">
+        <span className="nav-icon"><IconFeed /></span>
+        <span className="nav-label">Лента</span>
       </NavLink>
 
       <NavLink to="/settings" className="nav-item">
