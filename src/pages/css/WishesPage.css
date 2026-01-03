@@ -1,13 +1,13 @@
-.wishes-page {
+/* .wishes-page {
   padding-bottom: 80px; /* место для bottom navigation */
-}
+/* } */ 
 
-.wishes-page h1 {
+/* .wishes-page h1 {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 24px;
   color: var(--tg-theme-text-color, var(--theme-text-color));
-}
+} */
 
 .wishes-page h2 {
   font-size: 18px;
