@@ -214,6 +214,14 @@ export function WishesPage() {
         <section className="info-section">
           <h2>🔐 InitData</h2>
           <div className="info-grid">
+            {/* Не выводится */}
+            {/* Не выводится */}
+            {/* Не выводится */}
+            {/* Не выводится */}
+            {/* Не выводится */}
+            {/* Не выводится */}
+            {/* Не выводится */}
+            {/* Не выводится */}
             {initData.start_param && (
               <div className="info-item">
                 <span className="info-label">Стартовый параметр:</span>
