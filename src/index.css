@@ -25,10 +25,6 @@ html, body {
   -webkit-touch-callout: none;
   user-select: none;
 
-  /* === Фон страницы === */
-  background-color: var(--tg-theme-bg-color, #ffffff);
-  color: var(--tg-theme-text-color, #213547);
-
   /* предотвращаем pull-to-refresh фон */
   overscroll-behavior: contain;
 }
@@ -46,15 +42,22 @@ html, body {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
-  /* === COLORS === */
-  --color-primary: #4dabf7;
-  --color-primary-hover: #339af0;
-  --color-danger: #ff6b6b;
-  --color-success: #51cf66;
-  --color-warning: #ffd43b;
+  /* === THEME COLORS === */
+  /* Светлая тема */
+  --theme-bg-color: #ffffff;
+  --theme-text-color: #000000;
+  --theme-secondary-bg: rgba(0, 0, 0, 0.05);
+  --theme-hint-color: rgba(0, 0, 0, 0.5);
+  --theme-hint-color-light: rgba(0, 0, 0, 0.2);
+
+  /* Темная тема */
+  --theme-bg-color-dark: #000000;
+  --theme-text-color-dark: #ffffff;
+  --theme-secondary-bg-dark: rgba(255, 255, 255, 0.1);
+  --theme-hint-color-dark: rgba(255, 255, 255, 0.5);
+  --theme-hint-color-light-dark: rgba(255, 255, 255, 0.2);
 
   /* === SPACING === */
-  --spacing-xs: 8px;
   --spacing-sm: 12px;
   --spacing-md: 16px;
   --spacing-lg: 20px;
@@ -64,22 +67,13 @@ html, body {
   --head-height: 48px;
 
   /* === FONT SIZES === */
-  --font-size-sm: 13px;
   --font-size-md: 14px;
-  --font-size-lg: 16px;
   --font-size-xl: 24px;
 
   /* === RADIUS === */
-  --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 20px;
-
-  /* === SHADOWS === */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.12);
 
   /* === TRANSITIONS === */
-  --transition-fast: 0.12s;
   --transition-normal: 0.2s;
 }
 
@@ -90,8 +84,7 @@ html, body {
 body {
   display: flex;
   flex-direction: column;
-  background-color: var(--tg-theme-bg-color, #ffffff);
-  color: var(--tg-theme-text-color, #213547);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 /* ===============================
@@ -147,39 +140,57 @@ p {
 
 .scroll-container {
   -webkit-overflow-scrolling: touch;
-  background-color: var(--tg-theme-bg-color, #ffffff);
 }
 
 /* ===============================
-   DARK MODE
+   THEME STYLES
 ================================ */
 
-/* Поддержка системной темы через media query */
-@media (prefers-color-scheme: dark) {
-  :root:not(.theme-light) {
-    background-color: var(--tg-theme-bg-color, #121212);
-    color: var(--tg-theme-text-color, #ffffff);
-  }
+/* Светлая тема (по умолчанию) */
+html,
+body {
+  background-color: var(--theme-bg-color);
+  color: var(--theme-text-color);
+  --theme-current-bg: var(--theme-bg-color);
+  --theme-current-text: var(--theme-text-color);
+  --theme-current-secondary-bg: var(--theme-secondary-bg);
+  --theme-current-hint: var(--theme-hint-color);
+  --theme-current-hint-light: var(--theme-hint-color-light);
 }
 
-/* Явная темная тема через класс */
-:root.theme-dark {
-  background-color: var(--tg-theme-bg-color, #121212);
-  color: var(--tg-theme-text-color, #ffffff);
-}
-
-/* Явная светлая тема через класс */
-:root.theme-light {
-  background-color: var(--tg-theme-bg-color, #ffffff);
-  color: var(--tg-theme-text-color, #213547);
-}
-
-body.theme-dark {
-  background-color: var(--tg-theme-bg-color, #121212);
-  color: var(--tg-theme-text-color, #ffffff);
-}
-
+html.theme-light,
 body.theme-light {
-  background-color: var(--tg-theme-bg-color, #ffffff);
-  color: var(--tg-theme-text-color, #213547);
+  background-color: var(--theme-bg-color);
+  color: var(--theme-text-color);
+  --theme-current-bg: var(--theme-bg-color);
+  --theme-current-text: var(--theme-text-color);
+  --theme-current-secondary-bg: var(--theme-secondary-bg);
+  --theme-current-hint: var(--theme-hint-color);
+  --theme-current-hint-light: var(--theme-hint-color-light);
+}
+
+/* Темная тема */
+html.theme-dark,
+body.theme-dark {
+  background-color: var(--theme-bg-color-dark);
+  color: var(--theme-text-color-dark);
+  --theme-current-bg: var(--theme-bg-color-dark);
+  --theme-current-text: var(--theme-text-color-dark);
+  --theme-current-secondary-bg: var(--theme-secondary-bg-dark);
+  --theme-current-hint: var(--theme-hint-color-dark);
+  --theme-current-hint-light: var(--theme-hint-color-light-dark);
+}
+
+/* Поддержка системной темы через media query (если класс темы не установлен) */
+@media (prefers-color-scheme: dark) {
+  html:not(.theme-light):not(.theme-dark),
+  body:not(.theme-light):not(.theme-dark) {
+    background-color: var(--theme-bg-color-dark);
+    color: var(--theme-text-color-dark);
+    --theme-current-bg: var(--theme-bg-color-dark);
+    --theme-current-text: var(--theme-text-color-dark);
+    --theme-current-secondary-bg: var(--theme-secondary-bg-dark);
+    --theme-current-hint: var(--theme-hint-color-dark);
+    --theme-current-hint-light: var(--theme-hint-color-light-dark);
+  }
 }
