@@ -28,7 +28,7 @@
   position: absolute;
   inset: 0; /* растягиваем на весь блок */
   border-radius: 20px;
-  border: 15px solid var(--tg-theme-accent-text-color);
+  border: 1px solid var(--tg-theme-accent-text-color);
   pointer-events: none; /* чтобы не мешать клику */
 }
 
