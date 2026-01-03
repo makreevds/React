@@ -36,6 +36,9 @@
   --spacing-xxl: 30px;
   --spacing-xxxl: 40px;
   
+  /* Размеры компонентов */
+  --head-height: 0px;
+  
   /* Радиусы скругления */
   --radius-sm: 8px;
   --radius-md: 10px;
