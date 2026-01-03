@@ -14,7 +14,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
-  border-radius: 40px 40px 0 0;
+  border-radius: 40px;
 
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 
@@ -30,7 +30,7 @@
   content: '';
   position: absolute;
   inset: 0; /* растягиваем на весь блок */
-  border-radius: 40px 40px 0 0;
+  border-radius: 40px;
   border-top: 1px solid var(--tg-accent-theme);
   border-bottom: none;
   border-left: 1px solid var(--tg-accent-theme);
