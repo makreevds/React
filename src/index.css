@@ -65,6 +65,7 @@ html, body {
   --spacing-md: 16px;
   --spacing-lg: 20px;
   --spacing-xl: 24px;
+  --padding-page: 3%;
 
   /* === SIZES === */
   --head-height: 48px;
@@ -198,4 +199,17 @@ body.theme-dark {
     --theme-current-hint: var(--theme-hint-color-dark);
     --theme-current-hint-light: var(--theme-hint-color-light-dark);
   }
+}
+
+
+.page-container {
+  padding-top: calc(env(safe-area-inset-top, 0px) + var(--head-height));
+  padding-left: var(--padding-page);
+  padding-right: var(--padding-page);
+}
+.page-container h1{
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+  padding-top: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
 }

@@ -5,7 +5,7 @@ export function SettingsPage() {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <div className="settings-page">
+    <div className="page-container">
       <h1>Настройки</h1>
       
       <div className="settings-section">

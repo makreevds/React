@@ -1,30 +1,4 @@
-.settings-page {
-  padding: var(--spacing-xl);
-  /* Отступ сверху: высота Head + safe-area-inset-top + обычный padding */
-  padding-top: calc(env(safe-area-inset-top, 0px) + var(--head-height) + var(--spacing-xl));
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
-  min-height: 100vh;
-  background-color: inherit;
-  color: inherit;
-}
-
-.settings-page h1 {
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-lg);
-  color: inherit;
-}
-
-.placeholder-text {
-  color: inherit;
-  opacity: 0.6;
-  font-size: var(--font-size-md);
-}
-
 /* Settings Section */
-.settings-section {
-  margin-top: var(--spacing-xl);
-}
-
 .setting-item {
   display: flex;
   align-items: center;

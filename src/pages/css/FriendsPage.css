@@ -1,23 +1,44 @@
-.friends-page {
-  /* padding: var(--spacing-xl); */
-  /* Отступ сверху: высота Head + safe-area-inset-top + обычный padding */
-  padding-top: calc(env(safe-area-inset-top, 0px) + var(--head-height));
-  /* min-height: calc(100vh - 80px); */
-  /* padding-bottom: 100px; */
-  background-color: inherit;
-  color: inherit;
-  min-height: 100vh;
+/* Новые элементы под твой стиль */
+.friends-list {
+  margin-bottom: 30px;
 }
 
-.friends-page h1 {
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-lg);
-  color: inherit;
+.friend-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Тонкая линия разделитель */
 }
 
-.placeholder-text {
-  color: inherit;
-  opacity: 0.6;
+.friend-name {
+  font-weight: bold;
   font-size: var(--font-size-md);
 }
 
+.friend-username {
+  font-size: var(--font-size-sm);
+  opacity: 0.5;
+}
+
+.view-btn {
+  background: var(--tg-theme-button-color, #0088cc);
+  color: var(--tg-theme-button-text-color, #fff);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.invite-main-btn {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: 1px dashed var(--tg-theme-hint-color, #ccc);
+  color: var(--tg-theme-button-color, #0088cc);
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
