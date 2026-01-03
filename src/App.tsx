@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { HomePage } from './HomePage'
-import { CounterPage } from './CounterPage'
+import { WishesPage } from './WishesPage'
+import { FriendsPage } from './FriendsPage'
+import { SettingsPage } from './SettingsPage'
+import { BottomNavigation } from './BottomNavigation'
 
 // Объявляем глобальный тип для Telegram WebApp API
 declare global {
@@ -51,16 +54,27 @@ function App() {
 
   // === РОУТИНГ ===
   return (
-    <Routes>
-      <Route 
-        path="/" 
-        element={<HomePage userData={userData} onClose={handleClose} />} 
-      />
-      <Route 
-        path="/counter" 
-        element={<CounterPage />} 
-      />
-    </Routes>
+    <>
+      <Routes>
+        <Route 
+          path="/" 
+          element={<HomePage userData={userData} onClose={handleClose} />} 
+        />
+        <Route 
+          path="/wishes" 
+          element={<WishesPage />} 
+        />
+        <Route 
+          path="/friends" 
+          element={<FriendsPage />} 
+        />
+        <Route 
+          path="/settings" 
+          element={<SettingsPage />} 
+        />
+      </Routes>
+      <BottomNavigation />
+    </>
   );
 }
 

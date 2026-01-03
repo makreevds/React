@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { UserCard } from './UserCard'
 import './HomePage.css'
 
@@ -17,13 +16,6 @@ export function HomePage({ userData, onClose }: HomePageProps) {
       </div>
 
       <div className="button-group">
-        <Link 
-          to="/counter" 
-          className="btn btn-primary"
-        >
-          🔢 Открыть счетчик
-        </Link>
-
         <button 
           onClick={onClose} 
           className="btn btn-danger"
