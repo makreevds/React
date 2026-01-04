@@ -27,7 +27,11 @@ function App() {
     // === ОПРЕДЕЛЕНИЕ ПРИГЛАСИВШЕГО ===
     // Когда пользователь переходит по ссылке вида: https://t.me/bot?start=123456
     // Telegram передает параметр start в initDataUnsafe.start_param
-    const startParam = tg.initDataUnsafe?.start_param; // ID пригласившего
+    // Также проверяем URL параметр ref как резервный вариант
+    const startParamFromTelegram = tg.initDataUnsafe?.start_param; // ID пригласившего из Telegram
+    const urlParams = new URLSearchParams(window.location.search);
+    const startParamFromUrl = urlParams.get('ref'); // ID пригласившего из URL (резервный вариант)
+    const startParam = startParamFromTelegram || startParamFromUrl; // Используем любой доступный параметр
     const currentUserId = tg.initDataUnsafe?.user?.id; // ID текущего пользователя
     const currentUsername = tg.initDataUnsafe?.user?.username; // Username текущего пользователя
     
@@ -35,6 +39,7 @@ function App() {
       // Пользователь перешел по ссылке приглашения
       console.log('🎁 Пользователь приглашен!');
       console.log('📋 ID пригласившего:', startParam);
+      console.log('📋 Источник параметра:', startParamFromTelegram ? 'Telegram initData' : 'URL параметр');
       console.log('👤 ID нового пользователя:', currentUserId);
       console.log('👤 Username нового пользователя:', currentUsername);
       

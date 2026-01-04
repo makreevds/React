@@ -5,7 +5,7 @@ Telegram бот для мини-приложения
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
-from aiogram.filters import Command
+from aiogram.filters import CommandStart
 import asyncio
 import config
 
@@ -19,17 +19,34 @@ if BOT_TOKEN == "YOUR_BOT_TOKEN":
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
-@dp.message(Command("start"))
-async def cmd_start(message: types.Message):
+@dp.message(CommandStart())
+async def cmd_start(message: types.Message, command: CommandStart):
     """Обработчик команды /start"""
     # Получаем параметр из команды /start PARAM
-    start_param = message.text.split()[1] if len(message.text.split()) > 1 else None
+    # В aiogram 3.x параметр доступен через command.args
+    # Также используем резервный способ парсинга текста на случай, если command.args не работает
+    start_param = None
+    if hasattr(command, 'args') and command.args:
+        start_param = command.args
+    else:
+        # Резервный способ: парсим текст сообщения
+        parts = message.text.split(maxsplit=1)
+        if len(parts) > 1:
+            start_param = parts[1]
+    
+    # Формируем URL для WebApp с параметром пригласившего
+    web_app_url = WEB_APP_URL
+    if start_param:
+        # Добавляем параметр в URL, чтобы гарантированно передать его в приложение
+        # Telegram также передаст его в initDataUnsafe.start_param, но это дополнительная страховка
+        separator = '&' if '?' in web_app_url else '?'
+        web_app_url = f"{WEB_APP_URL}{separator}ref={start_param}"
     
     # Создаем кнопку с WebApp
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
             text="🎁 Открыть приложение",
-            web_app=WebAppInfo(url=WEB_APP_URL)
+            web_app=WebAppInfo(url=web_app_url)
         )]
     ])
     
