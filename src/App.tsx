@@ -43,6 +43,7 @@ function App() {
       console.log('👤 ID нового пользователя:', currentUserId);
       console.log('👤 Username нового пользователя:', currentUsername);
       
+      
       // Здесь можно отправить данные на сервер для логирования
       // Например: fetch('/api/log-invite', { method: 'POST', body: JSON.stringify({ inviterId: startParam, userId: currentUserId }) })
     }
