@@ -46,6 +46,8 @@ else
     exit 1
 fi
 
+
+
 echo -e "${GREEN}✅ Сайт успешно обновлен!${NC}"
 
 # Перезапускаем Telegram бота
