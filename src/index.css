@@ -54,8 +54,8 @@ html, body {
   --app-button-text-color: #fff;
 
   /* Еще мои параметры */
-  --opacity-nav-head: 0.7;
-  --blur-nav-head: 10px;
+  --opacity-nav-head: 0.8;
+  --blur-nav-head: 12px;
 
   /* Светлая тема */
   --theme-bg-color: #ffffff;
