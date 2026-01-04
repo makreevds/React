@@ -47,3 +47,48 @@ else
 fi
 
 echo -e "${GREEN}✅ Сайт успешно обновлен!${NC}"
+
+# Перезапускаем Telegram бота
+echo -e "${YELLOW}🤖 Перезапускаю Telegram бота...${NC}"
+BOT_DIR="$PROJECT_DIR/telegram-bot"
+
+if [ -d "$BOT_DIR" ]; then
+    cd "$BOT_DIR" || {
+        echo -e "${RED}❌ Ошибка: Не удалось перейти в директорию $BOT_DIR${NC}"
+        exit 1
+    }
+    
+    PID_FILE="bot.pid"
+    LOG_FILE="bot.log"
+    
+    # Останавливаем бота, если он запущен
+    if [ -f "$PID_FILE" ]; then
+        BOT_PID=$(cat "$PID_FILE")
+        if ps -p "$BOT_PID" > /dev/null 2>&1; then
+            echo -e "${YELLOW}⏹️  Останавливаю бота (PID: $BOT_PID)...${NC}"
+            kill "$BOT_PID"
+            rm "$PID_FILE"
+            sleep 1
+        else
+            rm "$PID_FILE"
+        fi
+    fi
+    
+    # Проверяем наличие config.py файла
+    if [ ! -f "config.py" ]; then
+        echo -e "${YELLOW}⚠️  Файл config.py не найден, пропускаю запуск бота${NC}"
+    else
+        # Запускаем бота в фоне
+        echo -e "${YELLOW}🚀 Запускаю бота в фоновом режиме...${NC}"
+        nohup python3 bot.py > "$LOG_FILE" 2>&1 &
+        BOT_PID=$!
+        
+        # Сохраняем PID
+        echo $BOT_PID > "$PID_FILE"
+        
+        echo -e "${GREEN}✓ Бот запущен (PID: $BOT_PID)${NC}"
+        echo -e "${YELLOW}💡 Логи: tail -f $BOT_DIR/$LOG_FILE${NC}"
+    fi
+else
+    echo -e "${YELLOW}⚠️  Директория $BOT_DIR не найдена, пропускаю запуск бота${NC}"
+fi
