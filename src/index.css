@@ -27,6 +27,8 @@ html, body {
 
   /* предотвращаем pull-to-refresh фон */
   overscroll-behavior: contain;
+
+  padding-bottom: 64px;
 }
 
 /* ===============================

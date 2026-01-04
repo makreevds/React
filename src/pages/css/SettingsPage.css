@@ -23,10 +23,10 @@
   color: inherit;
 }
 
-.setting-description {
+/* .setting-description {
   font-size: 13px;
   color: var(--theme-current-hint, var(--theme-hint-color));
-}
+} */
 
 /* Theme Segmented Control */
 .theme-segmented-control {
