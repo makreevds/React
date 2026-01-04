@@ -55,7 +55,7 @@ html, body {
 
   /* Еще мои параметры */
   --opacity-nav-head: 0.4;
-  --blur-nav-head: 2px;
+  --blur-nav-head: 10px;
 
   /* Светлая тема */
   --theme-bg-color: #ffffff;
