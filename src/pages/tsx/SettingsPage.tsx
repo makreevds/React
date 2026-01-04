@@ -21,22 +21,25 @@ export function SettingsPage() {
               className={`theme-segment ${theme === 'light' ? 'active' : ''}`}
               onClick={() => setTheme('light')}
               aria-label="Светлая тема"
+              title="Светлая тема"
             >
-              Светлая
+              ☀️
             </button>
             <button
               className={`theme-segment ${theme === null ? 'active' : ''}`}
               onClick={() => setTheme(null)}
               aria-label="Системная тема"
+              title="Системная тема"
             >
-              Системная
+              🔄
             </button>
             <button
               className={`theme-segment ${theme === 'dark' ? 'active' : ''}`}
               onClick={() => setTheme('dark')}
               aria-label="Темная тема"
+              title="Темная тема"
             >
-              Темная
+              🌙
             </button>
           </div>
         </div>
