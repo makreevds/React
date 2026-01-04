@@ -34,20 +34,13 @@ async def cmd_start(message: types.Message, command: CommandStart):
         if len(parts) > 1:
             start_param = parts[1]
     
-    # Формируем URL для WebApp с параметром пригласившего
-    web_app_url = WEB_APP_URL
-    if start_param:
-        # Добавляем параметр в URL, чтобы гарантированно передать его в приложение
-        # Telegram также передаст его в initDataUnsafe.start_param, но это дополнительная страховка
-        separator = '&' if '?' in web_app_url else '?'
-        # https://t.me/react_my_test_bot?startapp=590269096
-        web_app_url = f"{WEB_APP_URL}{separator}startapp={start_param}"
-    
     # Создаем кнопку с WebApp
+    # Telegram автоматически передаст start_param в initDataUnsafe.start_param
+    # при открытии WebApp через кнопку после команды /start PARAM
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
-            text=f"🎁 Открыть приложение, {web_app_url}",
-            web_app=WebAppInfo(url=web_app_url)
+            text="🎁 Открыть приложение",
+            web_app=WebAppInfo(url=WEB_APP_URL)
         )]
     ])
     
