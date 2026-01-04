@@ -12,9 +12,9 @@ export function SettingsPage() {
         <div className="setting-item">
           <div className="setting-info">
             <span className="setting-label">Тема</span>
-            {/* <span className="setting-description">
+            <span className="setting-description">
               {theme === 'dark' ? 'Темная' : theme === 'light' ? 'Светлая' : 'Системная'}
-            </span> */}
+            </span>
           </div>
           <div className="theme-segmented-control">
             <button
