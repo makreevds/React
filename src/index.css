@@ -28,7 +28,6 @@ html, body {
   /* предотвращаем pull-to-refresh фон */
   overscroll-behavior: contain;
 
-  padding-bottom: 64px;
 }
 
 /* ===============================
@@ -228,6 +227,7 @@ body.theme-dark {
   padding-top: calc(env(safe-area-inset-top, 0px) + var(--head-height));
   padding-left: var(--padding-page);
   padding-right: var(--padding-page);
+  padding-bottom: 64px;
 }
 .page-container h1{
   padding-left: var(--spacing-lg);
