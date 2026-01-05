@@ -48,7 +48,9 @@ export function WishesPage() {
         // Загружаем вишлисты пользователя
         let loadedWishlists: Wishlist[] = []
         try {
+          console.log('Загружаем вишлисты для telegram_id:', user.id)
           const response = await wishlistsRepo.getWishlistsByTelegramId(user.id)
+          console.log('Ответ от API (вишлисты):', response)
           // Проверяем, что ответ - массив
           if (Array.isArray(response)) {
             loadedWishlists = response.map((wl: any) => ({
@@ -56,6 +58,9 @@ export function WishesPage() {
               name: String(wl.name || ''),
               is_default: Boolean(wl.is_default),
             }))
+            console.log('Обработанные вишлисты:', loadedWishlists)
+          } else {
+            console.warn('Ответ не является массивом:', typeof response, response)
           }
         } catch (err: any) {
           // Если вишлистов нет (404), это нормально
@@ -73,7 +78,9 @@ export function WishesPage() {
         const wishesMap: Record<number, Wish[]> = {}
         for (const wishlist of loadedWishlists) {
           try {
+            console.log(`Загружаем желания для вишлиста ${wishlist.id} (${wishlist.name})`)
             const wishesResponse = await wishesRepo.getWishesByWishlistId(wishlist.id)
+            console.log(`Ответ от API (желания для вишлиста ${wishlist.id}):`, wishesResponse)
             // Проверяем, что ответ - массив и обрабатываем каждый элемент
             if (Array.isArray(wishesResponse)) {
               wishesMap[wishlist.id] = wishesResponse.map((w: any) => ({
@@ -85,7 +92,9 @@ export function WishesPage() {
                 description: w.description ? String(w.description) : undefined,
                 status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
               }))
+              console.log(`Обработанные желания для вишлиста ${wishlist.id}:`, wishesMap[wishlist.id])
             } else {
+              console.warn(`Ответ для вишлиста ${wishlist.id} не является массивом:`, typeof wishesResponse, wishesResponse)
               wishesMap[wishlist.id] = []
             }
           } catch (err) {
@@ -93,6 +102,7 @@ export function WishesPage() {
             wishesMap[wishlist.id] = []
           }
         }
+        console.log('Итоговая карта желаний:', wishesMap)
         setWishesByWishlist(wishesMap)
       } catch (err: any) {
         console.error('Критическая ошибка при загрузке данных:', err)
@@ -146,6 +156,9 @@ export function WishesPage() {
   let allWishes: Wish[] = []
   try {
     allWishes = Object.values(wishesByWishlist).flat().filter(w => w && w.id)
+    console.log('Все желания для отображения:', allWishes)
+    console.log('Количество вишлистов:', wishlists.length)
+    console.log('Количество желаний:', allWishes.length)
   } catch (err) {
     console.error('Ошибка при обработке желаний:', err)
     allWishes = []
@@ -192,6 +205,16 @@ export function WishesPage() {
 
         <section className="wishes-list-section">
           <h3 className="wishes-list-title">Мои желания</h3>
+          
+          {/* Отладочная информация - всегда показываем для отладки */}
+          <div style={{ fontSize: '12px', color: '#666', marginBottom: '10px', padding: '10px', background: '#f0f0f0', borderRadius: '4px' }}>
+            <div>isLoading: {String(isLoading)}</div>
+            <div>error: {error || 'нет'}</div>
+            <div>wishlists.length: {wishlists.length}</div>
+            <div>allWishes.length: {allWishes.length}</div>
+            <div>wishlists: {JSON.stringify(wishlists.map(w => ({ id: w.id, name: w.name })))}</div>
+            <div>wishesByWishlist keys: {Object.keys(wishesByWishlist).join(', ')}</div>
+          </div>
           
           {isLoading ? (
             <div className="wishes-loading">
