@@ -1,25 +1,40 @@
 import '../css/FriendsPage.css'
+import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
+import { useErrorHandler } from '../../hooks/useErrorHandler'
 
 export function FriendsPage() {
-  const tg = window.Telegram.WebApp;
+  const { webApp, getUserId } = useTelegramWebApp()
+  const { handleError } = useErrorHandler(webApp || undefined)
 
   // Тот самый метод для приглашения
   const handleInvite = () => {
-    // Получаем ID текущего пользователя
-    const userId = tg.initDataUnsafe?.user?.id;
-    
-    // Используем ?start= чтобы создать чат с ботом
-    // Бот должен отправлять кнопку с WebApp после команды /start
-    // Параметр передастся автоматически через start_param
-    const inviteLink = userId 
-      ? `https://t.me/react_my_test_bot?start=${userId}`
-      : `https://t.me/react_my_test_bot`;
-    
-    const message = "Зацени мой вишлист в Telegram! Добавляй свои желания тоже 🎁";
-    
-    // Открываем нативное окно шеринга
-    tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(message)}`);
-  };
+    if (!webApp) {
+      handleError(new Error('Telegram WebApp недоступен'), 'FriendsPage')
+      return
+    }
+
+    try {
+      // Получаем ID текущего пользователя
+      const userId = getUserId()
+      
+      // Используем ?start= чтобы создать чат с ботом
+      // Бот должен отправлять кнопку с WebApp после команды /start
+      // Параметр передастся автоматически через start_param
+      const botUsername = 'react_my_test_bot' // TODO: вынести в конфигурацию
+      const inviteLink = userId 
+        ? `https://t.me/${botUsername}?start=${userId}`
+        : `https://t.me/${botUsername}`
+      
+      const message = "Зацени мой вишлист в Telegram! Добавляй свои желания тоже 🎁"
+      
+      // Открываем нативное окно шеринга
+      webApp.openTelegramLink(
+        `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(message)}`
+      )
+    } catch (error) {
+      handleError(error, 'FriendsPage.handleInvite')
+    }
+  }
 
   // Фейковые данные для теста верстки
   const friendsInApp = [

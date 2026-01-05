@@ -22,3 +22,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Telegram bot
+telegram-bot/config.py
+telegram-bot/bot.pid
+telegram-bot/bot.log
+telegram-bot/__pycache__/
+telegram-bot/*.pyc
+telegram-bot/.env
+
+# Environment variables
+.env
+.env.local
+.env.production
