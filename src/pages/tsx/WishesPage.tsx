@@ -95,38 +95,53 @@ export function WishesPage() {
         
         for (const wishlist of loadedWishlists) {
           try {
-            console.log(`\nЗагружаем желания для вишлиста ID=${wishlist.id}, name="${wishlist.name}"`)
-            console.log(`URL запроса будет: /api/wishes/?wishlist_id=${wishlist.id}`)
+            console.log(`\n=== ЗАГРУЗКА ЖЕЛАНИЙ ДЛЯ ВИШЛИСТА ${wishlist.id} ===`)
+            console.log(`Вишлист ID: ${wishlist.id}, name: "${wishlist.name}"`)
+            console.log(`URL запроса: /api/wishes/?wishlist_id=${wishlist.id}`)
+            console.log(`Полный URL будет: ${apiContext?.client ? 'baseUrl' + '/api/wishes/?wishlist_id=' + wishlist.id : 'неизвестно'}`)
             
             const wishesResponse = await wishesRepo.getWishesByWishlistId(wishlist.id)
+            console.log(`✅ Получен ответ от API для вишлиста ${wishlist.id}`)
             
             console.log(`Ответ от API (желания для вишлиста ${wishlist.id}):`, wishesResponse)
             console.log(`Тип ответа:`, typeof wishesResponse, 'Является массивом:', Array.isArray(wishesResponse))
             
             // Проверяем, что ответ - массив и обрабатываем каждый элемент
             if (Array.isArray(wishesResponse)) {
-              console.log(`Количество желаний в ответе:`, wishesResponse.length)
+              console.log(`✅ Количество желаний в ответе:`, wishesResponse.length)
               if (wishesResponse.length > 0) {
-                console.log('Первое желание (сырые данные):', wishesResponse[0])
+                console.log('📦 Первое желание (сырые данные):', JSON.stringify(wishesResponse[0], null, 2))
+              } else {
+                console.warn(`⚠️ API вернул пустой массив для вишлиста ${wishlist.id}`)
               }
               
-              wishesMap[wishlist.id] = wishesResponse.map((w: any) => {
-                const processed = {
-                  id: Number(w.id) || 0,
-                  title: String(w.title || ''),
-                  price: w.price ? (typeof w.price === 'string' ? parseFloat(w.price) : Number(w.price)) : undefined,
-                  currency: w.currency ? String(w.currency) : undefined,
-                  image_url: w.image_url ? String(w.image_url) : undefined,
-                  description: w.description ? String(w.description) : undefined,
-                  status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
+              // Обрабатываем каждое желание
+              const processedWishes: Wish[] = []
+              for (const w of wishesResponse) {
+                try {
+                  const processed: Wish = {
+                    id: Number(w.id) || 0,
+                    title: String(w.title || 'Без названия'),
+                    price: w.price !== null && w.price !== undefined 
+                      ? (typeof w.price === 'string' ? parseFloat(w.price) : Number(w.price))
+                      : undefined,
+                    currency: w.currency ? String(w.currency) : undefined,
+                    image_url: w.image_url ? String(w.image_url) : undefined,
+                    description: w.description ? String(w.description) : undefined,
+                    status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
+                  }
+                  processedWishes.push(processed)
+                  console.log(`✅ Обработано желание ID=${processed.id}: "${processed.title}"`)
+                } catch (err) {
+                  console.error(`❌ Ошибка при обработке желания:`, w, err)
                 }
-                console.log(`Обработано желание:`, processed)
-                return processed
-              })
+              }
               
-              console.log(`Итого обработано желаний для вишлиста ${wishlist.id}:`, wishesMap[wishlist.id].length)
+              wishesMap[wishlist.id] = processedWishes
+              console.log(`✅ Итого обработано желаний для вишлиста ${wishlist.id}: ${processedWishes.length}`)
             } else {
-              console.warn(`⚠️ Ответ для вишлиста ${wishlist.id} не является массивом:`, typeof wishesResponse, wishesResponse)
+              console.error(`❌ Ответ для вишлиста ${wishlist.id} не является массивом!`)
+              console.error(`Тип: ${typeof wishesResponse}, Значение:`, wishesResponse)
               wishesMap[wishlist.id] = []
             }
           } catch (err: any) {

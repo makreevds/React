@@ -148,8 +148,17 @@ class WishViewSet(viewsets.ModelViewSet):
         wishlist_id = self.request.query_params.get('wishlist_id', None)
         if wishlist_id:
             try:
-                queryset = queryset.filter(wishlist_id=int(wishlist_id))
+                wishlist_id_int = int(wishlist_id)
+                logger.info(f'[WishViewSet] Фильтруем желания по wishlist_id={wishlist_id_int}')
+                queryset = queryset.filter(wishlist_id=wishlist_id_int)
+                count = queryset.count()
+                logger.info(f'[WishViewSet] Найдено желаний: {count}')
+                # Логируем первые несколько ID для отладки
+                if count > 0:
+                    ids = list(queryset.values_list('id', flat=True)[:5])
+                    logger.info(f'[WishViewSet] ID найденных желаний: {ids}')
             except ValueError:
+                logger.warning(f'[WishViewSet] Некорректный wishlist_id: {wishlist_id}')
                 pass
         
         # Фильтрация по user_id если передан
@@ -157,6 +166,7 @@ class WishViewSet(viewsets.ModelViewSet):
         if user_id:
             try:
                 queryset = queryset.filter(user_id=int(user_id))
+                logger.info(f'[WishViewSet] Фильтруем по user_id={user_id}, осталось: {queryset.count()}')
             except ValueError:
                 pass
         
@@ -166,15 +176,25 @@ class WishViewSet(viewsets.ModelViewSet):
             try:
                 user = User.objects.get(telegram_id=int(telegram_id))
                 queryset = queryset.filter(user=user)
+                logger.info(f'[WishViewSet] Фильтруем по telegram_id={telegram_id}, осталось: {queryset.count()}')
             except (User.DoesNotExist, ValueError):
+                logger.warning(f'[WishViewSet] Пользователь с telegram_id={telegram_id} не найден')
                 queryset = queryset.none()
         
         # Фильтрация по status
         status_filter = self.request.query_params.get('status', None)
         if status_filter:
             queryset = queryset.filter(status=status_filter)
+            logger.info(f'[WishViewSet] Фильтруем по status={status_filter}, осталось: {queryset.count()}')
         
         return queryset
+    
+    def list(self, request: Request, *args, **kwargs) -> Response:
+        """Переопределяем list для логирования."""
+        logger.info(f'[WishViewSet] Запрос списка желаний. Параметры: {dict(request.query_params)}')
+        response = super().list(request, *args, **kwargs)
+        logger.info(f'[WishViewSet] Возвращено желаний: {len(response.data) if isinstance(response.data, list) else "не список"}')
+        return response
     
     @action(detail=False, methods=['get'])
     def by_telegram_id(self, request: Request) -> Response:
@@ -190,11 +210,33 @@ class WishViewSet(viewsets.ModelViewSet):
         try:
             user = get_object_or_404(User, telegram_id=int(telegram_id))
             wishes = Wish.objects.filter(user=user)
+            logger.info(f'[WishViewSet.by_telegram_id] Найдено желаний для пользователя {telegram_id}: {wishes.count()}')
             serializer = self.get_serializer(wishes, many=True)
             return Response(serializer.data)
         except ValueError:
             return Response(
                 {'error': 'Некорректный telegram_id'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
+    @action(detail=False, methods=['get'], url_path='test-wishlist/(?P<wishlist_id>[^/.]+)')
+    def test_wishlist(self, request: Request, wishlist_id: int = None) -> Response:
+        """Тестовый endpoint для проверки желаний вишлиста."""
+        try:
+            wishlist = get_object_or_404(Wishlist, id=int(wishlist_id))
+            wishes = Wish.objects.filter(wishlist=wishlist)
+            logger.info(f'[WishViewSet.test_wishlist] Вишлист {wishlist_id}: найдено желаний {wishes.count()}')
+            serializer = self.get_serializer(wishes, many=True)
+            return Response({
+                'wishlist_id': wishlist_id,
+                'wishlist_name': wishlist.name,
+                'wishes_count': wishes.count(),
+                'wishes': serializer.data
+            })
+        except (ValueError, Wishlist.DoesNotExist) as e:
+            logger.error(f'[WishViewSet.test_wishlist] Ошибка: {e}')
+            return Response(
+                {'error': f'Ошибка: {str(e)}'},
                 status=status.HTTP_400_BAD_REQUEST
             )
     
