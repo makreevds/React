@@ -51,6 +51,36 @@ fi
 
 echo -e "${GREEN}✅ Сайт успешно обновлен!${NC}"
 
+# Перезапускаем Gunicorn (Django)
+echo -e "${YELLOW}🔄 Перезапускаю Django (Gunicorn)...${NC}"
+if pkill -f "gunicorn.*8002" 2>/dev/null; then
+    echo -e "${YELLOW}⏹️  Остановлен старый процесс Gunicorn${NC}"
+    sleep 1
+fi
+
+# Запускаем Gunicorn в фоне
+cd "$PROJECT_DIR/backend" || {
+    echo -e "${RED}❌ Ошибка: Не удалось перейти в директорию backend${NC}"
+} && {
+    if [ -f "$PROJECT_DIR/.venv/bin/python" ]; then
+        echo -e "${YELLOW}🚀 Запускаю Gunicorn в фоновом режиме...${NC}"
+        nohup "$PROJECT_DIR/.venv/bin/gunicorn" config.wsgi:application --bind 127.0.0.1:8002 > gunicorn.log 2>&1 &
+        GUNICORN_PID=$!
+        sleep 1
+        
+        # Проверяем, запустился ли процесс
+        if ps -p "$GUNICORN_PID" > /dev/null 2>&1; then
+            echo -e "${GREEN}✓ Gunicorn запущен (PID: $GUNICORN_PID)${NC}"
+            echo -e "${YELLOW}💡 Логи: tail -f $PROJECT_DIR/backend/gunicorn.log${NC}"
+        else
+            echo -e "${RED}❌ Ошибка при запуске Gunicorn${NC}"
+            echo -e "${YELLOW}💡 Проверьте логи: tail -20 $PROJECT_DIR/backend/gunicorn.log${NC}"
+        fi
+    else
+        echo -e "${YELLOW}⚠️  Виртуальное окружение не найдено, пропускаю запуск Gunicorn${NC}"
+    fi
+}
+
 # Проверяем и создаём виртуальное окружение, если его нет
 VENV_DIR="$PROJECT_DIR/.venv"
 VENV_PYTHON="$VENV_DIR/bin/python"
