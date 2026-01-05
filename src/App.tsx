@@ -58,7 +58,7 @@ function TelegramInit() {
 function App() {
   // Конфигурация API (в продакшене должен быть в переменных окружения)
   const apiConfig = {
-    baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
+    baseUrl: import.meta.env.VITE_API_BASE_URL || 'https://makrei.ru',
     timeout: 30000,
   }
 

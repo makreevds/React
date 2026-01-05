@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-py#0*4n5%&b+_r$)4g0rwfyf=@((x&eqnvrc$+f%aqx^usdc%*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'makrei.ru',
+    'www.makrei.ru',
+    'localhost',
+    '127.0.0.1',
+]
 
 
 # Application definition
@@ -143,6 +148,8 @@ REST_FRAMEWORK = {
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
+    'https://makrei.ru',  # Production domain
+    'https://www.makrei.ru',  # Production domain with www
     'http://localhost:5173',  # Vite dev server
     'http://localhost:3000',  # React dev server
     'https://web.telegram.org',  # Telegram Web
