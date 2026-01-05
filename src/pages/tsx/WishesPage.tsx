@@ -48,11 +48,22 @@ export function WishesPage() {
         // Загружаем вишлисты пользователя
         let loadedWishlists: Wishlist[] = []
         try {
-          loadedWishlists = await wishlistsRepo.getWishlistsByTelegramId(user.id)
-        } catch (err) {
-          if (err instanceof Error && (err.message.includes('404') || err.message.includes('NOT_FOUND'))) {
+          const response = await wishlistsRepo.getWishlistsByTelegramId(user.id)
+          // Проверяем, что ответ - массив
+          if (Array.isArray(response)) {
+            loadedWishlists = response.map((wl: any) => ({
+              id: Number(wl.id) || 0,
+              name: String(wl.name || ''),
+              is_default: Boolean(wl.is_default),
+            }))
+          }
+        } catch (err: any) {
+          // Если вишлистов нет (404), это нормально
+          if (err?.code === 'NOT_FOUND' || err?.status === 404 || 
+              (err?.message && (err.message.includes('404') || err.message.includes('NOT_FOUND')))) {
             loadedWishlists = []
           } else {
+            console.error('Ошибка загрузки вишлистов:', err)
             throw err
           }
         }
@@ -62,16 +73,34 @@ export function WishesPage() {
         const wishesMap: Record<number, Wish[]> = {}
         for (const wishlist of loadedWishlists) {
           try {
-            const wishes = await wishesRepo.getWishesByWishlistId(wishlist.id)
-            wishesMap[wishlist.id] = wishes
+            const wishesResponse = await wishesRepo.getWishesByWishlistId(wishlist.id)
+            // Проверяем, что ответ - массив и обрабатываем каждый элемент
+            if (Array.isArray(wishesResponse)) {
+              wishesMap[wishlist.id] = wishesResponse.map((w: any) => ({
+                id: Number(w.id) || 0,
+                title: String(w.title || ''),
+                price: w.price ? (typeof w.price === 'string' ? parseFloat(w.price) : Number(w.price)) : undefined,
+                currency: w.currency ? String(w.currency) : undefined,
+                image_url: w.image_url ? String(w.image_url) : undefined,
+                description: w.description ? String(w.description) : undefined,
+                status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
+              }))
+            } else {
+              wishesMap[wishlist.id] = []
+            }
           } catch (err) {
+            console.error(`Ошибка при загрузке желаний для вишлиста ${wishlist.id}:`, err)
             wishesMap[wishlist.id] = []
           }
         }
         setWishesByWishlist(wishesMap)
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : String(err)
+      } catch (err: any) {
+        console.error('Критическая ошибка при загрузке данных:', err)
+        const errorMessage = err?.message || err?.toString() || 'Неизвестная ошибка'
         setError(errorMessage)
+        // Устанавливаем пустые данные, чтобы компонент не упал
+        setWishlists([])
+        setWishesByWishlist({})
       } finally {
         setIsLoading(false)
       }
@@ -112,7 +141,15 @@ export function WishesPage() {
   }
 
   const userPhotoUrl = user?.photo_url || undefined
-  const allWishes: Wish[] = Object.values(wishesByWishlist).flat()
+  
+  // Безопасное получение всех желаний
+  let allWishes: Wish[] = []
+  try {
+    allWishes = Object.values(wishesByWishlist).flat().filter(w => w && w.id)
+  } catch (err) {
+    console.error('Ошибка при обработке желаний:', err)
+    allWishes = []
+  }
 
   if (!user) {
     return (
@@ -183,78 +220,87 @@ export function WishesPage() {
           ) : (
             <>
               {wishlists.map((wishlist) => {
-                const wishes = wishesByWishlist[wishlist.id] || []
-                if (wishes.length === 0) return null
+                try {
+                  if (!wishlist || !wishlist.id) return null
+                  const wishes = wishesByWishlist[wishlist.id] || []
+                  if (wishes.length === 0) return null
 
-                return (
-                  <div key={wishlist.id} className="wishlist-group">
-                    {wishlists.length > 1 && (
-                      <h4 className="wishlist-name">
-                        {wishlist.name}
-                        {wishlist.is_default && <span className="wishlist-default-badge"> (по умолчанию)</span>}
-                      </h4>
-                    )}
-                    <div className="wishes-list">
-                      {wishes.map((wish) => (
-                        <div key={wish.id} className="wish-item">
-                          <div className="wish-image-container">
-                            {wish.image_url ? (
-                              <img 
-                                src={wish.image_url} 
-                                alt={wish.title}
-                                className="wish-image"
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'none'
-                                  const container = e.currentTarget.parentElement
-                                  if (container) {
-                                    const placeholder = container.querySelector('.wish-image-placeholder')
-                                    if (placeholder) {
-                                      placeholder.classList.add('show')
-                                    }
-                                  }
-                                }}
-                              />
-                            ) : null}
-                            <div className={`wish-image-placeholder ${!wish.image_url ? 'show' : ''}`}>
-                              <GiftIcon className="gift-icon" />
+                  return (
+                    <div key={wishlist.id} className="wishlist-group">
+                      {wishlists.length > 1 && (
+                        <h4 className="wishlist-name">
+                          {wishlist.name || 'Без названия'}
+                          {wishlist.is_default && <span className="wishlist-default-badge"> (по умолчанию)</span>}
+                        </h4>
+                      )}
+                      <div className="wishes-list">
+                        {wishes.map((wish) => {
+                          if (!wish || !wish.id) return null
+                          return (
+                            <div key={wish.id} className="wish-item">
+                              <div className="wish-image-container">
+                                {wish.image_url ? (
+                                  <img 
+                                    src={wish.image_url} 
+                                    alt={wish.title || 'Желание'}
+                                    className="wish-image"
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none'
+                                      const container = e.currentTarget.parentElement
+                                      if (container) {
+                                        const placeholder = container.querySelector('.wish-image-placeholder')
+                                        if (placeholder) {
+                                          placeholder.classList.add('show')
+                                        }
+                                      }
+                                    }}
+                                  />
+                                ) : null}
+                                <div className={`wish-image-placeholder ${!wish.image_url ? 'show' : ''}`}>
+                                  <GiftIcon className="gift-icon" />
+                                </div>
+                              </div>
+                              <div className="wish-content">
+                                <h4 className="wish-title">{wish.title || 'Без названия'}</h4>
+                                {wish.description && (
+                                  <p className="wish-description">{wish.description}</p>
+                                )}
+                                <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
+                                {wish.status === 'reserved' && (
+                                  <p className="wish-status wish-status-reserved">Зарезервировано</p>
+                                )}
+                                {wish.status === 'fulfilled' && (
+                                  <p className="wish-status wish-status-fulfilled">Исполнено</p>
+                                )}
+                              </div>
+                              <div className="wish-actions">
+                                <button
+                                  className="wish-action-btn wish-edit-btn"
+                                  onClick={() => handleEdit(wish.id)}
+                                  aria-label="Редактировать"
+                                  title="Редактировать"
+                                >
+                                  ✏️
+                                </button>
+                                <button
+                                  className="wish-action-btn wish-delete-btn"
+                                  onClick={() => handleDelete(wish.id)}
+                                  aria-label="Удалить"
+                                  title="Удалить"
+                                >
+                                  🗑️
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                          <div className="wish-content">
-                            <h4 className="wish-title">{wish.title}</h4>
-                            {wish.description && (
-                              <p className="wish-description">{wish.description}</p>
-                            )}
-                            <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
-                            {wish.status === 'reserved' && (
-                              <p className="wish-status wish-status-reserved">Зарезервировано</p>
-                            )}
-                            {wish.status === 'fulfilled' && (
-                              <p className="wish-status wish-status-fulfilled">Исполнено</p>
-                            )}
-                          </div>
-                          <div className="wish-actions">
-                            <button
-                              className="wish-action-btn wish-edit-btn"
-                              onClick={() => handleEdit(wish.id)}
-                              aria-label="Редактировать"
-                              title="Редактировать"
-                            >
-                              ✏️
-                            </button>
-                            <button
-                              className="wish-action-btn wish-delete-btn"
-                              onClick={() => handleDelete(wish.id)}
-                              aria-label="Удалить"
-                              title="Удалить"
-                            >
-                              🗑️
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                          )
+                        })}
+                      </div>
                     </div>
-                  </div>
-                )
+                  )
+                } catch (err) {
+                  console.error('Ошибка при рендеринге вишлиста:', err, wishlist)
+                  return null
+                }
               })}
             </>
           )}
@@ -271,15 +317,21 @@ export function WishesPage() {
         {showDeveloperData && webApp && (
           <div className="developer-data">
             <pre className="json-output">
-              {JSON.stringify(
-                {
-                  user: user,
-                  wishlists: wishlists,
-                  wishesByWishlist: wishesByWishlist,
-                },
-                null,
-                2
-              )}
+              {(() => {
+                try {
+                  return JSON.stringify(
+                    {
+                      user: user,
+                      wishlists: wishlists,
+                      wishesByWishlist: wishesByWishlist,
+                    },
+                    null,
+                    2
+                  )
+                } catch (err) {
+                  return `Ошибка при сериализации данных: ${err}`
+                }
+              })()}
             </pre>
           </div>
         )}
