@@ -11,12 +11,18 @@
 /* Блок профиля пользователя */
 .user-profile-section {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 16px;
   padding: 20px;
   margin-top: 24px;
   background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
   border-radius: var(--radius-md);
+}
+
+.user-profile-section > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 html.theme-light .user-profile-section,
@@ -95,21 +101,21 @@ body.theme-dark .user-username {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 20px;
+  padding: 16px 0 0 0;
   margin-top: 16px;
-  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
-  border-radius: var(--radius-md);
+  border-top: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
   gap: 16px;
+  width: 100%;
 }
 
 html.theme-light .gifts-stats-section,
 body.theme-light .gifts-stats-section {
-  background: var(--theme-secondary-bg);
+  border-top-color: var(--theme-hint-color-light);
 }
 
 html.theme-dark .gifts-stats-section,
 body.theme-dark .gifts-stats-section {
-  background: var(--theme-secondary-bg-dark);
+  border-top-color: var(--theme-hint-color-light-dark);
 }
 
 .gifts-stat-item {

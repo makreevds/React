@@ -298,22 +298,22 @@ export function WishesPage() {
               <p className="user-username">@{user.username}</p>
             )}
           </div>
+          
+          {/* Блок статистики подарков */}
+          {userData && (
+            <div className="gifts-stats-section">
+              <div className="gifts-stat-item">
+                <div className="gifts-stat-value">{userData.gifts_given}</div>
+                <div className="gifts-stat-label">Подарено</div>
+              </div>
+              <div className="gifts-stat-divider"></div>
+              <div className="gifts-stat-item">
+                <div className="gifts-stat-value">{userData.gifts_received}</div>
+                <div className="gifts-stat-label">Получено</div>
+              </div>
+            </div>
+          )}
         </section>
-
-        {/* Блок статистики подарков */}
-        {userData && (
-          <section className="gifts-stats-section">
-            <div className="gifts-stat-item">
-              <div className="gifts-stat-value">{userData.gifts_given}</div>
-              <div className="gifts-stat-label">Подарено</div>
-            </div>
-            <div className="gifts-stat-divider"></div>
-            <div className="gifts-stat-item">
-              <div className="gifts-stat-value">{userData.gifts_received}</div>
-              <div className="gifts-stat-label">Получено</div>
-            </div>
-          </section>
-        )}
 
         <section className="wishes-list-section">
           <h3 className="wishes-list-title">Мои желания</h3>
