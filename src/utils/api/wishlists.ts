@@ -10,7 +10,6 @@ export interface Wishlist {
   name: string
   description?: string
   is_public: boolean
-  is_default: boolean
   created_at: string
   updated_at: string
   order: number
@@ -21,7 +20,6 @@ export interface CreateWishlistRequest {
   name: string
   description?: string
   is_public?: boolean
-  is_default?: boolean
   order?: number
   telegram_id: number
 }
@@ -30,7 +28,6 @@ export interface UpdateWishlistRequest {
   name?: string
   description?: string
   is_public?: boolean
-  is_default?: boolean
   order?: number
 }
 
@@ -107,13 +104,6 @@ export class WishlistsRepository {
    */
   async deleteWishlist(wishlistId: number): Promise<void> {
     return this.apiClient.delete<void>(`/api/wishlists/${wishlistId}/`)
-  }
-
-  /**
-   * Устанавливает вишлист как вишлист по умолчанию
-   */
-  async setDefault(wishlistId: number): Promise<Wishlist> {
-    return this.apiClient.post<Wishlist>(`/api/wishlists/${wishlistId}/set_default/`)
   }
 }
 

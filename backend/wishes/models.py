@@ -34,12 +34,6 @@ class Wishlist(models.Model):
         help_text='Виден ли вишлист другим пользователям'
     )
     
-    is_default = models.BooleanField(
-        default=False,
-        verbose_name='По умолчанию',
-        help_text='Вишлист по умолчанию для пользователя'
-    )
-    
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата создания',
@@ -64,55 +58,12 @@ class Wishlist(models.Model):
         ordering = ['order', '-created_at']
         indexes = [
             models.Index(fields=['user', 'order']),
-            models.Index(fields=['user', 'is_default']),
-        ]
-        constraints = [
-            # Один вишлист по умолчанию на пользователя
-            models.UniqueConstraint(
-                fields=['user', 'is_default'],
-                condition=models.Q(is_default=True),
-                name='unique_default_wishlist_per_user'
-            ),
         ]
     
     def __str__(self) -> str:
         """Возвращает строковое представление вишлиста."""
         return f"{self.name} ({self.user.first_name})"
     
-    def clean(self):
-        """Валидация модели."""
-        super().clean()
-        # Если это вишлист по умолчанию, убеждаемся что у пользователя нет другого
-        if self.is_default and self.pk:
-            existing_default = Wishlist.objects.filter(
-                user=self.user,
-                is_default=True
-            ).exclude(pk=self.pk)
-            if existing_default.exists():
-                raise ValidationError('У пользователя уже есть вишлист по умолчанию')
-    
-    def save(self, *args, **kwargs):
-        """Переопределяем save для автоматической установки is_default."""
-        # Если устанавливается is_default=True, снимаем флаг с других вишлистов
-        if self.is_default and self.user:
-            Wishlist.objects.filter(
-                user=self.user,
-                is_default=True
-            ).exclude(pk=self.pk if self.pk else None).update(is_default=False)
-        
-        # Если это новый вишлист (не pk) и is_default не был установлен явно
-        # и это первый вишлист пользователя, делаем его по умолчанию
-        if not self.pk and self.user:
-            # Проверяем, был ли is_default установлен явно через validated_data
-            # Если is_default не был установлен явно, проверяем, есть ли уже вишлисты
-            if not hasattr(self, '_is_default_set') or not getattr(self, '_is_default_set', False):
-                if not Wishlist.objects.filter(user=self.user).exists():
-                    self.is_default = True
-                else:
-                    # Если уже есть вишлисты, новый вишлист не должен быть по умолчанию
-                    self.is_default = False
-        
-        super().save(*args, **kwargs)
 
 
 class Wish(models.Model):

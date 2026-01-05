@@ -30,7 +30,6 @@ class WishlistSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'is_public',
-            'is_default',
             'created_at',
             'updated_at',
             'order',
@@ -53,7 +52,6 @@ class WishlistCreateSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'is_public',
-            'is_default',
             'order',
         ]
     
@@ -66,22 +64,7 @@ class WishlistCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Пользователь не указан')
         
         validated_data['user'] = user
-        
-        # Если is_default не указан явно, проверяем, есть ли уже вишлисты у пользователя
-        is_default_explicitly_set = 'is_default' in validated_data
-        if not is_default_explicitly_set:
-            # Если это первый вишлист пользователя, делаем его по умолчанию
-            has_existing_wishlists = Wishlist.objects.filter(user=user).exists()
-            validated_data['is_default'] = not has_existing_wishlists
-        # Если is_default=True указан явно, но у пользователя уже есть вишлист по умолчанию,
-        # то метод save() модели автоматически сбросит флаг у других вишлистов
-        
-        # Создаем экземпляр модели для сохранения
-        wishlist = Wishlist(**validated_data)
-        # Помечаем, что is_default был установлен явно (если был)
-        wishlist._is_default_set = is_default_explicitly_set
-        wishlist.save()
-        return wishlist
+        return super().create(validated_data)
 
 
 class WishlistUpdateSerializer(serializers.ModelSerializer):
@@ -93,7 +76,6 @@ class WishlistUpdateSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'is_public',
-            'is_default',
             'order',
         ]
 

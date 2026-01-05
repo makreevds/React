@@ -8,7 +8,6 @@ import { GiftIcon } from '../../utils/tsx/GiftIcon'
 interface Wishlist {
   id: number
   name: string
-  is_default: boolean
 }
 
 interface Wish {
@@ -59,7 +58,6 @@ export function WishesPage() {
             loadedWishlists = response.map((wl: any) => ({
               id: Number(wl.id) || 0,
               name: String(wl.name || ''),
-              is_default: Boolean(wl.is_default),
             }))
             console.log('Обработанные вишлисты:', loadedWishlists)
           } else {
@@ -315,7 +313,6 @@ export function WishesPage() {
                       <div key={wishlist.id} className="wishlist-group">
                         <h4 className="wishlist-name">
                           {wishlist.name || 'Без названия'}
-                          {wishlist.is_default && <span className="wishlist-default-badge"> (по умолчанию)</span>}
                         </h4>
                         <div className="wishes-empty">
                           <p>В этом вишлисте пока нет желаний</p>
@@ -331,7 +328,6 @@ export function WishesPage() {
                       {(wishlists.length > 1 || wishes.length > 0) && (
                         <h4 className="wishlist-name">
                           {wishlist.name || 'Без названия'}
-                          {wishlist.is_default && <span className="wishlist-default-badge"> (по умолчанию)</span>}
                         </h4>
                       )}
                       <div className="wishes-list">

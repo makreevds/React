@@ -107,25 +107,6 @@ class WishlistViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
     
-    @action(detail=True, methods=['post'])
-    def set_default(self, request: Request, pk: int = None) -> Response:
-        """Устанавливает вишлист как вишлист по умолчанию."""
-        wishlist = self.get_object()
-        
-        # Снимаем флаг is_default с других вишлистов пользователя
-        Wishlist.objects.filter(
-            user=wishlist.user,
-            is_default=True
-        ).exclude(pk=wishlist.pk).update(is_default=False)
-        
-        # Устанавливаем флаг is_default для текущего вишлиста
-        wishlist.is_default = True
-        wishlist.save()
-        
-        serializer = self.get_serializer(wishlist)
-        return Response(serializer.data)
-
-
 class WishViewSet(viewsets.ModelViewSet):
     """ViewSet для работы с желаниями через API."""
     
