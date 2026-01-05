@@ -1,8 +1,9 @@
+# Django и зависимости
 Django>=5.0.6
 djangorestframework>=3.14.0
 django-cors-headers>=4.3.0
 gunicorn>=21.2.0
 
-
-
+# Telegram бот
+aiogram>=3.0.0
 

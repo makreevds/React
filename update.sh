@@ -81,16 +81,24 @@ if [ -d "$BOT_DIR" ]; then
     if [ ! -f "config.py" ]; then
         echo -e "${YELLOW}⚠️  Файл config.py не найден, пропускаю запуск бота${NC}"
     else
-        # Запускаем бота в фоне
-        echo -e "${YELLOW}🚀 Запускаю бота в фоновом режиме...${NC}"
-        nohup python3 bot.py > "$LOG_FILE" 2>&1 &
-        BOT_PID=$!
+        # Используем виртуальное окружение из корня проекта
+        VENV_PYTHON="$PROJECT_DIR/.venv/bin/python"
         
-        # Сохраняем PID
-        echo $BOT_PID > "$PID_FILE"
-        
-        echo -e "${GREEN}✓ Бот запущен (PID: $BOT_PID)${NC}"
-        echo -e "${YELLOW}💡 Логи: tail -f $BOT_DIR/$LOG_FILE${NC}"
+        if [ ! -f "$VENV_PYTHON" ]; then
+            echo -e "${RED}❌ Виртуальное окружение не найдено: $VENV_PYTHON${NC}"
+            echo -e "${YELLOW}💡 Запустите: ./setup.sh${NC}"
+        else
+            # Запускаем бота в фоне через виртуальное окружение
+            echo -e "${YELLOW}🚀 Запускаю бота в фоновом режиме...${NC}"
+            nohup "$VENV_PYTHON" bot.py > "$LOG_FILE" 2>&1 &
+            BOT_PID=$!
+            
+            # Сохраняем PID
+            echo $BOT_PID > "$PID_FILE"
+            
+            echo -e "${GREEN}✓ Бот запущен (PID: $BOT_PID)${NC}"
+            echo -e "${YELLOW}💡 Логи: tail -f $BOT_DIR/$LOG_FILE${NC}"
+        fi
     fi
 else
     echo -e "${YELLOW}⚠️  Директория $BOT_DIR не найдена, пропускаю запуск бота${NC}"
