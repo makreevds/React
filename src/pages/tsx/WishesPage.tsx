@@ -321,7 +321,7 @@ export function WishesPage() {
         </section>
 
         <section className="wishes-list-section">
-          <h3 className="wishes-list-title">Мои желания</h3>
+          <h3 className="wishes-list-title">Мои вишлисты</h3>
           
           {isLoading ? (
             <div className="wishes-loading">

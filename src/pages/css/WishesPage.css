@@ -194,6 +194,7 @@ body.theme-dark .gifts-stat-divider {
   font-size: 18px;
   font-weight: 600;
   margin: 0;
+  padding-left: 20px;
   color: var(--theme-current-text, var(--theme-text-color));
 }
 
@@ -445,7 +446,7 @@ body.theme-dark .wish-status-fulfilled {
 }
 
 .wishlist-group {
-  margin-bottom: 32px;
+  margin-bottom: 0px;
   padding: 20px;
   background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
   border-radius: var(--radius-md);
