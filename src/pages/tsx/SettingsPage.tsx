@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 export function SettingsPage() {
   const { theme, setTheme } = useTheme()
   const { users } = useApiContext()
-  const { user: telegramUser } = useTelegramWebApp()
+  const { user: telegramUser, webApp } = useTelegramWebApp()
   const [isUpdating, setIsUpdating] = useState(false)
 
   // Обновляем тему в БД при изменении
@@ -21,8 +21,17 @@ export function SettingsPage() {
         // Получаем текущего пользователя
         const currentUser = await users.getUserByTelegramId(telegramUser.id)
         
-        // Определяем значение темы для БД (null -> 'light' для совместимости)
-        const themeForDB = theme || 'light'
+        // Определяем значение темы для БД
+        // Если тема null (системная), получаем реальную системную тему из Telegram
+        let themeForDB: string
+        if (theme === null) {
+          // Системная тема - получаем реальное значение из Telegram WebApp
+          const systemTheme = webApp?.colorScheme || 'light'
+          themeForDB = systemTheme === 'dark' ? 'dark' : 'light'
+        } else {
+          // Явно выбранная тема
+          themeForDB = theme
+        }
         
         // Обновляем только если тема изменилась
         if (currentUser.theme_color !== themeForDB) {
@@ -30,7 +39,7 @@ export function SettingsPage() {
           await users.updateUser(currentUser.id, {
             theme_color: themeForDB,
           })
-          console.log('Тема обновлена в БД:', themeForDB)
+          console.log('Тема обновлена в БД:', themeForDB, theme === null ? '(системная)' : '')
         }
       } catch (error) {
         console.error('Ошибка при обновлении темы в БД:', error)
@@ -42,7 +51,7 @@ export function SettingsPage() {
     // Небольшая задержка, чтобы избежать множественных запросов
     const timeoutId = setTimeout(updateThemeInDB, 500)
     return () => clearTimeout(timeoutId)
-  }, [theme, telegramUser?.id, users, isUpdating])
+  }, [theme, telegramUser?.id, users, isUpdating, webApp])
 
   const handleThemeChange = (newTheme: 'light' | 'dark' | null) => {
     setTheme(newTheme)
