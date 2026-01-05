@@ -13,9 +13,20 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 const THEME_STORAGE_KEY = 'app-theme'
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  // Определяем начальную тему из localStorage или null (системная тема)
+interface ThemeProviderProps {
+  children: ReactNode
+  initialTheme?: Theme | null // Начальная тема из БД или Telegram
+}
+
+export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
+  // Определяем начальную тему: сначала из пропсов, потом из localStorage, потом null (системная)
   const getInitialTheme = (): Theme | null => {
+    // Если передана начальная тема извне (из БД или Telegram), используем её
+    if (initialTheme !== undefined) {
+      return initialTheme
+    }
+    
+    // Иначе проверяем localStorage
     try {
       const savedTheme = localStorage.getItem(THEME_STORAGE_KEY)
       // Строгая проверка: только 'light' или 'dark' считаются валидными
@@ -31,6 +42,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }
 
   const [theme, setTheme] = useState<Theme | null>(getInitialTheme)
+  
+  // Обновляем тему, если изменилась initialTheme (например, загрузилась из БД)
+  useEffect(() => {
+    if (initialTheme !== undefined && initialTheme !== theme) {
+      setTheme(initialTheme)
+    }
+  }, [initialTheme])
 
   // Применяем тему к документу
   useEffect(() => {

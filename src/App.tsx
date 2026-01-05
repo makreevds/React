@@ -59,9 +59,13 @@ function TelegramInit() {
 /**
  * Компонент для автоматической регистрации пользователя
  */
-function UserRegistration() {
+interface UserRegistrationProps {
+  onUserLoaded?: (theme: 'light' | 'dark' | null) => void
+}
+
+function UserRegistration({ onUserLoaded }: UserRegistrationProps) {
   const { users } = useApiContext()
-  const { user, initData, isReady } = useTelegramWebApp()
+  const { user, initData, webApp, isReady } = useTelegramWebApp()
   const [registeredUser, setRegisteredUser] = useState<User | null>(null)
   const [isRegistering, setIsRegistering] = useState(false)
 
@@ -81,15 +85,55 @@ function UserRegistration() {
           username: user.username,
         })
 
-        const userData = await users.registerOrGet({
-          telegram_id: user.id,
-          first_name: user.first_name || '',
-          last_name: user.last_name,
-          username: user.username,
-          language: initData?.user?.language_code || 'ru',
-          theme_color: 'light', // Можно получить из webApp.colorScheme
-          start_param: initData?.start_param,
-        })
+        // Получаем системную тему из Telegram WebApp
+        const systemTheme = webApp?.colorScheme || 'light'
+        const systemThemeColor = systemTheme === 'dark' ? 'dark' : 'light'
+        
+        // Сначала устанавливаем системную тему из Telegram (чтобы не было мигания)
+        if (onUserLoaded) {
+          onUserLoaded(systemThemeColor)
+        }
+        
+        // Проверяем, есть ли уже пользователь в БД
+        let userData: User
+        try {
+          // Пытаемся получить существующего пользователя
+          userData = await users.getUserByTelegramId(user.id)
+          // Если пользователь найден, используем его сохранённую тему из БД
+          const themeFromDB = userData.theme_color === 'dark' ? 'dark' : 'light'
+          console.log('Пользователь найден, применяем тему из БД:', themeFromDB)
+          
+          // Применяем тему из БД (перезаписываем системную)
+          if (onUserLoaded) {
+            onUserLoaded(themeFromDB)
+          }
+          
+          // Сохраняем в localStorage
+          try {
+            localStorage.setItem('app-theme', themeFromDB)
+          } catch (e) {
+            // Игнорируем ошибки
+          }
+        } catch (error) {
+          // Пользователь не найден, регистрируем с системной темой
+          console.log('Новый пользователь, регистрируем с системной темой из Telegram:', systemThemeColor)
+          userData = await users.registerOrGet({
+            telegram_id: user.id,
+            first_name: user.first_name || '',
+            last_name: user.last_name,
+            username: user.username,
+            language: initData?.user?.language_code || 'ru',
+            theme_color: systemThemeColor, // При первом создании используем системную тему
+            start_param: initData?.start_param,
+          })
+          
+          // Тема уже установлена выше (системная), просто сохраняем в localStorage
+          try {
+            localStorage.setItem('app-theme', systemThemeColor)
+          } catch (e) {
+            // Игнорируем ошибки
+          }
+        }
 
         setRegisteredUser(userData)
         console.log('✅ Пользователь зарегистрирован/получен:', userData)
@@ -117,11 +161,13 @@ function App() {
     timeout: 30000,
   }
 
+  const [initialTheme, setInitialTheme] = useState<'light' | 'dark' | null>(null)
+
   return (
-    <ThemeProvider>
+    <ThemeProvider initialTheme={initialTheme}>
       <ApiProvider config={apiConfig}>
         <TelegramInit />
-        <UserRegistration />
+        <UserRegistration onUserLoaded={setInitialTheme} />
         <Head />
         <Routes>
           <Route 
