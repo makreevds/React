@@ -11,6 +11,10 @@ export type { Wish, CreateWishRequest, UpdateWishRequest } from './wishes'
 export { FriendsRepository } from './friends'
 export type { Friend, FriendRequest } from './friends'
 
+import type { ApiClient } from './client'
+import { WishesRepository } from './wishes'
+import { FriendsRepository } from './friends'
+
 /**
  * Создает все репозитории с общим API клиентом
  */

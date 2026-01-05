@@ -21,13 +21,18 @@ export interface ApiResponse<T> {
  * Базовый класс для API ошибок
  */
 export class ApiClientError extends Error {
+  code?: string
+  status?: number
+
   constructor(
     message: string,
-    public code?: string,
-    public status?: number
+    code?: string,
+    status?: number
   ) {
     super(message)
     this.name = 'ApiClientError'
+    this.code = code
+    this.status = status
   }
 }
 

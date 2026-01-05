@@ -1,6 +1,9 @@
 import { useMemo } from 'react'
 import { createApiClient, createRepositories, type ApiClientConfig } from '../utils/api'
 
+// Реэкспортируем тип для использования в других модулях
+export type { ApiClientConfig }
+
 /**
  * Хук для работы с API
  * 

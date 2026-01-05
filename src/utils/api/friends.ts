@@ -28,7 +28,11 @@ export interface FriendRequest {
  * Репозиторий для работы с друзьями
  */
 export class FriendsRepository {
-  constructor(private apiClient: ApiClient) {}
+  private apiClient: ApiClient
+
+  constructor(apiClient: ApiClient) {
+    this.apiClient = apiClient
+  }
 
   /**
    * Получает список друзей пользователя
@@ -47,7 +51,7 @@ export class FriendsRepository {
   /**
    * Отправляет заявку в друзья
    */
-  async sendFriendRequest(userId: number, friendId: number): Promise<FriendRequest> {
+  async sendFriendRequest(_userId: number, friendId: number): Promise<FriendRequest> {
     return this.apiClient.post<FriendRequest>('/api/friend-requests', {
       to_user_id: friendId,
     })

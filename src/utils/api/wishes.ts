@@ -44,7 +44,11 @@ export interface UpdateWishRequest {
  * Репозиторий для работы с желаниями
  */
 export class WishesRepository {
-  constructor(private apiClient: ApiClient) {}
+  private apiClient: ApiClient
+
+  constructor(apiClient: ApiClient) {
+    this.apiClient = apiClient
+  }
 
   /**
    * Получает список желаний пользователя
