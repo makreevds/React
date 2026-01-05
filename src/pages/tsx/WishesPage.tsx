@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import '../css/WishesPage.css'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { useApiContext } from '../../contexts/ApiContext'
@@ -18,6 +18,67 @@ interface Wish {
   image_url?: string
   description?: string
   status: 'active' | 'reserved' | 'fulfilled'
+}
+
+// Компонент-обертка для плавной анимации сворачивания/разворачивания
+interface WishlistContentWrapperProps {
+  children: React.ReactNode
+  isCollapsed: boolean
+  wishlistId: number
+}
+
+function WishlistContentWrapper({ children, isCollapsed }: WishlistContentWrapperProps) {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (contentRef.current && wrapperRef.current) {
+      if (!isCollapsed) {
+        // Разворачиваем: устанавливаем реальную высоту
+        const height = contentRef.current.scrollHeight
+        wrapperRef.current.style.maxHeight = `${height}px`
+      } else {
+        // Сворачиваем: устанавливаем 0
+        wrapperRef.current.style.maxHeight = '0px'
+      }
+    }
+  }, [isCollapsed])
+
+  // Обновляем высоту при изменении содержимого
+  useEffect(() => {
+    if (contentRef.current && wrapperRef.current && !isCollapsed) {
+      const updateHeight = () => {
+        if (wrapperRef.current && contentRef.current) {
+          const height = contentRef.current.scrollHeight
+          wrapperRef.current.style.maxHeight = `${height}px`
+        }
+      }
+      
+      // Используем ResizeObserver для отслеживания изменений размера
+      const resizeObserver = new ResizeObserver(updateHeight)
+      resizeObserver.observe(contentRef.current)
+      
+      return () => {
+        resizeObserver.disconnect()
+      }
+    }
+  }, [isCollapsed, children])
+
+  return (
+    <div 
+      ref={wrapperRef}
+      className="wishes-list-wrapper"
+      style={{
+        maxHeight: isCollapsed ? '0' : 'auto',
+        transition: 'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        overflow: 'hidden',
+      }}
+    >
+      <div ref={contentRef}>
+        {children}
+      </div>
+    </div>
+  )
 }
 
 export function WishesPage() {
@@ -302,9 +363,14 @@ export function WishesPage() {
                           <span className="wishlist-name-text">{wishlist.name || 'Без названия'}</span>
                           <span className="wishlist-toggle-icon">{isCollapsed ? '▼' : '▲'}</span>
                         </h4>
-                        <div className={`wishes-empty ${isCollapsed ? 'collapsed' : ''}`}>
-                          <p>В этом вишлисте пока нет желаний</p>
-                        </div>
+                        <WishlistContentWrapper 
+                          isCollapsed={isCollapsed}
+                          wishlistId={wishlist.id}
+                        >
+                          <div className="wishes-empty">
+                            <p>В этом вишлисте пока нет желаний</p>
+                          </div>
+                        </WishlistContentWrapper>
                       </div>
                     )
                   }
@@ -324,8 +390,12 @@ export function WishesPage() {
                           <span className="wishlist-toggle-icon">{isCollapsed ? '▼' : '▲'}</span>
                         </h4>
                       )}
-                      <div className={`wishes-list ${isCollapsed ? 'collapsed' : ''}`}>
-                        {wishes.map((wish) => {
+                      <WishlistContentWrapper 
+                        isCollapsed={isCollapsed}
+                        wishlistId={wishlist.id}
+                      >
+                        <div className="wishes-list">
+                          {wishes.map((wish) => {
                           if (!wish || !wish.id) return null
                           return (
                             <div key={wish.id} className="wish-item">
@@ -385,7 +455,8 @@ export function WishesPage() {
                             </div>
                           )
                         })}
-                      </div>
+                        </div>
+                      </WishlistContentWrapper>
                     </div>
                   )
                 } catch (err) {
