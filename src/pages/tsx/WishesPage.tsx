@@ -90,29 +90,52 @@ export function WishesPage() {
 
         // Загружаем желания для каждого вишлиста
         const wishesMap: Record<number, Wish[]> = {}
+        console.log('=== ЗАГРУЗКА ЖЕЛАНИЙ ===')
+        console.log('Количество вишлистов для загрузки желаний:', loadedWishlists.length)
+        
         for (const wishlist of loadedWishlists) {
           try {
-            console.log(`Загружаем желания для вишлиста ${wishlist.id} (${wishlist.name})`)
+            console.log(`\nЗагружаем желания для вишлиста ID=${wishlist.id}, name="${wishlist.name}"`)
+            console.log(`URL запроса будет: /api/wishes/?wishlist_id=${wishlist.id}`)
+            
             const wishesResponse = await wishesRepo.getWishesByWishlistId(wishlist.id)
+            
             console.log(`Ответ от API (желания для вишлиста ${wishlist.id}):`, wishesResponse)
+            console.log(`Тип ответа:`, typeof wishesResponse, 'Является массивом:', Array.isArray(wishesResponse))
+            
             // Проверяем, что ответ - массив и обрабатываем каждый элемент
             if (Array.isArray(wishesResponse)) {
-              wishesMap[wishlist.id] = wishesResponse.map((w: any) => ({
-                id: Number(w.id) || 0,
-                title: String(w.title || ''),
-                price: w.price ? (typeof w.price === 'string' ? parseFloat(w.price) : Number(w.price)) : undefined,
-                currency: w.currency ? String(w.currency) : undefined,
-                image_url: w.image_url ? String(w.image_url) : undefined,
-                description: w.description ? String(w.description) : undefined,
-                status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
-              }))
-              console.log(`Обработанные желания для вишлиста ${wishlist.id}:`, wishesMap[wishlist.id])
+              console.log(`Количество желаний в ответе:`, wishesResponse.length)
+              if (wishesResponse.length > 0) {
+                console.log('Первое желание (сырые данные):', wishesResponse[0])
+              }
+              
+              wishesMap[wishlist.id] = wishesResponse.map((w: any) => {
+                const processed = {
+                  id: Number(w.id) || 0,
+                  title: String(w.title || ''),
+                  price: w.price ? (typeof w.price === 'string' ? parseFloat(w.price) : Number(w.price)) : undefined,
+                  currency: w.currency ? String(w.currency) : undefined,
+                  image_url: w.image_url ? String(w.image_url) : undefined,
+                  description: w.description ? String(w.description) : undefined,
+                  status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
+                }
+                console.log(`Обработано желание:`, processed)
+                return processed
+              })
+              
+              console.log(`Итого обработано желаний для вишлиста ${wishlist.id}:`, wishesMap[wishlist.id].length)
             } else {
-              console.warn(`Ответ для вишлиста ${wishlist.id} не является массивом:`, typeof wishesResponse, wishesResponse)
+              console.warn(`⚠️ Ответ для вишлиста ${wishlist.id} не является массивом:`, typeof wishesResponse, wishesResponse)
               wishesMap[wishlist.id] = []
             }
-          } catch (err) {
-            console.error(`Ошибка при загрузке желаний для вишлиста ${wishlist.id}:`, err)
+          } catch (err: any) {
+            console.error(`❌ Ошибка при загрузке желаний для вишлиста ${wishlist.id}:`, err)
+            console.error('Детали ошибки:', {
+              message: err?.message,
+              code: err?.code,
+              status: err?.status,
+            })
             wishesMap[wishlist.id] = []
           }
         }
@@ -230,6 +253,7 @@ export function WishesPage() {
             <div>allWishes.length: {allWishes.length}</div>
             <div>wishlists: {JSON.stringify(wishlists.map(w => ({ id: w.id, name: w.name })))}</div>
             <div>wishesByWishlist keys: {Object.keys(wishesByWishlist).join(', ') || 'нет'}</div>
+            <div>wishesByWishlist[2]: {wishesByWishlist[2] ? JSON.stringify(wishesByWishlist[2].map(w => ({ id: w.id, title: w.title }))) : 'нет данных'}</div>
             <div style={{ marginTop: '10px', padding: '5px', background: '#fff', borderRadius: '3px' }}>
               <strong>Проверьте в админке Django:</strong>
               <div>1. У вишлиста поле "user" должно указывать на пользователя с telegram_id = {user?.id || '?'}</div>
