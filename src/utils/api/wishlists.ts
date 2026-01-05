@@ -48,14 +48,37 @@ export class WishlistsRepository {
    * Получает список вишлистов пользователя по Telegram ID
    */
   async getWishlistsByTelegramId(telegramId: number): Promise<Wishlist[]> {
-    return this.apiClient.get<Wishlist[]>(`/api/wishlists/by_telegram_id/?telegram_id=${telegramId}`)
+    const response = await this.apiClient.get<any>(`/api/wishlists/by_telegram_id/?telegram_id=${telegramId}`)
+    // Django REST Framework может возвращать объект с пагинацией, нужно извлечь results
+    // Но для кастомных action (by_telegram_id) обычно возвращается массив напрямую
+    if (response && typeof response === 'object' && 'results' in response && Array.isArray(response.results)) {
+      return response.results as Wishlist[]
+    }
+    // Если это уже массив, возвращаем как есть
+    if (Array.isArray(response)) {
+      return response as Wishlist[]
+    }
+    // Если это объект без results, возвращаем пустой массив
+    console.warn('[WishlistsRepository] Неожиданный формат ответа API:', response)
+    return []
   }
 
   /**
    * Получает список вишлистов пользователя по user_id
    */
   async getWishlistsByUserId(userId: number): Promise<Wishlist[]> {
-    return this.apiClient.get<Wishlist[]>(`/api/wishlists/?user_id=${userId}`)
+    const response = await this.apiClient.get<any>(`/api/wishlists/?user_id=${userId}`)
+    // Django REST Framework может возвращать объект с пагинацией, нужно извлечь results
+    if (response && typeof response === 'object' && 'results' in response && Array.isArray(response.results)) {
+      return response.results as Wishlist[]
+    }
+    // Если это уже массив, возвращаем как есть
+    if (Array.isArray(response)) {
+      return response as Wishlist[]
+    }
+    // Если это объект без results, возвращаем пустой массив
+    console.warn('[WishlistsRepository] Неожиданный формат ответа API:', response)
+    return []
   }
 
   /**

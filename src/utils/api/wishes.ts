@@ -78,14 +78,36 @@ export class WishesRepository {
    * Получает список желаний вишлиста
    */
   async getWishesByWishlistId(wishlistId: number): Promise<Wish[]> {
-    return this.apiClient.get<Wish[]>(`/api/wishes/?wishlist_id=${wishlistId}`)
+    const response = await this.apiClient.get<any>(`/api/wishes/?wishlist_id=${wishlistId}`)
+    // Django REST Framework возвращает объект с пагинацией, нужно извлечь results
+    if (response && typeof response === 'object' && 'results' in response && Array.isArray(response.results)) {
+      return response.results as Wish[]
+    }
+    // Если это уже массив, возвращаем как есть
+    if (Array.isArray(response)) {
+      return response as Wish[]
+    }
+    // Если это объект без results, возвращаем пустой массив
+    console.warn('[WishesRepository] Неожиданный формат ответа API:', response)
+    return []
   }
 
   /**
    * Получает список желаний пользователя по user_id
    */
   async getUserWishes(userId: number): Promise<Wish[]> {
-    return this.apiClient.get<Wish[]>(`/api/wishes/?user_id=${userId}`)
+    const response = await this.apiClient.get<any>(`/api/wishes/?user_id=${userId}`)
+    // Django REST Framework возвращает объект с пагинацией, нужно извлечь results
+    if (response && typeof response === 'object' && 'results' in response && Array.isArray(response.results)) {
+      return response.results as Wish[]
+    }
+    // Если это уже массив, возвращаем как есть
+    if (Array.isArray(response)) {
+      return response as Wish[]
+    }
+    // Если это объект без results, возвращаем пустой массив
+    console.warn('[WishesRepository] Неожиданный формат ответа API:', response)
+    return []
   }
 
   /**
@@ -97,7 +119,18 @@ export class WishesRepository {
     if (params?.offset) queryParams.append('offset', params.offset.toString())
     
     const query = queryParams.toString()
-    return this.apiClient.get<Wish[]>(`/api/wishes${query ? `?${query}` : ''}`)
+    const response = await this.apiClient.get<any>(`/api/wishes${query ? `?${query}` : ''}`)
+    // Django REST Framework возвращает объект с пагинацией, нужно извлечь results
+    if (response && typeof response === 'object' && 'results' in response && Array.isArray(response.results)) {
+      return response.results as Wish[]
+    }
+    // Если это уже массив, возвращаем как есть
+    if (Array.isArray(response)) {
+      return response as Wish[]
+    }
+    // Если это объект без results, возвращаем пустой массив
+    console.warn('[WishesRepository] Неожиданный формат ответа API:', response)
+    return []
   }
 
   /**
