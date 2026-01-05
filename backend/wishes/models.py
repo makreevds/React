@@ -100,9 +100,17 @@ class Wishlist(models.Model):
                 is_default=True
             ).exclude(pk=self.pk if self.pk else None).update(is_default=False)
         
-        # Если это первый вишлист пользователя, делаем его по умолчанию
-        if not self.pk and self.user and not Wishlist.objects.filter(user=self.user).exists():
-            self.is_default = True
+        # Если это новый вишлист (не pk) и is_default не был установлен явно
+        # и это первый вишлист пользователя, делаем его по умолчанию
+        if not self.pk and self.user:
+            # Проверяем, был ли is_default установлен явно через validated_data
+            # Если is_default не был установлен явно, проверяем, есть ли уже вишлисты
+            if not hasattr(self, '_is_default_set') or not getattr(self, '_is_default_set', False):
+                if not Wishlist.objects.filter(user=self.user).exists():
+                    self.is_default = True
+                else:
+                    # Если уже есть вишлисты, новый вишлист не должен быть по умолчанию
+                    self.is_default = False
         
         super().save(*args, **kwargs)
 

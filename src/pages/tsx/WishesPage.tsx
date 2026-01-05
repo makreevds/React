@@ -307,11 +307,28 @@ export function WishesPage() {
                 try {
                   if (!wishlist || !wishlist.id) return null
                   const wishes = wishesByWishlist[wishlist.id] || []
+                  // Показываем вишлист даже если в нем нет желаний, но только если есть желания в других вишлистах
+                  // Если это единственный вишлист и в нем нет желаний, показываем сообщение "нет желаний"
+                  if (wishes.length === 0 && allWishes.length > 0) {
+                    // Есть желания в других вишлистах, но не в этом - показываем вишлист пустым
+                    return (
+                      <div key={wishlist.id} className="wishlist-group">
+                        <h4 className="wishlist-name">
+                          {wishlist.name || 'Без названия'}
+                          {wishlist.is_default && <span className="wishlist-default-badge"> (по умолчанию)</span>}
+                        </h4>
+                        <div className="wishes-empty">
+                          <p>В этом вишлисте пока нет желаний</p>
+                        </div>
+                      </div>
+                    )
+                  }
                   if (wishes.length === 0) return null
 
                   return (
                     <div key={wishlist.id} className="wishlist-group">
-                      {wishlists.length > 1 && (
+                      {/* Всегда показываем название вишлиста, если вишлистов больше одного или если есть желания */}
+                      {(wishlists.length > 1 || wishes.length > 0) && (
                         <h4 className="wishlist-name">
                           {wishlist.name || 'Без названия'}
                           {wishlist.is_default && <span className="wishlist-default-badge"> (по умолчанию)</span>}
