@@ -41,7 +41,7 @@ export class UsersRepository {
    * Регистрирует пользователя или возвращает существующего
    */
   async registerOrGet(data: RegisterUserRequest): Promise<User> {
-    return this.apiClient.post<User>('/api/users/register_or_get/', data)
+    return this.apiClient.post<User>('/api/users/register-or-get/', data)
   }
 
   /**

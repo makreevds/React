@@ -68,12 +68,18 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(user)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], url_path='register-or-get')
     def register_or_get(self, request: Request) -> Response:
         """Регистрирует пользователя или возвращает существующего (get_or_create)."""
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        logger.info(f'Получен запрос на регистрацию: {request.data}')
+        
         telegram_id = request.data.get('telegram_id')
         
         if not telegram_id:
+            logger.warning('Отсутствует telegram_id в запросе')
             return Response(
                 {'error': 'Параметр telegram_id обязателен'},
                 status=status.HTTP_400_BAD_REQUEST
@@ -82,6 +88,7 @@ class UserViewSet(viewsets.ModelViewSet):
         try:
             telegram_id = int(telegram_id)
         except (ValueError, TypeError):
+            logger.warning(f'Некорректный telegram_id: {request.data.get("telegram_id")}')
             return Response(
                 {'error': 'Некорректный telegram_id'},
                 status=status.HTTP_400_BAD_REQUEST
@@ -135,6 +142,8 @@ class UserViewSet(viewsets.ModelViewSet):
                         pass  # Пригласивший не найден, пропускаем
             except (ValueError, TypeError):
                 pass  # Некорректный start_param, пропускаем
+        
+        logger.info(f'Пользователь {"создан" if created else "найден"}: telegram_id={telegram_id}, id={user.id}')
         
         serializer = self.get_serializer(user)
         return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)

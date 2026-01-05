@@ -75,6 +75,12 @@ function UserRegistration() {
       setIsRegistering(true)
 
       try {
+        console.log('Начинаю регистрацию пользователя:', {
+          telegram_id: user.id,
+          first_name: user.first_name,
+          username: user.username,
+        })
+
         const userData = await users.registerOrGet({
           telegram_id: user.id,
           first_name: user.first_name || '',
@@ -86,9 +92,12 @@ function UserRegistration() {
         })
 
         setRegisteredUser(userData)
-        console.log('Пользователь зарегистрирован/получен:', userData)
+        console.log('✅ Пользователь зарегистрирован/получен:', userData)
       } catch (error) {
-        console.error('Ошибка при регистрации пользователя:', error)
+        console.error('❌ Ошибка при регистрации пользователя:', error)
+        if (error instanceof Error) {
+          console.error('Детали ошибки:', error.message)
+        }
         // Не блокируем работу приложения при ошибке регистрации
       } finally {
         setIsRegistering(false)
