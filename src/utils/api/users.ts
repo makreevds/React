@@ -45,13 +45,6 @@ export class UsersRepository {
   }
 
   /**
-   * Получает пользователя по ID
-   */
-  async getUserById(userId: number): Promise<User> {
-    return this.apiClient.get<User>(`/api/users/${userId}/`)
-  }
-
-  /**
    * Получает пользователя по Telegram ID
    */
   async getUserByTelegramId(telegramId: number): Promise<User> {

@@ -60,14 +60,6 @@ class UserViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
     
-    @action(detail=True, methods=['post'])
-    def update_last_visit(self, request: Request, pk: int = None) -> Response:
-        """Обновляет время последнего посещения пользователя."""
-        user = self.get_object()
-        user.save()  # auto_now обновит last_visit
-        serializer = self.get_serializer(user)
-        return Response(serializer.data)
-    
     @action(detail=False, methods=['post'], url_path='register-or-get')
     def register_or_get(self, request: Request) -> Response:
         """Регистрирует пользователя или возвращает существующего (get_or_create)."""
