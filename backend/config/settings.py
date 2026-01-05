@@ -120,6 +120,12 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Форматы даты и времени для админки
+DATETIME_FORMAT = 'd.m.Y H:i:s'
+DATE_FORMAT = 'd.m.Y'
+TIME_FORMAT = 'H:i:s'
+SHORT_DATETIME_FORMAT = 'd.m.Y H:i:s'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
