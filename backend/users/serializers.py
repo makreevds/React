@@ -1,0 +1,83 @@
+from rest_framework import serializers
+from .models import User
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Сериализатор для модели User."""
+    
+    invited_by_telegram_id = serializers.IntegerField(
+        source='invited_by.telegram_id',
+        read_only=True,
+        allow_null=True
+    )
+    
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'telegram_id',
+            'first_name',
+            'last_name',
+            'username',
+            'registration_time',
+            'last_visit',
+            'language',
+            'theme_color',
+            'invited_by_telegram_id',
+        ]
+        read_only_fields = [
+            'id',
+            'registration_time',
+            'last_visit',
+        ]
+
+
+class UserCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания пользователя."""
+    
+    invited_by_telegram_id = serializers.IntegerField(
+        required=False,
+        allow_null=True,
+        write_only=True,
+        help_text='Telegram ID пользователя, который пригласил'
+    )
+    
+    class Meta:
+        model = User
+        fields = [
+            'telegram_id',
+            'first_name',
+            'last_name',
+            'username',
+            'language',
+            'theme_color',
+            'invited_by_telegram_id',
+        ]
+    
+    def create(self, validated_data: dict) -> User:
+        """Создает пользователя с обработкой пригласившего."""
+        invited_by_telegram_id = validated_data.pop('invited_by_telegram_id', None)
+        
+        if invited_by_telegram_id:
+            try:
+                invited_by = User.objects.get(telegram_id=invited_by_telegram_id)
+                validated_data['invited_by'] = invited_by
+            except User.DoesNotExist:
+                pass  # Если пригласивший не найден, просто пропускаем
+        
+        return super().create(validated_data)
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    """Сериализатор для обновления пользователя."""
+    
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'language',
+            'theme_color',
+        ]
+
