@@ -213,7 +213,10 @@ export function WishesPage() {
         setWishlists([])
         setWishesByWishlist({})
       } finally {
-        setIsLoading(false)
+        // Небольшая задержка для плавного появления контента
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 100)
       }
     }
 
@@ -277,26 +280,28 @@ export function WishesPage() {
     <div className="page-container wishes-page">
       <div className="wishes-main-content">
         <section className="user-profile-section">
-          <div className="user-avatar-container">
-            {userPhotoUrl ? (
-              <img 
-                src={userPhotoUrl} 
-                alt={`${user?.first_name} ${user?.last_name || ''}`.trim()}
-                className="user-avatar"
-              />
-            ) : (
-              <div className="user-avatar-placeholder">
-                {user?.first_name?.[0]?.toUpperCase() || '?'}
-              </div>
-            )}
-          </div>
-          <div className="user-info">
-            <h2 className="user-name">
-              {user?.first_name || ''} {user?.last_name || ''}
-            </h2>
-            {user?.username && (
-              <p className="user-username">@{user.username}</p>
-            )}
+          <div className="user-profile-top">
+            <div className="user-avatar-container">
+              {userPhotoUrl ? (
+                <img 
+                  src={userPhotoUrl} 
+                  alt={`${user?.first_name} ${user?.last_name || ''}`.trim()}
+                  className="user-avatar"
+                />
+              ) : (
+                <div className="user-avatar-placeholder">
+                  {user?.first_name?.[0]?.toUpperCase() || '?'}
+                </div>
+              )}
+            </div>
+            <div className="user-info">
+              <h2 className="user-name">
+                {user?.first_name || ''} {user?.last_name || ''}
+              </h2>
+              {user?.username && (
+                <p className="user-username">@{user.username}</p>
+              )}
+            </div>
           </div>
           
           {/* Блок статистики подарков */}
