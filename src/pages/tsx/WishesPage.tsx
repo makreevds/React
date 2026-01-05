@@ -48,9 +48,12 @@ export function WishesPage() {
         // Загружаем вишлисты пользователя
         let loadedWishlists: Wishlist[] = []
         try {
-          console.log('Загружаем вишлисты для telegram_id:', user.id)
+          console.log('=== ЗАГРУЗКА ВИШЛИСТОВ ===')
+          console.log('telegram_id пользователя:', user.id)
+          console.log('URL запроса будет: /api/wishlists/by_telegram_id/?telegram_id=' + user.id)
           const response = await wishlistsRepo.getWishlistsByTelegramId(user.id)
           console.log('Ответ от API (вишлисты):', response)
+          console.log('Тип ответа:', typeof response, 'Является массивом:', Array.isArray(response))
           // Проверяем, что ответ - массив
           if (Array.isArray(response)) {
             loadedWishlists = response.map((wl: any) => ({
@@ -63,13 +66,24 @@ export function WishesPage() {
             console.warn('Ответ не является массивом:', typeof response, response)
           }
         } catch (err: any) {
+          console.error('Ошибка при загрузке вишлистов:', err)
+          console.error('Детали ошибки:', {
+            message: err?.message,
+            code: err?.code,
+            status: err?.status,
+            stack: err?.stack
+          })
+          
           // Если вишлистов нет (404), это нормально
           if (err?.code === 'NOT_FOUND' || err?.status === 404 || 
               (err?.message && (err.message.includes('404') || err.message.includes('NOT_FOUND')))) {
+            console.log('Вишлисты не найдены (404) - это нормально для нового пользователя')
             loadedWishlists = []
           } else {
-            console.error('Ошибка загрузки вишлистов:', err)
-            throw err
+            // Для других ошибок тоже устанавливаем пустой массив, но логируем
+            console.warn('Неожиданная ошибка при загрузке вишлистов, устанавливаем пустой массив')
+            loadedWishlists = []
+            // Не пробрасываем ошибку дальше, чтобы страница не упала
           }
         }
         setWishlists(loadedWishlists)
@@ -208,12 +222,20 @@ export function WishesPage() {
           
           {/* Отладочная информация - всегда показываем для отладки */}
           <div style={{ fontSize: '12px', color: '#666', marginBottom: '10px', padding: '10px', background: '#f0f0f0', borderRadius: '4px' }}>
+            <div><strong>Отладочная информация:</strong></div>
+            <div>user?.id (telegram_id): {user?.id || 'не определен'}</div>
             <div>isLoading: {String(isLoading)}</div>
             <div>error: {error || 'нет'}</div>
             <div>wishlists.length: {wishlists.length}</div>
             <div>allWishes.length: {allWishes.length}</div>
             <div>wishlists: {JSON.stringify(wishlists.map(w => ({ id: w.id, name: w.name })))}</div>
-            <div>wishesByWishlist keys: {Object.keys(wishesByWishlist).join(', ')}</div>
+            <div>wishesByWishlist keys: {Object.keys(wishesByWishlist).join(', ') || 'нет'}</div>
+            <div style={{ marginTop: '10px', padding: '5px', background: '#fff', borderRadius: '3px' }}>
+              <strong>Проверьте в админке Django:</strong>
+              <div>1. У вишлиста поле "user" должно указывать на пользователя с telegram_id = {user?.id || '?'}</div>
+              <div>2. В таблице users найдите пользователя с telegram_id = {user?.id || '?'}</div>
+              <div>3. Убедитесь, что вишлист привязан к этому пользователю</div>
+            </div>
           </div>
           
           {isLoading ? (
