@@ -277,6 +277,107 @@ body.theme-dark .wish-title {
   font-weight: 500;
 }
 
+.wish-description {
+  font-size: 14px;
+  margin: 4px 0;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.wish-status {
+  font-size: 12px;
+  margin: 4px 0 0 0;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  font-weight: 500;
+}
+
+.wish-status-reserved {
+  background: var(--theme-current-warning-light, #fff3cd);
+  color: var(--theme-current-warning, #856404);
+}
+
+html.theme-light .wish-status-reserved,
+body.theme-light .wish-status-reserved {
+  background: #fff3cd;
+  color: #856404;
+}
+
+html.theme-dark .wish-status-reserved,
+body.theme-dark .wish-status-reserved {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.wish-status-fulfilled {
+  background: var(--theme-current-success-light, #d4edda);
+  color: var(--theme-current-success, #155724);
+}
+
+html.theme-light .wish-status-fulfilled,
+body.theme-light .wish-status-fulfilled {
+  background: #d4edda;
+  color: #155724;
+}
+
+html.theme-dark .wish-status-fulfilled,
+body.theme-dark .wish-status-fulfilled {
+  background: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+}
+
+.wishlist-group {
+  margin-bottom: 24px;
+}
+
+.wishlist-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--theme-current-text, var(--theme-text-color));
+}
+
+.wishlist-default-badge {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+  opacity: 0.7;
+}
+
+.wishes-loading,
+.wishes-error {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+}
+
+.wishes-error {
+  color: var(--theme-current-error, #ff4444);
+}
+
+.btn-retry {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: var(--tg-theme-button-color, #0088cc);
+  color: var(--tg-theme-button-text-color, #ffffff);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-retry:hover {
+  opacity: 0.9;
+}
+
+.btn-retry:active {
+  opacity: 0.8;
+}
+
 html.theme-light .wish-price,
 body.theme-light .wish-price {
   color: var(--theme-hint-color);

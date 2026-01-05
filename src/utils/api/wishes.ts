@@ -8,36 +8,53 @@ import { ApiClient } from './client'
 
 export interface Wish {
   id: number
+  wishlist: number
+  wishlist_id: number
+  wishlist_name?: string
+  user: number
+  user_id: number
   title: string
   description?: string
   link?: string
   image_url?: string
   price?: number
   currency?: string
+  status: 'active' | 'reserved' | 'fulfilled'
   is_fulfilled: boolean
   fulfilled_by?: number
   fulfilled_at?: string
+  reserved_by?: number
+  reserved_by_id?: number
+  gifted_by?: number
+  gifted_by_id?: number
   created_at: string
   updated_at: string
-  user_id: number
+  reserved_at?: string
+  gifted_at?: string
+  order: number
 }
 
 export interface CreateWishRequest {
+  wishlist: number
   title: string
   description?: string
   link?: string
   image_url?: string
   price?: number
   currency?: string
+  order?: number
 }
 
 export interface UpdateWishRequest {
+  wishlist?: number
   title?: string
   description?: string
   link?: string
   image_url?: string
   price?: number
   currency?: string
+  status?: 'active' | 'reserved' | 'fulfilled'
+  order?: number
 }
 
 /**
@@ -51,10 +68,24 @@ export class WishesRepository {
   }
 
   /**
-   * Получает список желаний пользователя
+   * Получает список желаний пользователя по Telegram ID
+   */
+  async getWishesByTelegramId(telegramId: number): Promise<Wish[]> {
+    return this.apiClient.get<Wish[]>(`/api/wishes/by_telegram_id/?telegram_id=${telegramId}`)
+  }
+
+  /**
+   * Получает список желаний вишлиста
+   */
+  async getWishesByWishlistId(wishlistId: number): Promise<Wish[]> {
+    return this.apiClient.get<Wish[]>(`/api/wishes/?wishlist_id=${wishlistId}`)
+  }
+
+  /**
+   * Получает список желаний пользователя по user_id
    */
   async getUserWishes(userId: number): Promise<Wish[]> {
-    return this.apiClient.get<Wish[]>(`/api/users/${userId}/wishes`)
+    return this.apiClient.get<Wish[]>(`/api/wishes/?user_id=${userId}`)
   }
 
   /**
@@ -80,35 +111,43 @@ export class WishesRepository {
    * Создает новое желание
    */
   async createWish(data: CreateWishRequest): Promise<Wish> {
-    return this.apiClient.post<Wish>('/api/wishes', data)
+    return this.apiClient.post<Wish>('/api/wishes/', data)
   }
 
   /**
    * Обновляет желание
    */
   async updateWish(wishId: number, data: UpdateWishRequest): Promise<Wish> {
-    return this.apiClient.patch<Wish>(`/api/wishes/${wishId}`, data)
+    return this.apiClient.patch<Wish>(`/api/wishes/${wishId}/`, data)
   }
 
   /**
    * Удаляет желание
    */
   async deleteWish(wishId: number): Promise<void> {
-    return this.apiClient.delete<void>(`/api/wishes/${wishId}`)
+    return this.apiClient.delete<void>(`/api/wishes/${wishId}/`)
   }
 
   /**
    * Отмечает желание как исполненное
    */
-  async fulfillWish(wishId: number): Promise<Wish> {
-    return this.apiClient.post<Wish>(`/api/wishes/${wishId}/fulfill`)
+  async fulfillWish(wishId: number, giftedById?: number): Promise<Wish> {
+    const data = giftedById ? { gifted_by_id: giftedById } : {}
+    return this.apiClient.post<Wish>(`/api/wishes/${wishId}/fulfill/`, data)
   }
 
   /**
    * Отменяет исполнение желания
    */
   async unfulfillWish(wishId: number): Promise<Wish> {
-    return this.apiClient.delete<Wish>(`/api/wishes/${wishId}/fulfill`)
+    return this.apiClient.delete<Wish>(`/api/wishes/${wishId}/fulfill/`)
+  }
+
+  /**
+   * Перемещает желание в другой вишлист
+   */
+  async moveWish(wishId: number, wishlistId: number): Promise<Wish> {
+    return this.apiClient.post<Wish>(`/api/wishes/${wishId}/move/`, { wishlist_id: wishlistId })
   }
 }
 
