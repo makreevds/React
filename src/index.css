@@ -15,6 +15,8 @@ html, body {
 
   min-width: 320px;
   min-height: 100vh;
+  max-height: 100vh;
+  height: 100vh;
 
   font-family: system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -25,9 +27,19 @@ html, body {
   -webkit-touch-callout: none;
   user-select: none;
 
-  /* предотвращаем pull-to-refresh фон */
-  overscroll-behavior: contain;
-
+  /* Отключаем overscroll/bounce эффект */
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+  
+  /* Предотвращаем горизонтальный скролл */
+  overflow-x: hidden;
+  
+  /* Фиксируем высоту для предотвращения лишнего скролла */
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
 }
 
 /* ===============================
@@ -93,6 +105,21 @@ html, body {
 }
 
 /* ===============================
+   ROOT CONTAINER
+================================ */
+
+#root {
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  position: relative;
+}
+
+/* ===============================
    BODY
 ================================ */
 
@@ -100,6 +127,7 @@ body {
   display: flex;
   flex-direction: column;
   transition: background-color var(--transition-normal), color var(--transition-normal);
+  overflow: hidden;
 }
 
 /* ===============================
