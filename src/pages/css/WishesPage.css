@@ -212,8 +212,15 @@ body.theme-dark .wish-image-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
   background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+  color: var(--theme-current-hint, var(--theme-hint-color));
+}
+
+.wish-image-placeholder svg {
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  opacity: 0.6;
 }
 
 html.theme-light .wish-image-placeholder,
