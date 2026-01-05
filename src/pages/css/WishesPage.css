@@ -187,40 +187,51 @@ body.theme-dark .wish-item {
   height: 60px;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background: var(--theme-current-bg, var(--theme-bg-color));
-}
-
-html.theme-light .wish-image-container,
-body.theme-light .wish-image-container {
-  background: var(--theme-bg-color);
-}
-
-html.theme-dark .wish-image-container,
-body.theme-dark .wish-image-container {
-  background: var(--theme-bg-color-dark);
+  position: relative;
+  background: transparent;
 }
 
 .wish-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .wish-image-placeholder {
   width: 100%;
   height: 100%;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
-  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+  background: transparent;
   color: var(--theme-current-hint, var(--theme-hint-color));
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-.wish-image-placeholder svg {
+.wish-image-placeholder.show {
+  display: flex;
+}
+
+.wish-image-placeholder .gift-icon {
   width: 100%;
   height: 100%;
-  padding: 12px;
-  opacity: 0.6;
+  padding: 4px;
+  opacity: 0.4;
+}
+
+html.theme-light .wish-image-placeholder,
+body.theme-light .wish-image-placeholder {
+  color: var(--theme-hint-color);
+}
+
+html.theme-dark .wish-image-placeholder,
+body.theme-dark .wish-image-placeholder {
+  color: var(--theme-hint-color-dark);
 }
 
 html.theme-light .wish-image-placeholder,
