@@ -10,7 +10,6 @@ import { ThemeProvider } from './contexts/ThemeContext'
 import { ApiProvider, useApiContext } from './contexts/ApiContext'
 import { useTelegramWebApp } from './hooks/useTelegramWebApp'
 import { useErrorHandler } from './hooks/useErrorHandler'
-import type { User } from './utils/api'
 
 /**
  * Компонент инициализации Telegram WebApp
@@ -66,12 +65,12 @@ interface UserRegistrationProps {
 function UserRegistration({ onUserLoaded }: UserRegistrationProps) {
   const { users } = useApiContext()
   const { user, initData, webApp, isReady } = useTelegramWebApp()
-  const [registeredUser, setRegisteredUser] = useState<User | null>(null)
   const [isRegistering, setIsRegistering] = useState(false)
 
   useEffect(() => {
     // Ждём готовности Telegram WebApp и наличия данных пользователя
-    if (!isReady || !user || isRegistering || registeredUser) {
+    // Вызываем при каждом монтировании компонента (при открытии приложения)
+    if (!isReady || !user || isRegistering) {
       return
     }
 
@@ -94,48 +93,33 @@ function UserRegistration({ onUserLoaded }: UserRegistrationProps) {
           onUserLoaded(systemThemeColor)
         }
         
-        // Проверяем, есть ли уже пользователь в БД
-        let userData: User
+        // Всегда вызываем registerOrGet, чтобы обновить last_visit
+        // Это обновит время последнего посещения при каждом входе
+        const userData = await users.registerOrGet({
+          telegram_id: user.id,
+          first_name: user.first_name || '',
+          last_name: user.last_name,
+          username: user.username,
+          language: initData?.user?.language_code || 'ru',
+          theme_color: systemThemeColor, // При первом создании используем системную тему
+          start_param: initData?.start_param,
+        })
+        
+        // Применяем тему из БД (если пользователь уже был, будет его сохранённая тема)
+        const themeFromDB = userData.theme_color === 'dark' ? 'dark' : 'light'
+        
+        // Применяем тему из БД (перезаписываем системную)
+        if (onUserLoaded) {
+          onUserLoaded(themeFromDB)
+        }
+        
+        // Сохраняем в localStorage
         try {
-          // Пытаемся получить существующего пользователя
-          userData = await users.getUserByTelegramId(user.id)
-          // Если пользователь найден, используем его сохранённую тему из БД
-          const themeFromDB = userData.theme_color === 'dark' ? 'dark' : 'light'
-          console.log('Пользователь найден, применяем тему из БД:', themeFromDB)
-          
-          // Применяем тему из БД (перезаписываем системную)
-          if (onUserLoaded) {
-            onUserLoaded(themeFromDB)
-          }
-          
-          // Сохраняем в localStorage
-          try {
-            localStorage.setItem('app-theme', themeFromDB)
-          } catch (e) {
-            // Игнорируем ошибки
-          }
-        } catch (error) {
-          // Пользователь не найден, регистрируем с системной темой
-          console.log('Новый пользователь, регистрируем с системной темой из Telegram:', systemThemeColor)
-          userData = await users.registerOrGet({
-            telegram_id: user.id,
-            first_name: user.first_name || '',
-            last_name: user.last_name,
-            username: user.username,
-            language: initData?.user?.language_code || 'ru',
-            theme_color: systemThemeColor, // При первом создании используем системную тему
-            start_param: initData?.start_param,
-          })
-          
-          // Тема уже установлена выше (системная), просто сохраняем в localStorage
-          try {
-            localStorage.setItem('app-theme', systemThemeColor)
-          } catch (e) {
-            // Игнорируем ошибки
-          }
+          localStorage.setItem('app-theme', themeFromDB)
+        } catch (e) {
+          // Игнорируем ошибки
         }
 
-        setRegisteredUser(userData)
         console.log('✅ Пользователь зарегистрирован/получен:', userData)
       } catch (error) {
         console.error('❌ Ошибка при регистрации пользователя:', error)
@@ -149,7 +133,8 @@ function UserRegistration({ onUserLoaded }: UserRegistrationProps) {
     }
 
     registerUser()
-  }, [isReady, user, initData, users, isRegistering, registeredUser])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReady, user?.id]) // Вызываем только при изменении isReady или user.id
 
   return null
 }
