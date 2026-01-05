@@ -47,72 +47,35 @@ export function WishesPage() {
         // Загружаем вишлисты пользователя
         let loadedWishlists: Wishlist[] = []
         try {
-          console.log('=== ЗАГРУЗКА ВИШЛИСТОВ ===')
-          console.log('telegram_id пользователя:', user.id)
-          console.log('URL запроса будет: /api/wishlists/by_telegram_id/?telegram_id=' + user.id)
           const response = await wishlistsRepo.getWishlistsByTelegramId(user.id)
-          console.log('Ответ от API (вишлисты):', response)
-          console.log('Тип ответа:', typeof response, 'Является массивом:', Array.isArray(response))
           // Проверяем, что ответ - массив
           if (Array.isArray(response)) {
             loadedWishlists = response.map((wl: any) => ({
               id: Number(wl.id) || 0,
               name: String(wl.name || ''),
             }))
-            console.log('Обработанные вишлисты:', loadedWishlists)
-          } else {
-            console.warn('Ответ не является массивом:', typeof response, response)
           }
         } catch (err: any) {
-          console.error('Ошибка при загрузке вишлистов:', err)
-          console.error('Детали ошибки:', {
-            message: err?.message,
-            code: err?.code,
-            status: err?.status,
-            stack: err?.stack
-          })
-          
           // Если вишлистов нет (404), это нормально
           if (err?.code === 'NOT_FOUND' || err?.status === 404 || 
               (err?.message && (err.message.includes('404') || err.message.includes('NOT_FOUND')))) {
-            console.log('Вишлисты не найдены (404) - это нормально для нового пользователя')
             loadedWishlists = []
           } else {
-            // Для других ошибок тоже устанавливаем пустой массив, но логируем
-            console.warn('Неожиданная ошибка при загрузке вишлистов, устанавливаем пустой массив')
+            // Для других ошибок тоже устанавливаем пустой массив
             loadedWishlists = []
-            // Не пробрасываем ошибку дальше, чтобы страница не упала
           }
         }
         setWishlists(loadedWishlists)
 
         // Загружаем желания для каждого вишлиста
         const wishesMap: Record<number, Wish[]> = {}
-        console.log('=== ЗАГРУЗКА ЖЕЛАНИЙ ===')
-        console.log('Количество вишлистов для загрузки желаний:', loadedWishlists.length)
         
         for (const wishlist of loadedWishlists) {
           try {
-            console.log(`\n=== ЗАГРУЗКА ЖЕЛАНИЙ ДЛЯ ВИШЛИСТА ${wishlist.id} ===`)
-            console.log(`Вишлист ID: ${wishlist.id}, name: "${wishlist.name}"`)
-            console.log(`URL запроса: /api/wishes/?wishlist_id=${wishlist.id}`)
-            console.log(`Полный URL будет: ${apiContext?.client ? 'baseUrl' + '/api/wishes/?wishlist_id=' + wishlist.id : 'неизвестно'}`)
-            
             const wishesResponse = await wishesRepo.getWishesByWishlistId(wishlist.id)
-            console.log(`✅ Получен ответ от API для вишлиста ${wishlist.id}`)
-            
-            console.log(`Ответ от API (желания для вишлиста ${wishlist.id}):`, wishesResponse)
-            console.log(`Тип ответа:`, typeof wishesResponse, 'Является массивом:', Array.isArray(wishesResponse))
             
             // Проверяем, что ответ - массив и обрабатываем каждый элемент
             if (Array.isArray(wishesResponse)) {
-              console.log(`✅ Количество желаний в ответе:`, wishesResponse.length)
-              if (wishesResponse.length > 0) {
-                console.log('📦 Первое желание (сырые данные):', JSON.stringify(wishesResponse[0], null, 2))
-              } else {
-                console.warn(`⚠️ API вернул пустой массив для вишлиста ${wishlist.id}`)
-              }
-              
               // Обрабатываем каждое желание
               const processedWishes: Wish[] = []
               for (const w of wishesResponse) {
@@ -129,33 +92,21 @@ export function WishesPage() {
                     status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
                   }
                   processedWishes.push(processed)
-                  console.log(`✅ Обработано желание ID=${processed.id}: "${processed.title}"`)
                 } catch (err) {
-                  console.error(`❌ Ошибка при обработке желания:`, w, err)
+                  // Пропускаем некорректные желания
                 }
               }
               
               wishesMap[wishlist.id] = processedWishes
-              console.log(`✅ Итого обработано желаний для вишлиста ${wishlist.id}: ${processedWishes.length}`)
             } else {
-              console.error(`❌ Ответ для вишлиста ${wishlist.id} не является массивом!`)
-              console.error(`Тип: ${typeof wishesResponse}, Значение:`, wishesResponse)
               wishesMap[wishlist.id] = []
             }
           } catch (err: any) {
-            console.error(`❌ Ошибка при загрузке желаний для вишлиста ${wishlist.id}:`, err)
-            console.error('Детали ошибки:', {
-              message: err?.message,
-              code: err?.code,
-              status: err?.status,
-            })
             wishesMap[wishlist.id] = []
           }
         }
-        console.log('Итоговая карта желаний:', wishesMap)
         setWishesByWishlist(wishesMap)
       } catch (err: any) {
-        console.error('Критическая ошибка при загрузке данных:', err)
         const errorMessage = err?.message || err?.toString() || 'Неизвестная ошибка'
         setError(errorMessage)
         // Устанавливаем пустые данные, чтобы компонент не упал
@@ -206,11 +157,7 @@ export function WishesPage() {
   let allWishes: Wish[] = []
   try {
     allWishes = Object.values(wishesByWishlist).flat().filter(w => w && w.id)
-    console.log('Все желания для отображения:', allWishes)
-    console.log('Количество вишлистов:', wishlists.length)
-    console.log('Количество желаний:', allWishes.length)
   } catch (err) {
-    console.error('Ошибка при обработке желаний:', err)
     allWishes = []
   }
 
@@ -255,25 +202,6 @@ export function WishesPage() {
 
         <section className="wishes-list-section">
           <h3 className="wishes-list-title">Мои желания</h3>
-          
-          {/* Отладочная информация - всегда показываем для отладки */}
-          <div style={{ fontSize: '12px', color: '#666', marginBottom: '10px', padding: '10px', background: '#f0f0f0', borderRadius: '4px' }}>
-            <div><strong>Отладочная информация:</strong></div>
-            <div>user?.id (telegram_id): {user?.id || 'не определен'}</div>
-            <div>isLoading: {String(isLoading)}</div>
-            <div>error: {error || 'нет'}</div>
-            <div>wishlists.length: {wishlists.length}</div>
-            <div>allWishes.length: {allWishes.length}</div>
-            <div>wishlists: {JSON.stringify(wishlists.map(w => ({ id: w.id, name: w.name })))}</div>
-            <div>wishesByWishlist keys: {Object.keys(wishesByWishlist).join(', ') || 'нет'}</div>
-            <div>wishesByWishlist[2]: {wishesByWishlist[2] ? JSON.stringify(wishesByWishlist[2].map(w => ({ id: w.id, title: w.title }))) : 'нет данных'}</div>
-            <div style={{ marginTop: '10px', padding: '5px', background: '#fff', borderRadius: '3px' }}>
-              <strong>Проверьте в админке Django:</strong>
-              <div>1. У вишлиста поле "user" должно указывать на пользователя с telegram_id = {user?.id || '?'}</div>
-              <div>2. В таблице users найдите пользователя с telegram_id = {user?.id || '?'}</div>
-              <div>3. Убедитесь, что вишлист привязан к этому пользователю</div>
-            </div>
-          </div>
           
           {isLoading ? (
             <div className="wishes-loading">
