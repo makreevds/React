@@ -19,12 +19,13 @@ cd "$PROJECT_DIR" || {
 
 echo -e "${GREEN}✓ Директория: $PROJECT_DIR${NC}"
 
-# Обновляем код из Git
-echo -e "${YELLOW}📥 Обновляю код из Git...${NC}"
-if git pull; then
-    echo -e "${GREEN}✓ Код обновлен${NC}"
+# Обновляем код из Git принудительно
+echo -e "${YELLOW}📥 Обновляю код из Git (Force)...${NC}"
+git fetch origin main
+if git reset --hard origin/main; then
+    echo -e "${GREEN}✓ Код принудительно обновлен до origin/main${NC}"
 else
-    echo -e "${RED}❌ Ошибка при обновлении кода из Git${NC}"
+    echo -e "${RED}❌ Ошибка при сбросе кода${NC}"
     exit 1
 fi
 
