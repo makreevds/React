@@ -125,8 +125,8 @@ class UserViewSet(viewsets.ModelViewSet):
                 user.theme_color = request.data['theme_color']
                 updated = True
             
-            if updated:
-                user.save()
+            # Всегда сохраняем пользователя, чтобы обновить last_visit (auto_now=True)
+            user.save()
         
         # Обработка пригласившего (start_param)
         start_param = request.data.get('start_param')
