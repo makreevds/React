@@ -60,7 +60,7 @@ function TelegramInit() {
  * Компонент для автоматической регистрации пользователя
  */
 interface UserRegistrationProps {
-  onUserLoaded?: (theme: 'light' | 'dark' | null) => void
+  onUserLoaded?: (theme: 'light' | 'dark') => void
 }
 
 function UserRegistration({ onUserLoaded }: UserRegistrationProps) {
@@ -178,7 +178,7 @@ function App() {
     timeout: 30000,
   }
 
-  const [initialTheme, setInitialTheme] = useState<'light' | 'dark' | null>(null)
+  const [initialTheme, setInitialTheme] = useState<'light' | 'dark'>('light')
 
   return (
     <ThemeProvider initialTheme={initialTheme}>

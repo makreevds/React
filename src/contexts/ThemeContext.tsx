@@ -4,9 +4,9 @@ import type { ReactNode } from 'react'
 type Theme = 'light' | 'dark'
 
 interface ThemeContextType {
-  theme: Theme | null // null означает системная тема
+  theme: Theme
   toggleTheme: () => void
-  setTheme: (theme: Theme | null) => void
+  setTheme: (theme: Theme) => void
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -15,12 +15,12 @@ const THEME_STORAGE_KEY = 'app-theme'
 
 interface ThemeProviderProps {
   children: ReactNode
-  initialTheme?: Theme | null // Начальная тема из БД или Telegram
+  initialTheme?: Theme // Начальная тема из БД или Telegram
 }
 
 export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
-  // Определяем начальную тему: сначала из пропсов, потом из localStorage, потом null (системная)
-  const getInitialTheme = (): Theme | null => {
+  // Определяем начальную тему: сначала из пропсов, потом из localStorage, потом 'light' по умолчанию
+  const getInitialTheme = (): Theme => {
     // Если передана начальная тема извне (из БД или Telegram), используем её
     if (initialTheme !== undefined) {
       return initialTheme
@@ -37,18 +37,18 @@ export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
       // Если ошибка доступа к localStorage, игнорируем
       console.warn('Failed to read theme from localStorage:', e)
     }
-    // Если нет сохраненной темы или она невалидна, возвращаем null - будет использоваться системная
-    return null
+    // Если нет сохраненной темы, возвращаем 'light' по умолчанию
+    return 'light'
   }
 
-  const [theme, setTheme] = useState<Theme | null>(getInitialTheme)
+  const [theme, setTheme] = useState<Theme>(getInitialTheme)
   
   // Обновляем тему, если изменилась initialTheme (например, загрузилась из БД)
   useEffect(() => {
     if (initialTheme !== undefined && initialTheme !== theme) {
       setTheme(initialTheme)
     }
-  }, [initialTheme])
+  }, [initialTheme, theme])
 
   // Применяем тему к документу
   useEffect(() => {
@@ -62,41 +62,21 @@ export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
     if (theme === 'dark') {
       root.classList.add('theme-dark')
       body.classList.add('theme-dark')
-      try {
-        localStorage.setItem(THEME_STORAGE_KEY, 'dark')
-      } catch (e) {
-        console.warn('Failed to save theme to localStorage:', e)
-      }
-    } else if (theme === 'light') {
+    } else {
       root.classList.add('theme-light')
       body.classList.add('theme-light')
-      try {
-        localStorage.setItem(THEME_STORAGE_KEY, 'light')
-      } catch (e) {
-        console.warn('Failed to save theme to localStorage:', e)
-      }
-    } else {
-      // Если theme === null, удаляем из localStorage - будет использоваться системная тема
-      // Классы темы уже удалены выше, так что ничего не нужно добавлять
-      try {
-        localStorage.removeItem(THEME_STORAGE_KEY)
-      } catch (e) {
-        console.warn('Failed to remove theme from localStorage:', e)
-      }
+    }
+    
+    // Сохраняем тему в localStorage
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme)
+    } catch (e) {
+      console.warn('Failed to save theme to localStorage:', e)
     }
   }, [theme])
 
   const toggleTheme = () => {
-    setTheme(prev => {
-      if (prev === 'light') {
-        return 'dark'
-      } else if (prev === 'dark') {
-        return null // Переключаем на системную тему
-      } else {
-        // Если была системная тема, переключаем на светлую
-        return 'light'
-      }
-    })
+    setTheme(prev => prev === 'light' ? 'dark' : 'light')
   }
 
   return (

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 export function SettingsPage() {
   const { theme, setTheme } = useTheme()
   const { users } = useApiContext()
-  const { user: telegramUser, webApp } = useTelegramWebApp()
+  const { user: telegramUser } = useTelegramWebApp()
   const [isUpdating, setIsUpdating] = useState(false)
 
   // Обновляем тему в БД при изменении
@@ -21,25 +21,13 @@ export function SettingsPage() {
         // Получаем текущего пользователя
         const currentUser = await users.getUserByTelegramId(telegramUser.id)
         
-        // Определяем значение темы для БД
-        // Если тема null (системная), получаем реальную системную тему из Telegram
-        let themeForDB: string
-        if (theme === null) {
-          // Системная тема - получаем реальное значение из Telegram WebApp
-          const systemTheme = webApp?.colorScheme || 'light'
-          themeForDB = systemTheme === 'dark' ? 'dark' : 'light'
-        } else {
-          // Явно выбранная тема
-          themeForDB = theme
-        }
-        
         // Обновляем только если тема изменилась
-        if (currentUser.theme_color !== themeForDB) {
+        if (currentUser.theme_color !== theme) {
           setIsUpdating(true)
           await users.updateUser(currentUser.id, {
-            theme_color: themeForDB,
+            theme_color: theme,
           })
-          console.log('Тема обновлена в БД:', themeForDB, theme === null ? '(системная)' : '')
+          console.log('Тема обновлена в БД:', theme)
         }
       } catch (error) {
         console.error('Ошибка при обновлении темы в БД:', error)
@@ -51,9 +39,9 @@ export function SettingsPage() {
     // Небольшая задержка, чтобы избежать множественных запросов
     const timeoutId = setTimeout(updateThemeInDB, 500)
     return () => clearTimeout(timeoutId)
-  }, [theme, telegramUser?.id, users, isUpdating, webApp])
+  }, [theme, telegramUser?.id, users, isUpdating])
 
-  const handleThemeChange = (newTheme: 'light' | 'dark' | null) => {
+  const handleThemeChange = (newTheme: 'light' | 'dark') => {
     setTheme(newTheme)
   }
 
@@ -66,7 +54,7 @@ export function SettingsPage() {
           <div className="setting-info">
             <span className="setting-label">Тема</span>
             <span className="setting-description">
-              {theme === 'dark' ? 'Темная' : theme === 'light' ? 'Светлая' : 'Системная'}
+              {theme === 'dark' ? 'Темная' : 'Светлая'}
             </span>
           </div>
           <div className="theme-segmented-control">
@@ -78,15 +66,6 @@ export function SettingsPage() {
               disabled={isUpdating}
             >
               ☀️
-            </button>
-            <button
-              className={`theme-segment ${theme === null ? 'active' : ''}`}
-              onClick={() => handleThemeChange(null)}
-              aria-label="Системная тема"
-              title="Системная тема"
-              disabled={isUpdating}
-            >
-              🔄
             </button>
             <button
               className={`theme-segment ${theme === 'dark' ? 'active' : ''}`}
