@@ -17,25 +17,45 @@ export function WishesPage() {
 
   // Загружаем вишлисты и желания при монтировании компонента
   useEffect(() => {
+    console.log('WishesPage: useEffect triggered', { userId: user?.id, hasUser: !!user })
+    
     if (!user?.id) {
+      console.log('WishesPage: Нет user.id, пропускаем загрузку')
       setIsLoading(false)
       return
     }
 
     const loadData = async () => {
       try {
+        console.log('WishesPage: Начинаем загрузку данных для user.id =', user.id)
         setIsLoading(true)
         setError(null)
 
         // Загружаем вишлисты пользователя
-        const loadedWishlists = await wishlistsRepo.getWishlistsByTelegramId(user.id)
+        console.log('WishesPage: Загружаем вишлисты для telegram_id =', user.id)
+        let loadedWishlists: Wishlist[] = []
+        try {
+          loadedWishlists = await wishlistsRepo.getWishlistsByTelegramId(user.id)
+          console.log('WishesPage: Загружено вишлистов:', loadedWishlists.length, loadedWishlists)
+        } catch (err) {
+          console.error('WishesPage: Ошибка при загрузке вишлистов:', err)
+          // Если вишлистов нет (404), это нормально - пользователь может еще не создал вишлисты
+          if (err instanceof Error && err.message.includes('404')) {
+            console.log('WishesPage: Вишлисты не найдены (404) - это нормально для нового пользователя')
+            loadedWishlists = []
+          } else {
+            throw err // Пробрасываем другие ошибки
+          }
+        }
         setWishlists(loadedWishlists)
 
         // Загружаем желания для каждого вишлиста
         const wishesMap: Record<number, Wish[]> = {}
         for (const wishlist of loadedWishlists) {
           try {
+            console.log(`WishesPage: Загружаем желания для вишлиста ${wishlist.id}...`)
             const wishes = await wishesRepo.getWishesByWishlistId(wishlist.id)
+            console.log(`WishesPage: Загружено желаний для вишлиста ${wishlist.id}:`, wishes.length)
             wishesMap[wishlist.id] = wishes
           } catch (err) {
             console.error(`Ошибка при загрузке желаний для вишлиста ${wishlist.id}:`, err)
@@ -43,11 +63,15 @@ export function WishesPage() {
           }
         }
         setWishesByWishlist(wishesMap)
+        console.log('WishesPage: Данные загружены успешно', { wishlists: loadedWishlists.length, wishesMap })
       } catch (err) {
-        console.error('Ошибка при загрузке данных:', err)
-        setError(err instanceof Error ? err.message : 'Не удалось загрузить данные')
+        console.error('WishesPage: Ошибка при загрузке данных:', err)
+        const errorMessage = err instanceof Error ? err.message : String(err)
+        console.error('WishesPage: Детали ошибки:', errorMessage)
+        setError(errorMessage)
       } finally {
         setIsLoading(false)
+        console.log('WishesPage: Загрузка завершена')
       }
     }
 
@@ -94,6 +118,28 @@ export function WishesPage() {
 
   // Получаем все желания из всех вишлистов для отображения
   const allWishes: Wish[] = Object.values(wishesByWishlist).flat()
+  
+  console.log('WishesPage: Render state', {
+    isLoading,
+    error,
+    wishlistsCount: wishlists.length,
+    allWishesCount: allWishes.length,
+    wishesByWishlist,
+    user: user?.id
+  })
+
+  // Если нет пользователя, показываем сообщение
+  if (!user) {
+    return (
+      <div className="page-container wishes-page">
+        <div className="wishes-main-content">
+          <div className="wishes-empty">
+            <p>Ожидание загрузки данных пользователя...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="page-container wishes-page">
@@ -137,10 +183,45 @@ export function WishesPage() {
               <p>Ошибка: {error}</p>
               <button 
                 className="btn-retry" 
-                onClick={() => window.location.reload()}
+                onClick={() => {
+                  setError(null)
+                  setIsLoading(true)
+                  // Перезагружаем данные
+                  if (user?.id) {
+                    wishlistsRepo.getWishlistsByTelegramId(user.id)
+                      .then(loadedWishlists => {
+                        setWishlists(loadedWishlists)
+                        const wishesMap: Record<number, Wish[]> = {}
+                        return Promise.all(
+                          loadedWishlists.map(async (wishlist) => {
+                            try {
+                              const wishes = await wishesRepo.getWishesByWishlistId(wishlist.id)
+                              wishesMap[wishlist.id] = wishes
+                            } catch (err) {
+                              console.error(`Ошибка при загрузке желаний для вишлиста ${wishlist.id}:`, err)
+                              wishesMap[wishlist.id] = []
+                            }
+                          })
+                        ).then(() => {
+                          setWishesByWishlist(wishesMap)
+                          setIsLoading(false)
+                        })
+                      })
+                      .catch(err => {
+                        console.error('Ошибка при повторной загрузке:', err)
+                        setError(err instanceof Error ? err.message : 'Не удалось загрузить данные')
+                        setIsLoading(false)
+                      })
+                  }
+                }}
               >
                 Повторить
               </button>
+            </div>
+          ) : wishlists.length === 0 ? (
+            <div className="wishes-empty">
+              <p>У вас пока нет вишлистов</p>
+              <button className="btn-add-wish">Создать вишлист</button>
             </div>
           ) : allWishes.length === 0 ? (
             <div className="wishes-empty">
