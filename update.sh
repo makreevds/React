@@ -51,6 +51,53 @@ fi
 
 echo -e "${GREEN}✅ Сайт успешно обновлен!${NC}"
 
+# Проверяем и создаём виртуальное окружение, если его нет
+VENV_DIR="$PROJECT_DIR/.venv"
+VENV_PYTHON="$VENV_DIR/bin/python"
+
+if [ ! -f "$VENV_PYTHON" ]; then
+    echo -e "${YELLOW}📦 Виртуальное окружение не найдено, создаю...${NC}"
+    
+    # Проверка наличия Python 3
+    if ! command -v python3 &> /dev/null; then
+        echo -e "${RED}❌ Python 3 не найден. Установите Python 3.8 или выше.${NC}"
+        exit 1
+    fi
+    
+    # Создание виртуального окружения
+    python3 -m venv "$VENV_DIR"
+    
+    if [ ! -f "$VENV_PYTHON" ]; then
+        echo -e "${RED}❌ Ошибка при создании виртуального окружения${NC}"
+        exit 1
+    fi
+    
+    echo -e "${GREEN}✓ Виртуальное окружение создано${NC}"
+    
+    # Активация и установка зависимостей
+    echo -e "${YELLOW}📥 Устанавливаю зависимости Python...${NC}"
+    source "$VENV_DIR/bin/activate"
+    pip install --upgrade pip --quiet
+    
+    if [ -f "$PROJECT_DIR/requirements.txt" ]; then
+        pip install -r "$PROJECT_DIR/requirements.txt" --quiet
+        echo -e "${GREEN}✓ Зависимости установлены${NC}"
+    else
+        echo -e "${YELLOW}⚠️  Файл requirements.txt не найден${NC}"
+    fi
+    
+    # Выполнение миграций Django
+    if [ -d "$PROJECT_DIR/backend" ]; then
+        echo -e "${YELLOW}🗄️  Выполняю миграции базы данных...${NC}"
+        cd "$PROJECT_DIR/backend"
+        python manage.py migrate --noinput > /dev/null 2>&1
+        cd "$PROJECT_DIR"
+        echo -e "${GREEN}✓ Миграции выполнены${NC}"
+    fi
+else
+    echo -e "${GREEN}✓ Виртуальное окружение найдено${NC}"
+fi
+
 # Перезапускаем Telegram бота
 echo -e "${YELLOW}🤖 Перезапускаю Telegram бота...${NC}"
 BOT_DIR="$PROJECT_DIR/telegram-bot"
@@ -81,24 +128,16 @@ if [ -d "$BOT_DIR" ]; then
     if [ ! -f "config.py" ]; then
         echo -e "${YELLOW}⚠️  Файл config.py не найден, пропускаю запуск бота${NC}"
     else
-        # Используем виртуальное окружение из корня проекта
-        VENV_PYTHON="$PROJECT_DIR/.venv/bin/python"
+        # Запускаем бота в фоне через виртуальное окружение
+        echo -e "${YELLOW}🚀 Запускаю бота в фоновом режиме...${NC}"
+        nohup "$VENV_PYTHON" bot.py > "$LOG_FILE" 2>&1 &
+        BOT_PID=$!
         
-        if [ ! -f "$VENV_PYTHON" ]; then
-            echo -e "${RED}❌ Виртуальное окружение не найдено: $VENV_PYTHON${NC}"
-            echo -e "${YELLOW}💡 Запустите: ./setup.sh${NC}"
-        else
-            # Запускаем бота в фоне через виртуальное окружение
-            echo -e "${YELLOW}🚀 Запускаю бота в фоновом режиме...${NC}"
-            nohup "$VENV_PYTHON" bot.py > "$LOG_FILE" 2>&1 &
-            BOT_PID=$!
-            
-            # Сохраняем PID
-            echo $BOT_PID > "$PID_FILE"
-            
-            echo -e "${GREEN}✓ Бот запущен (PID: $BOT_PID)${NC}"
-            echo -e "${YELLOW}💡 Логи: tail -f $BOT_DIR/$LOG_FILE${NC}"
-        fi
+        # Сохраняем PID
+        echo $BOT_PID > "$PID_FILE"
+        
+        echo -e "${GREEN}✓ Бот запущен (PID: $BOT_PID)${NC}"
+        echo -e "${YELLOW}💡 Логи: tail -f $BOT_DIR/$LOG_FILE${NC}"
     fi
 else
     echo -e "${YELLOW}⚠️  Директория $BOT_DIR не найдена, пропускаю запуск бота${NC}"
