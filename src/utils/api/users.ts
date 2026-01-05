@@ -15,6 +15,8 @@ export interface User {
   language: string
   theme_color: string
   invited_by_telegram_id?: number
+  gifts_given?: number
+  gifts_received?: number
 }
 
 export interface RegisterUserRequest {

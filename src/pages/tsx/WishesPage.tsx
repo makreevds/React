@@ -31,6 +31,43 @@ export function WishesPage() {
   const [wishesByWishlist, setWishesByWishlist] = useState<Record<number, Wish[]>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [collapsedWishlists, setCollapsedWishlists] = useState<Set<number>>(new Set())
+  const [userData, setUserData] = useState<{ gifts_given: number; gifts_received: number } | null>(null)
+
+  // Загружаем данные пользователя
+  useEffect(() => {
+    if (!user?.id || !apiContext?.users) {
+      return
+    }
+
+    const loadUserData = async () => {
+      try {
+        const userDataResponse = await apiContext.users.getUserByTelegramId(user.id)
+        setUserData({
+          gifts_given: userDataResponse.gifts_given || 0,
+          gifts_received: userDataResponse.gifts_received || 0,
+        })
+      } catch (err) {
+        // Игнорируем ошибки загрузки данных пользователя
+        setUserData({ gifts_given: 0, gifts_received: 0 })
+      }
+    }
+
+    loadUserData()
+  }, [user?.id, apiContext?.users])
+
+  // Обработчик сворачивания/разворачивания вишлиста
+  const toggleWishlist = (wishlistId: number) => {
+    setCollapsedWishlists(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(wishlistId)) {
+        newSet.delete(wishlistId)
+      } else {
+        newSet.add(wishlistId)
+      }
+      return newSet
+    })
+  }
 
   // Загружаем вишлисты и желания при монтировании компонента
   useEffect(() => {
@@ -66,6 +103,8 @@ export function WishesPage() {
           }
         }
         setWishlists(loadedWishlists)
+        // По умолчанию все вишлисты свернуты
+        setCollapsedWishlists(new Set(loadedWishlists.map(wl => wl.id)))
 
         // Загружаем желания для каждого вишлиста
         const wishesMap: Record<number, Wish[]> = {}
@@ -200,6 +239,21 @@ export function WishesPage() {
           </div>
         </section>
 
+        {/* Блок статистики подарков */}
+        {userData && (
+          <section className="gifts-stats-section">
+            <div className="gifts-stat-item">
+              <div className="gifts-stat-value">{userData.gifts_given}</div>
+              <div className="gifts-stat-label">Подарено</div>
+            </div>
+            <div className="gifts-stat-divider"></div>
+            <div className="gifts-stat-item">
+              <div className="gifts-stat-value">{userData.gifts_received}</div>
+              <div className="gifts-stat-label">Получено</div>
+            </div>
+          </section>
+        )}
+
         <section className="wishes-list-section">
           <h3 className="wishes-list-title">Мои желания</h3>
           
@@ -237,12 +291,18 @@ export function WishesPage() {
                   // Если это единственный вишлист и в нем нет желаний, показываем сообщение "нет желаний"
                   if (wishes.length === 0 && allWishes.length > 0) {
                     // Есть желания в других вишлистах, но не в этом - показываем вишлист пустым
+                    const isCollapsed = collapsedWishlists.has(wishlist.id)
+
                     return (
                       <div key={wishlist.id} className="wishlist-group">
-                        <h4 className="wishlist-name">
-                          {wishlist.name || 'Без названия'}
+                        <h4 
+                          className={`wishlist-name ${isCollapsed ? 'collapsed' : ''}`}
+                          onClick={() => toggleWishlist(wishlist.id)}
+                        >
+                          <span className="wishlist-name-text">{wishlist.name || 'Без названия'}</span>
+                          <span className="wishlist-toggle-icon">{isCollapsed ? '▼' : '▲'}</span>
                         </h4>
-                        <div className="wishes-empty">
+                        <div className={`wishes-empty ${isCollapsed ? 'collapsed' : ''}`}>
                           <p>В этом вишлисте пока нет желаний</p>
                         </div>
                       </div>
@@ -250,15 +310,21 @@ export function WishesPage() {
                   }
                   if (wishes.length === 0) return null
 
+                  const isCollapsed = collapsedWishlists.has(wishlist.id)
+
                   return (
                     <div key={wishlist.id} className="wishlist-group">
                       {/* Всегда показываем название вишлиста, если вишлистов больше одного или если есть желания */}
                       {(wishlists.length > 1 || wishes.length > 0) && (
-                        <h4 className="wishlist-name">
-                          {wishlist.name || 'Без названия'}
+                        <h4 
+                          className={`wishlist-name ${isCollapsed ? 'collapsed' : ''}`}
+                          onClick={() => toggleWishlist(wishlist.id)}
+                        >
+                          <span className="wishlist-name-text">{wishlist.name || 'Без названия'}</span>
+                          <span className="wishlist-toggle-icon">{isCollapsed ? '▼' : '▲'}</span>
                         </h4>
                       )}
-                      <div className="wishes-list">
+                      <div className={`wishes-list ${isCollapsed ? 'collapsed' : ''}`}>
                         {wishes.map((wish) => {
                           if (!wish || !wish.id) return null
                           return (
