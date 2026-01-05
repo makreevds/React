@@ -34,6 +34,11 @@ class UserSerializer(serializers.ModelSerializer):
             'language',
             'theme_color',
             'invited_by_telegram_id',
+            'birth_date',
+            'address',
+            'hobbies',
+            'gifts_given',
+            'gifts_received',
         ]
         read_only_fields = [
             'id',
@@ -89,5 +94,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'username',
             'language',
             'theme_color',
+            'birth_date',
+            'address',
+            'hobbies',
         ]
 

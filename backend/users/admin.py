@@ -33,6 +33,9 @@ class UserAdmin(admin.ModelAdmin):
         'formatted_last_visit',
         'language',
         'theme_color',
+        'birth_date',
+        'gifts_given',
+        'gifts_received',
         'invited_by',
     )
     
@@ -41,6 +44,7 @@ class UserAdmin(admin.ModelAdmin):
         'theme_color',
         'registration_time',
         'last_visit',
+        'birth_date',
     )
     
     search_fields = (
@@ -62,6 +66,19 @@ class UserAdmin(admin.ModelAdmin):
                 'first_name',
                 'last_name',
                 'username',
+            )
+        }),
+        ('Личная информация', {
+            'fields': (
+                'birth_date',
+                'address',
+                'hobbies',
+            )
+        }),
+        ('Статистика подарков', {
+            'fields': (
+                'gifts_given',
+                'gifts_received',
             )
         }),
         ('Настройки', {

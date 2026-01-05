@@ -69,6 +69,39 @@ class User(models.Model):
         help_text='Пользователь, который пригласил данного пользователя'
     )
     
+    birth_date = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name='Дата рождения',
+        help_text='Дата рождения пользователя'
+    )
+    
+    address = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Адрес проживания',
+        help_text='Адрес проживания пользователя'
+    )
+    
+    hobbies = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Хобби',
+        help_text='Хобби и интересы пользователя'
+    )
+    
+    gifts_given = models.IntegerField(
+        default=0,
+        verbose_name='Количество подаренных подарков',
+        help_text='Количество подарков, которые пользователь подарил'
+    )
+    
+    gifts_received = models.IntegerField(
+        default=0,
+        verbose_name='Количество полученных подарков',
+        help_text='Количество подарков, которые пользователь получил'
+    )
+    
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
