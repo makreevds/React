@@ -14,6 +14,7 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
+  margin-top: 24px;
   background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
   border-radius: var(--radius-md);
 }
