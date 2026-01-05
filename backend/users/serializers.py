@@ -11,6 +11,16 @@ class UserSerializer(serializers.ModelSerializer):
         allow_null=True
     )
     
+    registration_time = serializers.DateTimeField(
+        format='%Y-%m-%d %H:%M:%S',
+        read_only=True
+    )
+    
+    last_visit = serializers.DateTimeField(
+        format='%Y-%m-%d %H:%M:%S',
+        read_only=True
+    )
+    
     class Meta:
         model = User
         fields = [
