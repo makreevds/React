@@ -234,7 +234,7 @@ body.theme-dark .wish-image-placeholder {
   color: var(--theme-hint-color-dark);
 }
 
-html.theme-light .wish-image-placeholder,
+/* html.theme-light .wish-image-placeholder,
 body.theme-light .wish-image-placeholder {
   background: var(--theme-hint-color-light);
 }
@@ -242,7 +242,7 @@ body.theme-light .wish-image-placeholder {
 html.theme-dark .wish-image-placeholder,
 body.theme-dark .wish-image-placeholder {
   background: var(--theme-hint-color-light-dark);
-}
+} */
 
 .wish-content {
   flex: 1;
