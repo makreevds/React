@@ -168,8 +168,10 @@ if [ ! -f "$VENV_PYTHON" ]; then
     
     # Выполнение миграций Django
     if [ -d "$PROJECT_DIR/backend" ]; then
-        echo -e "${YELLOW}🗄️  Выполняю миграции базы данных...${NC}"
+        echo -e "${YELLOW}🗄️  Создаю миграции базы данных...${NC}"
         cd "$PROJECT_DIR/backend"
+        python manage.py makemigrations --noinput > /dev/null 2>&1
+        echo -e "${YELLOW}🗄️  Применяю миграции базы данных...${NC}"
         python manage.py migrate --noinput > /dev/null 2>&1
         cd "$PROJECT_DIR"
         echo -e "${GREEN}✓ Миграции выполнены${NC}"
@@ -179,8 +181,10 @@ else
     
     # Выполняем миграции после обновления кода (всегда, чтобы применить изменения в моделях)
     if [ -d "$PROJECT_DIR/backend" ]; then
-        echo -e "${YELLOW}🗄️  Выполняю миграции базы данных...${NC}"
+        echo -e "${YELLOW}🗄️  Создаю миграции базы данных...${NC}"
         cd "$PROJECT_DIR/backend"
+        "$VENV_PYTHON" manage.py makemigrations --noinput
+        echo -e "${YELLOW}🗄️  Применяю миграции базы данных...${NC}"
         "$VENV_PYTHON" manage.py migrate --noinput
         cd "$PROJECT_DIR"
         echo -e "${GREEN}✓ Миграции выполнены${NC}"
