@@ -1,10 +1,11 @@
 import { createContext, useContext, type ReactNode } from 'react'
 import { useApi, type ApiClientConfig } from '../hooks/useApi'
-import type { WishesRepository, FriendsRepository, ApiClient } from '../utils/api'
+import type { WishesRepository, FriendsRepository, UsersRepository, ApiClient } from '../utils/api'
 
 interface ApiContextValue {
   wishes: WishesRepository
   friends: FriendsRepository
+  users: UsersRepository
   client: ApiClient
 }
 

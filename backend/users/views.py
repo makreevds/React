@@ -67,3 +67,74 @@ class UserViewSet(viewsets.ModelViewSet):
         user.save()  # auto_now обновит last_visit
         serializer = self.get_serializer(user)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['post'])
+    def register_or_get(self, request: Request) -> Response:
+        """Регистрирует пользователя или возвращает существующего (get_or_create)."""
+        telegram_id = request.data.get('telegram_id')
+        
+        if not telegram_id:
+            return Response(
+                {'error': 'Параметр telegram_id обязателен'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            telegram_id = int(telegram_id)
+        except (ValueError, TypeError):
+            return Response(
+                {'error': 'Некорректный telegram_id'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Получаем или создаём пользователя
+        user, created = User.objects.get_or_create(
+            telegram_id=telegram_id,
+            defaults={
+                'first_name': request.data.get('first_name', ''),
+                'last_name': request.data.get('last_name', ''),
+                'username': request.data.get('username', ''),
+                'language': request.data.get('language', 'ru'),
+                'theme_color': request.data.get('theme_color', 'light'),
+            }
+        )
+        
+        # Если пользователь уже существовал, обновляем его данные
+        if not created:
+            updated = False
+            if 'first_name' in request.data and user.first_name != request.data['first_name']:
+                user.first_name = request.data['first_name']
+                updated = True
+            if 'last_name' in request.data and user.last_name != request.data.get('last_name', ''):
+                user.last_name = request.data.get('last_name', '')
+                updated = True
+            if 'username' in request.data and user.username != request.data.get('username', ''):
+                user.username = request.data.get('username', '')
+                updated = True
+            if 'language' in request.data and user.language != request.data['language']:
+                user.language = request.data['language']
+                updated = True
+            if 'theme_color' in request.data and user.theme_color != request.data['theme_color']:
+                user.theme_color = request.data['theme_color']
+                updated = True
+            
+            if updated:
+                user.save()
+        
+        # Обработка пригласившего (start_param)
+        start_param = request.data.get('start_param')
+        if start_param and not user.invited_by:
+            try:
+                inviter_telegram_id = int(start_param)
+                if inviter_telegram_id != telegram_id:  # Нельзя пригласить самого себя
+                    try:
+                        inviter = User.objects.get(telegram_id=inviter_telegram_id)
+                        user.invited_by = inviter
+                        user.save()
+                    except User.DoesNotExist:
+                        pass  # Пригласивший не найден, пропускаем
+            except (ValueError, TypeError):
+                pass  # Некорректный start_param, пропускаем
+        
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)

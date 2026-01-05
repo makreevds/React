@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { WishesPage } from './pages/tsx/WishesPage'
 import { FriendsPage } from './pages/tsx/FriendsPage'
@@ -7,9 +7,10 @@ import { FeedPage } from './pages/tsx/FeedPage'
 import { BottomNavigation } from './utils/tsx/BottomNavigation'
 import { Head } from './utils/tsx/Head'
 import { ThemeProvider } from './contexts/ThemeContext'
-import { ApiProvider } from './contexts/ApiContext'
+import { ApiProvider, useApiContext } from './contexts/ApiContext'
 import { useTelegramWebApp } from './hooks/useTelegramWebApp'
 import { useErrorHandler } from './hooks/useErrorHandler'
+import type { User } from './utils/api'
 
 /**
  * Компонент инициализации Telegram WebApp
@@ -55,6 +56,51 @@ function TelegramInit() {
   return null
 }
 
+/**
+ * Компонент для автоматической регистрации пользователя
+ */
+function UserRegistration() {
+  const { users } = useApiContext()
+  const { user, initData, isReady } = useTelegramWebApp()
+  const [registeredUser, setRegisteredUser] = useState<User | null>(null)
+  const [isRegistering, setIsRegistering] = useState(false)
+
+  useEffect(() => {
+    // Ждём готовности Telegram WebApp и наличия данных пользователя
+    if (!isReady || !user || isRegistering || registeredUser) {
+      return
+    }
+
+    const registerUser = async () => {
+      setIsRegistering(true)
+
+      try {
+        const userData = await users.registerOrGet({
+          telegram_id: user.id,
+          first_name: user.first_name || '',
+          last_name: user.last_name,
+          username: user.username,
+          language: initData?.user?.language_code || 'ru',
+          theme_color: 'light', // Можно получить из webApp.colorScheme
+          start_param: initData?.start_param,
+        })
+
+        setRegisteredUser(userData)
+        console.log('Пользователь зарегистрирован/получен:', userData)
+      } catch (error) {
+        console.error('Ошибка при регистрации пользователя:', error)
+        // Не блокируем работу приложения при ошибке регистрации
+      } finally {
+        setIsRegistering(false)
+      }
+    }
+
+    registerUser()
+  }, [isReady, user, initData, users, isRegistering, registeredUser])
+
+  return null
+}
+
 function App() {
   // Конфигурация API (в продакшене должен быть в переменных окружения)
   const apiConfig = {
@@ -66,6 +112,7 @@ function App() {
     <ThemeProvider>
       <ApiProvider config={apiConfig}>
         <TelegramInit />
+        <UserRegistration />
         <Head />
         <Routes>
           <Route 
