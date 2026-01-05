@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 
 type Theme = 'light' | 'dark'
@@ -42,13 +42,21 @@ export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
   }
 
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
+  const hasUserChangedTheme = useRef(false)
   
-  // Обновляем тему, если изменилась initialTheme (например, загрузилась из БД)
+  // Обновляем тему только один раз при первой загрузке initialTheme из БД
+  // Не перезаписываем, если пользователь уже изменил тему вручную
   useEffect(() => {
-    if (initialTheme !== undefined && initialTheme !== theme) {
+    if (!hasUserChangedTheme.current && initialTheme !== undefined && initialTheme !== theme) {
       setTheme(initialTheme)
     }
   }, [initialTheme, theme])
+  
+  // Обёртка для setTheme, чтобы отслеживать изменения пользователя
+  const setThemeWithTracking = (newTheme: Theme) => {
+    hasUserChangedTheme.current = true
+    setTheme(newTheme)
+  }
 
   // Применяем тему к документу
   useEffect(() => {
@@ -76,11 +84,12 @@ export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
   }, [theme])
 
   const toggleTheme = () => {
+    hasUserChangedTheme.current = true
     setTheme(prev => prev === 'light' ? 'dark' : 'light')
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme: setThemeWithTracking }}>
       {children}
     </ThemeContext.Provider>
   )
