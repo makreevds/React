@@ -1,173 +1,388 @@
-.wishes-page h2 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  color: var(--theme-current-text, var(--theme-text-color));
+.wishes-page {
+  padding-bottom: 80px; /* Отступ для нижней навигации */
 }
 
-/* Явные правила для светлой темы */
-html.theme-light .wishes-page h2,
-body.theme-light .wishes-page h2 {
-  color: var(--theme-text-color);
+.wishes-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-/* Явные правила для темной темы */
-html.theme-dark .wishes-page h2,
-body.theme-dark .wishes-page h2 {
-  color: var(--theme-text-color-dark);
-}
-
-.info-section {
-  margin-bottom: 32px;
-  padding: 16px;
+/* Блок профиля пользователя */
+.user-profile-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
   background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
   border-radius: var(--radius-md);
 }
 
-/* Явные правила для светлой темы */
-html.theme-light .info-section,
-body.theme-light .info-section {
+html.theme-light .user-profile-section,
+body.theme-light .user-profile-section {
   background: var(--theme-secondary-bg);
 }
 
-/* Явные правила для темной темы */
-html.theme-dark .info-section,
-body.theme-dark .info-section {
+html.theme-dark .user-profile-section,
+body.theme-dark .user-profile-section {
   background: var(--theme-secondary-bg-dark);
 }
 
-.info-grid {
+.user-avatar-container {
+  flex-shrink: 0;
+}
+
+.user-avatar,
+.user-avatar-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tg-theme-button-color, #0088cc);
+  color: var(--tg-theme-button-text-color, #ffffff);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: var(--theme-current-text, var(--theme-text-color));
+  word-break: break-word;
+}
+
+html.theme-light .user-name,
+body.theme-light .user-name {
+  color: var(--theme-text-color);
+}
+
+html.theme-dark .user-name,
+body.theme-dark .user-name {
+  color: var(--theme-text-color-dark);
+}
+
+.user-username {
+  font-size: 14px;
+  margin: 0;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+}
+
+html.theme-light .user-username,
+body.theme-light .user-username {
+  color: var(--theme-hint-color);
+}
+
+html.theme-dark .user-username,
+body.theme-dark .user-username {
+  color: var(--theme-hint-color-dark);
+}
+
+/* Список желаний */
+.wishes-list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wishes-list-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--theme-current-text, var(--theme-text-color));
+}
+
+html.theme-light .wishes-list-title,
+body.theme-light .wishes-list-title {
+  color: var(--theme-text-color);
+}
+
+html.theme-dark .wishes-list-title,
+body.theme-dark .wishes-list-title {
+  color: var(--theme-text-color-dark);
+}
+
+.wishes-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+}
+
+html.theme-light .wishes-empty,
+body.theme-light .wishes-empty {
+  color: var(--theme-hint-color);
+}
+
+html.theme-dark .wishes-empty,
+body.theme-dark .wishes-empty {
+  color: var(--theme-hint-color-dark);
+}
+
+.btn-add-wish {
+  margin-top: 16px;
+  padding: 12px 24px;
+  background: var(--tg-theme-button-color, #0088cc);
+  color: var(--tg-theme-button-text-color, #ffffff);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-add-wish:hover {
+  opacity: 0.9;
+}
+
+.btn-add-wish:active {
+  opacity: 0.8;
+}
+
+.wishes-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.info-item {
+.wish-item {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 12px;
   padding: 12px;
-  background: var(--theme-current-bg, var(--theme-bg-color));
-  border-radius: 8px;
+  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
+  border-radius: var(--radius-md);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* Явные правила для светлой темы */
-html.theme-light .info-item,
-body.theme-light .info-item {
+html.theme-light .wish-item,
+body.theme-light .wish-item {
+  background: var(--theme-secondary-bg);
+}
+
+html.theme-dark .wish-item,
+body.theme-dark .wish-item {
+  background: var(--theme-secondary-bg-dark);
+}
+
+.wish-item:active {
+  transform: scale(0.98);
+}
+
+.wish-image-container {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--theme-current-bg, var(--theme-bg-color));
+}
+
+html.theme-light .wish-image-container,
+body.theme-light .wish-image-container {
   background: var(--theme-bg-color);
 }
 
-/* Явные правила для темной темы */
-html.theme-dark .info-item,
-body.theme-dark .info-item {
+html.theme-dark .wish-image-container,
+body.theme-dark .wish-image-container {
   background: var(--theme-bg-color-dark);
 }
 
-.info-item.full-width {
-  grid-column: 1 / -1;
+.wish-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.info-label {
-  font-size: 12px;
+.wish-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+}
+
+html.theme-light .wish-image-placeholder,
+body.theme-light .wish-image-placeholder {
+  background: var(--theme-hint-color-light);
+}
+
+html.theme-dark .wish-image-placeholder,
+body.theme-dark .wish-image-placeholder {
+  background: var(--theme-hint-color-light-dark);
+}
+
+.wish-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wish-title {
+  font-size: 16px;
   font-weight: 500;
-  color: var(--theme-current-hint, var(--theme-hint-color));
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Явные правила для светлой темы */
-html.theme-light .info-label,
-body.theme-light .info-label {
-  color: var(--theme-hint-color);
-}
-
-/* Явные правила для темной темы */
-html.theme-dark .info-label,
-body.theme-dark .info-label {
-  color: var(--theme-hint-color-dark);
-}
-
-.info-value {
-  font-size: 14px;
+  margin: 0;
   color: var(--theme-current-text, var(--theme-text-color));
   word-break: break-word;
 }
 
-/* Явные правила для светлой темы */
-html.theme-light .info-value,
-body.theme-light .info-value {
+html.theme-light .wish-title,
+body.theme-light .wish-title {
   color: var(--theme-text-color);
 }
 
-/* Явные правила для темной темы */
-html.theme-dark .info-value,
-body.theme-dark .info-value {
+html.theme-dark .wish-title,
+body.theme-dark .wish-title {
   color: var(--theme-text-color-dark);
 }
 
-.info-value.hash {
-  font-family: 'Courier New', monospace;
-  font-size: 11px;
-  opacity: 0.8;
-}
-
-.info-link {
-  color: var(--tg-theme-link-color, var(--tg-accent-theme, #0088cc));
-  text-decoration: none;
+.wish-price {
   font-size: 14px;
+  margin: 0;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+  font-weight: 500;
 }
 
-.info-link:hover {
-  text-decoration: underline;
+html.theme-light .wish-price,
+body.theme-light .wish-price {
+  color: var(--theme-hint-color);
 }
 
-.json-output,
-.info-value.json {
+html.theme-dark .wish-price,
+body.theme-dark .wish-price {
+  color: var(--theme-hint-color-dark);
+}
+
+.wish-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.wish-action-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--theme-current-bg, var(--theme-bg-color));
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.2s, transform 0.1s;
+  padding: 0;
+}
+
+html.theme-light .wish-action-btn,
+body.theme-light .wish-action-btn {
+  background: var(--theme-bg-color);
+}
+
+html.theme-dark .wish-action-btn,
+body.theme-dark .wish-action-btn {
+  background: var(--theme-bg-color-dark);
+}
+
+.wish-action-btn:active {
+  transform: scale(0.95);
+}
+
+.wish-edit-btn:hover {
+  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+}
+
+.wish-delete-btn:hover {
+  background: rgba(255, 59, 48, 0.1);
+}
+
+/* Секция для разработчика */
+.developer-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+}
+
+html.theme-light .developer-section,
+body.theme-light .developer-section {
+  border-top-color: var(--theme-hint-color-light);
+}
+
+html.theme-dark .developer-section,
+body.theme-dark .developer-section {
+  border-top-color: var(--theme-hint-color-light-dark);
+}
+
+.developer-toggle-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s;
+}
+
+html.theme-light .developer-toggle-btn,
+body.theme-light .developer-toggle-btn {
+  color: var(--theme-hint-color);
+}
+
+html.theme-dark .developer-toggle-btn,
+body.theme-dark .developer-toggle-btn {
+  color: var(--theme-hint-color-dark);
+}
+
+.developer-toggle-btn:hover {
+  color: var(--theme-current-text, var(--theme-text-color));
+}
+
+.developer-data {
+  margin-top: 12px;
+}
+
+.json-output {
   font-family: 'Courier New', monospace;
   font-size: 11px;
   line-height: 1.5;
   padding: 12px;
   background: var(--theme-current-hint-light, var(--theme-hint-color-light));
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   overflow-x: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
   max-height: 400px;
   overflow-y: auto;
+  margin: 0;
 }
 
-/* Явные правила для светлой темы */
 html.theme-light .json-output,
-html.theme-light .info-value.json,
-body.theme-light .json-output,
-body.theme-light .info-value.json {
+body.theme-light .json-output {
   background: var(--theme-hint-color-light);
 }
 
-/* Явные правила для темной темы */
 html.theme-dark .json-output,
-html.theme-dark .info-value.json,
-body.theme-dark .json-output,
-body.theme-dark .info-value.json {
+body.theme-dark .json-output {
   background: var(--theme-hint-color-light-dark);
 }
-
-.placeholder-text {
-  color: var(--theme-current-hint, var(--theme-hint-color));
-  font-size: 14px;
-  text-align: center;
-  padding: 24px;
-}
-
-/* Явные правила для светлой темы */
-html.theme-light .placeholder-text,
-body.theme-light .placeholder-text {
-  color: var(--theme-hint-color);
-}
-
-/* Явные правила для темной темы */
-html.theme-dark .placeholder-text,
-body.theme-dark .placeholder-text {
-  color: var(--theme-hint-color-dark);
-}
-

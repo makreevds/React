@@ -1,257 +1,173 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import '../css/WishesPage.css'
+import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 
-interface UserInfo {
-  id?: number
-  first_name?: string
-  last_name?: string
-  username?: string
-  language_code?: string
-  is_premium?: boolean
-  photo_url?: string
-  allows_write_to_pm?: boolean
-  is_bot?: boolean
-}
-
-interface WebAppInfo {
-  version?: string
-  platform?: string
-  colorScheme?: 'light' | 'dark'
-  themeParams?: any
-  isExpanded?: boolean
-  viewportHeight?: number
-  viewportStableHeight?: number
-  headerColor?: string
-  backgroundColor?: string
-  isClosingConfirmationEnabled?: boolean
-}
-
-interface InitData {
-  user?: UserInfo
-  chat?: any
-  chat_type?: string
-  chat_instance?: string
-  start_param?: string
-  can_send_after?: number
-  auth_date?: number
-  hash?: string
+// Заглушка для желания
+interface Wish {
+  id: number
+  title: string
+  price?: number
+  currency?: string
+  image_url?: string
 }
 
 export function WishesPage() {
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
-  const [webAppInfo, setWebAppInfo] = useState<WebAppInfo | null>(null)
-  const [initData, setInitData] = useState<InitData | null>(null)
-  const [allData, setAllData] = useState<any>(null)
+  const { user, webApp } = useTelegramWebApp()
+  const [showDeveloperData, setShowDeveloperData] = useState(false)
+  
+  // Заглушки для списка желаний
+  const [wishes] = useState<Wish[]>([
+    {
+      id: 1,
+      title: 'iPhone 15 Pro',
+      price: 99999,
+      currency: '₽',
+      image_url: 'https://via.placeholder.com/100x100?text=iPhone',
+    },
+    {
+      id: 2,
+      title: 'Наушники AirPods Pro',
+      price: 24990,
+      currency: '₽',
+      image_url: 'https://via.placeholder.com/100x100?text=AirPods',
+    },
+    {
+      id: 3,
+      title: 'Книга "Искусство программирования"',
+      price: 3500,
+      currency: '₽',
+    },
+  ])
 
-  useEffect(() => {
-    const tg = window.Telegram?.WebApp
-    
-    if (tg) {
-      // Информация о пользователе
-      const user = tg.initDataUnsafe?.user
-      setUserInfo(user || null)
-
-      // Информация о WebApp
-      const webApp: WebAppInfo = {
-        version: tg.version,
-        platform: tg.platform,
-        colorScheme: tg.colorScheme,
-        themeParams: tg.themeParams,
-        isExpanded: tg.isExpanded,
-        viewportHeight: tg.viewportHeight,
-        viewportStableHeight: tg.viewportStableHeight,
-        headerColor: tg.headerColor,
-        backgroundColor: tg.backgroundColor,
-        isClosingConfirmationEnabled: tg.isClosingConfirmationEnabled,
-      }
-      setWebAppInfo(webApp)
-
-      // InitData
-      const data: InitData = {
-        user: tg.initDataUnsafe?.user,
-        chat: tg.initDataUnsafe?.chat,
-        chat_type: tg.initDataUnsafe?.chat_type,
-        chat_instance: tg.initDataUnsafe?.chat_instance,
-        start_param: tg.initDataUnsafe?.start_param,
-        can_send_after: tg.initDataUnsafe?.can_send_after,
-        auth_date: tg.initDataUnsafe?.auth_date,
-        hash: tg.initDataUnsafe?.hash,
-      }
-      setInitData(data)
-
-      // Все данные для отладки
-      setAllData({
-        initDataUnsafe: tg.initDataUnsafe,
-        initData: tg.initData,
-        version: tg.version,
-        platform: tg.platform,
-        colorScheme: tg.colorScheme,
-        themeParams: tg.themeParams,
-        isExpanded: tg.isExpanded,
-        viewportHeight: tg.viewportHeight,
-        viewportStableHeight: tg.viewportStableHeight,
-        headerColor: tg.headerColor,
-        backgroundColor: tg.backgroundColor,
-        isClosingConfirmationEnabled: tg.isClosingConfirmationEnabled,
-      })
-    }
-  }, [])
-
-  const formatValue = (value: any): string => {
-    if (value === null || value === undefined) return 'не указано'
-    if (typeof value === 'boolean') return value ? 'да' : 'нет'
-    if (typeof value === 'object') return JSON.stringify(value, null, 2)
-    return String(value)
+  const handleEdit = (wishId: number) => {
+    console.log('Редактировать желание:', wishId)
+    // TODO: Реализовать редактирование
   }
 
-  const formatDate = (timestamp?: number): string => {
-    if (!timestamp) return 'не указано'
-    return new Date(timestamp * 1000).toLocaleString('ru-RU')
+  const handleDelete = (wishId: number) => {
+    console.log('Удалить желание:', wishId)
+    // TODO: Реализовать удаление
   }
+
+  const formatPrice = (price?: number, currency?: string) => {
+    if (!price) return 'Цена не указана'
+    return `${price.toLocaleString('ru-RU')} ${currency || '₽'}`
+  }
+
+  // Получаем фото пользователя из Telegram
+  const userPhotoUrl = user?.photo_url || undefined
 
   return (
     <div className="page-container wishes-page">
-      <h1>Информация о пользователе</h1>
-
-      {/* Информация о пользователе */}
-      {userInfo && (
-        <section className="info-section">
-          <h2>👤 Пользователь</h2>
-          <div className="info-grid">
-            {userInfo.id && (
-              <div className="info-item">
-                <span className="info-label">ID:</span>
-                <span className="info-value">{userInfo.id}</span>
-              </div>
-            )}
-            {userInfo.first_name && (
-              <div className="info-item">
-                <span className="info-label">Имя:</span>
-                <span className="info-value">{userInfo.first_name}</span>
-              </div>
-            )}
-            {userInfo.last_name && (
-              <div className="info-item">
-                <span className="info-label">Фамилия:</span>
-                <span className="info-value">{userInfo.last_name}</span>
-              </div>
-            )}
-            {userInfo.username && (
-              <div className="info-item">
-                <span className="info-label">Username:</span>
-                <span className="info-value">@{userInfo.username}</span>
-              </div>
-            )}
-            {userInfo.language_code && (
-              <div className="info-item">
-                <span className="info-label">Язык:</span>
-                <span className="info-value">{userInfo.language_code}</span>
-              </div>
-            )}
-            <div className="info-item">
-              <span className="info-label">Premium:</span>
-              <span className="info-value">{formatValue(userInfo.is_premium)}</span>
-            </div>
-            {userInfo.photo_url && (
-              <div className="info-item">
-                <span className="info-label">Фото:</span>
-                <a href={userInfo.photo_url} target="_blank" rel="noopener noreferrer" className="info-link">
-                  Открыть фото
-                </a>
-              </div>
-            )}
-            <div className="info-item">
-              <span className="info-label">Разрешена переписка:</span>
-              <span className="info-value">{formatValue(userInfo.allows_write_to_pm)}</span>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Информация о WebApp */}
-      {webAppInfo && (
-        <section className="info-section">
-          <h2>📱 WebApp</h2>
-          <div className="info-grid">
-            {webAppInfo.version && (
-              <div className="info-item">
-                <span className="info-label">Версия:</span>
-                <span className="info-value">{webAppInfo.version}</span>
-              </div>
-            )}
-            {webAppInfo.platform && (
-              <div className="info-item">
-                <span className="info-label">Платформа:</span>
-                <span className="info-value">{webAppInfo.platform}</span>
-              </div>
-            )}
-            {webAppInfo.colorScheme && (
-              <div className="info-item">
-                <span className="info-label">Цветовая схема:</span>
-                <span className="info-value">{webAppInfo.colorScheme}</span>
-              </div>
-            )}
-            <div className="info-item">
-              <span className="info-label">Развернуто:</span>
-              <span className="info-value">{formatValue(webAppInfo.isExpanded)}</span>
-            </div>
-            {webAppInfo.viewportHeight && (
-              <div className="info-item">
-                <span className="info-label">Высота viewport:</span>
-                <span className="info-value">{webAppInfo.viewportHeight}px</span>
-              </div>
-            )}
-            <div className="info-item">
-              <span className="info-label">Подтверждение закрытия:</span>
-              <span className="info-value">{formatValue(webAppInfo.isClosingConfirmationEnabled)}</span>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* InitData */}
-      {initData && (
-        <section className="info-section">
-          <h2>🔐 InitData</h2>
-          <div className="info-grid">
-            <div className="info-item">
-              <span className="info-label">Стартовый параметр (ID пригласившего):</span>
-              <span className="info-value">
-                {initData.start_param ? (
-                  <span>{initData.start_param}</span>
-                ) : (
-                  <span style={{ opacity: 0.5 }}>не указано (пользователь открыл приложение напрямую)</span>
-                )}
-              </span>
-            </div>
-            {initData.auth_date && (
-              <div className="info-item">
-                <span className="info-label">Дата авторизации:</span>
-                <span className="info-value">{formatDate(initData.auth_date)}</span>
-              </div>
-            )}
-            {initData.hash && (
-              <div className="info-item full-width">
-                <span className="info-label">Хеш:</span>
-                <span className="info-value hash">{initData.hash}</span>
+      {/* Основная часть - личная страница */}
+      <div className="wishes-main-content">
+        {/* Блок с информацией о пользователе */}
+        <section className="user-profile-section">
+          <div className="user-avatar-container">
+            {userPhotoUrl ? (
+              <img 
+                src={userPhotoUrl} 
+                alt={`${user?.first_name} ${user?.last_name || ''}`.trim()}
+                className="user-avatar"
+              />
+            ) : (
+              <div className="user-avatar-placeholder">
+                {user?.first_name?.[0]?.toUpperCase() || '?'}
               </div>
             )}
           </div>
+          <div className="user-info">
+            <h2 className="user-name">
+              {user?.first_name || ''} {user?.last_name || ''}
+            </h2>
+            {user?.username && (
+              <p className="user-username">@{user.username}</p>
+            )}
+          </div>
         </section>
-      )}
 
-      {/* Все данные в JSON */}
-      {allData && (
-        <section className="info-section">
-          <h2>📋 Все данные (JSON)</h2>
-          <pre className="json-output">{JSON.stringify(allData, null, 2)}</pre>
+        {/* Список желаний */}
+        <section className="wishes-list-section">
+          <h3 className="wishes-list-title">Мои желания</h3>
+          {wishes.length === 0 ? (
+            <div className="wishes-empty">
+              <p>У вас пока нет желаний</p>
+              <button className="btn-add-wish">Добавить желание</button>
+            </div>
+          ) : (
+            <div className="wishes-list">
+              {wishes.map((wish) => (
+                <div key={wish.id} className="wish-item">
+                  <div className="wish-image-container">
+                    {wish.image_url ? (
+                      <img 
+                        src={wish.image_url} 
+                        alt={wish.title}
+                        className="wish-image"
+                      />
+                    ) : (
+                      <div className="wish-image-placeholder">
+                        🎁
+                      </div>
+                    )}
+                  </div>
+                  <div className="wish-content">
+                    <h4 className="wish-title">{wish.title}</h4>
+                    <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
+                  </div>
+                  <div className="wish-actions">
+                    <button
+                      className="wish-action-btn wish-edit-btn"
+                      onClick={() => handleEdit(wish.id)}
+                      aria-label="Редактировать"
+                      title="Редактировать"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      className="wish-action-btn wish-delete-btn"
+                      onClick={() => handleDelete(wish.id)}
+                      aria-label="Удалить"
+                      title="Удалить"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
-      )}
+      </div>
 
-      {!userInfo && !webAppInfo && (
-        <p className="placeholder-text">Данные не доступны. Убедитесь, что приложение запущено в Telegram.</p>
-      )}
+      {/* Секция для разработчика */}
+      <div className="developer-section">
+        <button
+          className="developer-toggle-btn"
+          onClick={() => setShowDeveloperData(!showDeveloperData)}
+        >
+          {showDeveloperData ? '▼' : '▶'} Данные для разработчика
+        </button>
+        {showDeveloperData && webApp && (
+          <div className="developer-data">
+            <pre className="json-output">
+              {JSON.stringify(
+                {
+                  user: user,
+                  initDataUnsafe: webApp.initDataUnsafe,
+                  initData: webApp.initData,
+                  version: webApp.version,
+                  platform: webApp.platform,
+                  colorScheme: webApp.colorScheme,
+                  themeParams: webApp.themeParams,
+                },
+                null,
+                2
+              )}
+            </pre>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
-
