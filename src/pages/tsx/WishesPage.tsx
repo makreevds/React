@@ -314,14 +314,6 @@ export function WishesPage() {
   }
 
   const userPhotoUrl = user?.photo_url || undefined
-  
-  // Безопасное получение всех желаний
-  let allWishes: Wish[] = []
-  try {
-    allWishes = Object.values(wishesByWishlist).flat().filter(w => w && w.id)
-  } catch (err) {
-    allWishes = []
-  }
 
   if (!user) {
     return (
@@ -406,13 +398,7 @@ export function WishesPage() {
             </div>
           ) : wishlists.length === 0 ? (
             <div className="wishes-empty">
-              <p>У вас пока нет вишлистов</p>
-              <button className="btn-add-wish">Создать вишлист</button>
-            </div>
-          ) : allWishes.length === 0 ? (
-            <div className="wishes-empty">
-              <p>У вас пока нет желаний</p>
-              <button className="btn-add-wish">Добавить желание</button>
+              <p>Создай список своих хотелок!</p>
             </div>
           ) : (
             <>
