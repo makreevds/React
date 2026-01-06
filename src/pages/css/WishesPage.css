@@ -5,14 +5,13 @@
 .wishes-main-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
 }
 
 /* Блок профиля пользователя */
 .user-profile-section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
   padding: 20px;
   margin-top: 24px;
   background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
@@ -114,8 +113,8 @@ body.theme-dark .user-username {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 16px 0 0 0;
-  margin-top: 16px;
+  padding: 8px 0 0 0;
+  margin-top: 8px;
   border-top: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
   gap: 16px;
   width: 100%;
@@ -140,7 +139,7 @@ body.theme-dark .gifts-stats-section {
 }
 
 .gifts-stat-value {
-  font-size: 32px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--tg-theme-button-color, #0088cc);
   line-height: 1;
