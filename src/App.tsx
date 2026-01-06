@@ -200,7 +200,7 @@ function App() {
         <Routes>
           <Route 
             path="/" 
-            element={<FriendsPage />} 
+            element={<WishesPage />} 
           />
           <Route 
             path="/wishes" 

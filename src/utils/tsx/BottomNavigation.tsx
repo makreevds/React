@@ -1,4 +1,5 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 import '../css/BottomNavigation.css'
 
 const IconWishes = () => (
@@ -32,24 +33,100 @@ const IconSettings = () => (
 )
 
 export function BottomNavigation() {
+  const location = useLocation()
+  const navRef = useRef<HTMLElement>(null)
+  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([])
+  const indicatorRef = useRef<HTMLDivElement>(null)
+  const [indicatorStyle, setIndicatorStyle] = useState<{ left: string; width: string }>({ left: '0%', width: '0%' })
+
+  // Определяем активный путь
+  const getActivePath = () => {
+    const path = location.pathname
+    if (path === '/' || path.startsWith('/wishes')) return '/wishes'
+    if (path.startsWith('/friends') || path.startsWith('/user/')) return '/friends'
+    if (path.startsWith('/feed')) return '/feed'
+    if (path.startsWith('/settings')) return '/settings'
+    return '/wishes' // По умолчанию
+  }
+
+  const activePath = getActivePath()
+
+  // Обновляем позицию индикатора
+  useEffect(() => {
+    const updateIndicator = () => {
+      const activeIndex = ['/wishes', '/friends', '/feed', '/settings'].indexOf(activePath)
+      if (activeIndex === -1 || !navRef.current) return
+
+      const activeItem = itemRefs.current[activeIndex]
+      if (!activeItem || !indicatorRef.current) return
+
+      const navRect = navRef.current.getBoundingClientRect()
+      const itemRect = activeItem.getBoundingClientRect()
+
+      const left = itemRect.left - navRect.left
+      const width = itemRect.width
+
+      setIndicatorStyle({
+        left: `${left}px`,
+        width: `${width}px`,
+      })
+    }
+
+    // Обновляем сразу и после небольшой задержки (для корректного расчета после рендера)
+    updateIndicator()
+    const timeoutId = setTimeout(updateIndicator, 50)
+    
+    // Также обновляем при изменении размера окна
+    window.addEventListener('resize', updateIndicator)
+
+    return () => {
+      clearTimeout(timeoutId)
+      window.removeEventListener('resize', updateIndicator)
+    }
+  }, [activePath, location.pathname])
+
   return (
-    <nav className="bottom-navigation">
-      <NavLink to="/wishes" className="nav-item">
+    <nav className="bottom-navigation" ref={navRef}>
+      <div 
+        ref={indicatorRef}
+        className="nav-indicator"
+        style={{
+          left: indicatorStyle.left,
+          width: indicatorStyle.width,
+        }}
+      />
+      <NavLink 
+        to="/wishes" 
+        className="nav-item"
+        ref={(el) => { itemRefs.current[0] = el }}
+      >
         <span className="nav-icon"><IconWishes /></span>
         <span className="nav-label">Желания</span>
       </NavLink>
 
-      <NavLink to="/friends" className="nav-item">
+      <NavLink 
+        to="/friends" 
+        className="nav-item"
+        ref={(el) => { itemRefs.current[1] = el }}
+      >
         <span className="nav-icon"><IconFriends /></span>
         <span className="nav-label">Друзья</span>
       </NavLink>
 
-      <NavLink to="/feed" className="nav-item">
+      <NavLink 
+        to="/feed" 
+        className="nav-item"
+        ref={(el) => { itemRefs.current[2] = el }}
+      >
         <span className="nav-icon"><IconFeed /></span>
         <span className="nav-label">Лента</span>
       </NavLink>
 
-      <NavLink to="/settings" className="nav-item">
+      <NavLink 
+        to="/settings" 
+        className="nav-item"
+        ref={(el) => { itemRefs.current[3] = el }}
+      >
         <span className="nav-icon"><IconSettings /></span>
         <span className="nav-label">Настройки</span>
       </NavLink>
