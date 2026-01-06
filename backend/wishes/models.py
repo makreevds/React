@@ -91,11 +91,11 @@ class Wish(models.Model):
         help_text='Название желания'
     )
     
-    description = models.TextField(
+    comment = models.TextField(
         blank=True,
         null=True,
-        verbose_name='Описание',
-        help_text='Описание желания'
+        verbose_name='Комментарий',
+        help_text='Комментарий к желанию'
     )
     
     link = models.URLField(

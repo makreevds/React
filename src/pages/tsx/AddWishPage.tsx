@@ -18,7 +18,7 @@ export function AddWishPage() {
   const isEditMode = !!wishId
 
   const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
+  const [comment, setComment] = useState('')
   const [link, setLink] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [price, setPrice] = useState('')
@@ -34,7 +34,7 @@ export function AddWishPage() {
       wishesRepo.getWishById(wishId)
         .then((wish) => {
           setTitle(wish.title || '')
-          setDescription(wish.description || '')
+          setComment(wish.comment || '')
           setLink(wish.link || '')
           setImageUrl(wish.image_url || '')
           setPrice(wish.price ? wish.price.toString() : '')
@@ -109,7 +109,7 @@ export function AddWishPage() {
         // Режим редактирования
         await wishesRepo.updateWish(wishId, {
           title: title.trim(),
-          description: description.trim() || undefined,
+          comment: comment.trim() || undefined,
           link: link.trim() || undefined,
           image_url: imageUrl.trim() || undefined,
           price: price ? parseFloat(price) : undefined,
@@ -120,7 +120,7 @@ export function AddWishPage() {
         await wishesRepo.createWish({
           wishlist: wishlistId,
           title: title.trim(),
-          description: description.trim() || undefined,
+          comment: comment.trim() || undefined,
           link: link.trim() || undefined,
           image_url: imageUrl.trim() || undefined,
           price: price ? parseFloat(price) : undefined,
@@ -198,14 +198,14 @@ export function AddWishPage() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="wish-description">Описание</label>
+              <label htmlFor="wish-comment">Комментарий</label>
               <textarea
-                id="wish-description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                id="wish-comment"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder="Описание подарка (необязательно)"
+                placeholder="Комментарий к подарку (необязательно)"
                 rows={3}
               />
             </div>

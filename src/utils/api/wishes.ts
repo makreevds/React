@@ -14,7 +14,7 @@ export interface Wish {
   user: number
   user_id: number
   title: string
-  description?: string
+  comment?: string
   link?: string
   image_url?: string
   price?: number
@@ -37,7 +37,7 @@ export interface Wish {
 export interface CreateWishRequest {
   wishlist: number
   title: string
-  description?: string
+  comment?: string
   link?: string
   image_url?: string
   price?: number
@@ -48,7 +48,7 @@ export interface CreateWishRequest {
 export interface UpdateWishRequest {
   wishlist?: number
   title?: string
-  description?: string
+  comment?: string
   link?: string
   image_url?: string
   price?: number

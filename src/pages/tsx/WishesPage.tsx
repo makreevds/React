@@ -80,7 +80,7 @@ interface Wish {
   price?: number
   currency?: string
   image_url?: string
-  description?: string
+  comment?: string
   status: 'active' | 'reserved' | 'fulfilled'
 }
 
@@ -254,7 +254,7 @@ export function WishesPage() {
                       : undefined,
                     currency: w.currency ? String(w.currency) : undefined,
                     image_url: w.image_url ? String(w.image_url) : undefined,
-                    description: w.description ? String(w.description) : undefined,
+                    comment: w.comment ? String(w.comment) : undefined,
                     status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
                   }
                   processedWishes.push(processed)
@@ -528,8 +528,8 @@ export function WishesPage() {
                                     </div>
                                     <div className="wish-content">
                                       <h4 className="wish-title">{wish.title || 'Без названия'}</h4>
-                                {wish.description && (
-                                  <p className="wish-description">{wish.description}</p>
+                                {wish.comment && (
+                                  <p className="wish-description">{wish.comment}</p>
                                 )}
                                 <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
                                 {wish.status === 'reserved' && (

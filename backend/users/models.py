@@ -102,6 +102,15 @@ class User(models.Model):
         help_text='Количество подарков, которые пользователь получил'
     )
     
+    subscriptions = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        blank=True,
+        related_name='subscribers',
+        verbose_name='Подписки',
+        help_text='Пользователи, на которых подписан данный пользователь'
+    )
+    
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'

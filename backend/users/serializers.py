@@ -39,6 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
             'hobbies',
             'gifts_given',
             'gifts_received',
+            'subscriptions',
         ]
         read_only_fields = [
             'id',

@@ -17,6 +17,7 @@ export interface User {
   invited_by_telegram_id?: number
   gifts_given?: number
   gifts_received?: number
+  subscriptions?: number[] // Массив ID пользователей, на которых подписан
 }
 
 export interface RegisterUserRequest {

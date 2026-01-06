@@ -144,7 +144,7 @@ class WishSerializer(serializers.ModelSerializer):
             'user',
             'user_id',
             'title',
-            'description',
+            'comment',
             'link',
             'image_url',
             'price',
@@ -198,7 +198,7 @@ class WishCreateSerializer(serializers.ModelSerializer):
         fields = [
             'wishlist',
             'title',
-            'description',
+            'comment',
             'link',
             'image_url',
             'price',
@@ -222,7 +222,7 @@ class WishUpdateSerializer(serializers.ModelSerializer):
         fields = [
             'wishlist',
             'title',
-            'description',
+            'comment',
             'link',
             'image_url',
             'price',
