@@ -21,17 +21,27 @@ function WishMenu({ onEdit, onDelete }: WishMenuProps) {
   // Закрываем меню при клике вне его
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      const target = event.target as Node
+      // Проверяем, что клик не по кнопке меню и не по dropdown
+      if (buttonRef.current && buttonRef.current.contains(target)) {
+        return // Не закрываем, если клик по кнопке
+      }
+      if (dropdownRef.current && dropdownRef.current.contains(target)) {
+        return // Не закрываем, если клик внутри меню
+      }
+      // Если клик вне меню и кнопки - закрываем
+      if (menuRef.current && !menuRef.current.contains(target)) {
         setIsOpen(false)
       }
     }
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
+      // Используем capture phase для более раннего перехвата
+      document.addEventListener('mousedown', handleClickOutside, true)
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('mousedown', handleClickOutside, true)
     }
   }, [isOpen])
 
@@ -62,21 +72,30 @@ function WishMenu({ onEdit, onDelete }: WishMenuProps) {
         <div 
           ref={dropdownRef}
           className="wish-menu-dropdown wish-menu-dropdown-portal"
+          onClick={(e) => {
+            e.stopPropagation()
+          }}
         >
           <button
             className="wish-menu-item"
-            onClick={() => {
-              onEdit()
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              console.log('Клик на Редактировать')
               setIsOpen(false)
+              onEdit()
             }}
           >
             Редактировать
           </button>
           <button
             className="wish-menu-item wish-menu-item-danger"
-            onClick={() => {
-              onDelete()
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              console.log('Клик на Удалить')
               setIsOpen(false)
+              onDelete()
             }}
           >
             Удалить
@@ -370,12 +389,16 @@ export function WishesPage() {
   }
 
   const handleDelete = async (wishId: number) => {
+    console.log('handleDelete вызван:', wishId)
     if (!confirm('Вы уверены, что хотите удалить это желание?')) {
       return
     }
 
     try {
-      if (!wishesRepo) return
+      if (!wishesRepo) {
+        console.error('wishesRepo не доступен')
+        return
+      }
       await wishesRepo.deleteWish(wishId)
       const updatedWishesByWishlist = { ...wishesByWishlist }
       for (const wishlistId in updatedWishesByWishlist) {
@@ -385,6 +408,7 @@ export function WishesPage() {
       }
       setWishesByWishlist(updatedWishesByWishlist)
     } catch (err) {
+      console.error('Ошибка при удалении желания:', err)
       alert('Не удалось удалить желание')
     }
   }
