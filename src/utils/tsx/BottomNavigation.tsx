@@ -63,12 +63,13 @@ export function BottomNavigation() {
       const navRect = navRef.current.getBoundingClientRect()
       const itemRect = activeItem.getBoundingClientRect()
 
-      const left = itemRect.left - navRect.left
-      const width = itemRect.width
+      // Вычисляем центр иконки для позиционирования круга
+      const itemCenterX = itemRect.left - navRect.left + itemRect.width / 2
+      const indicatorSize = 48 // Размер круга
 
       setIndicatorStyle({
-        left: `${left}px`,
-        width: `${width}px`,
+        left: `${itemCenterX - indicatorSize / 2}px`,
+        width: `${indicatorSize}px`,
       })
     }
 

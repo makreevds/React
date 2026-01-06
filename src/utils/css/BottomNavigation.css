@@ -3,6 +3,9 @@
   bottom: env(safe-area-inset-bottom, 0px);
   left: 12px;
   right: 12px;
+  width: calc(100% - 24px);
+  max-width: calc(100vw - 24px);
+  box-sizing: border-box;
 
   height: 64px;
   display: flex;
@@ -21,6 +24,9 @@
 
   /* отключаем обычный border */
   border: none;
+  
+  /* Плавное изменение цвета при смене темы */
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 /* Анимированный индикатор (кружок) */
@@ -28,10 +34,11 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  width: 48px;
   height: 48px;
-  background: var(--tg-accent-theme, #0088cc);
-  border-radius: 24px;
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--tg-theme-button-color, #0088cc);
+  border-radius: 40px;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s ease;
   pointer-events: none;
   z-index: 0;
   opacity: 0.15;
@@ -47,6 +54,11 @@ body.theme-dark .nav-indicator {
   background: var(--tg-theme-button-color, #0088cc);
 }
 
+html.theme-ozon .nav-indicator,
+body.theme-ozon .nav-indicator {
+  background: var(--tg-theme-button-color, #0088cc);
+}
+
 /* псевдоэлемент для чистого бордера */
 .bottom-navigation::before {
   content: '';
@@ -55,6 +67,7 @@ body.theme-dark .nav-indicator {
   border-radius: 40px;
   border: 1px solid var(--tg-accent-theme);
   pointer-events: none; /* чтобы не мешать клику */
+  transition: border-color 0.2s ease;
 }
 
 
@@ -111,11 +124,19 @@ body.theme-dark .nav-indicator {
 .theme-dark .bottom-navigation {
   background: rgba(20, 20, 20, var(--opacity-nav-head));
   border-color: rgba(255, 255, 255, 0.08);
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .theme-light .bottom-navigation {
   background: rgba(255, 255, 255, var(--opacity-nav-head));
   border-color: var(--tg-accent-theme);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-ozon .bottom-navigation {
+  background: rgba(255, 255, 255, var(--opacity-nav-head));
+  border-color: var(--tg-accent-theme);
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 /* Скрываем навбар, когда открыта клавиатура (фокус на инпуте/текстареа/селекте) */
