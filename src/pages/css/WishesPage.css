@@ -1024,3 +1024,79 @@ body.theme-dark .btn-cancel {
 .btn-submit:active:not(:disabled) {
   transform: scale(0.98);
 }
+
+/* Стили для страниц форм (вместо модальных окон) */
+.page-form-container {
+  padding: 20px;
+  margin-top: 24px;
+  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
+  border-radius: var(--radius-md);
+}
+
+html.theme-light .page-form-container,
+body.theme-light .page-form-container {
+  background: var(--theme-secondary-bg);
+}
+
+html.theme-dark .page-form-container,
+body.theme-dark .page-form-container {
+  background: var(--theme-secondary-bg-dark);
+}
+
+.page-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+}
+
+html.theme-light .page-form-header,
+body.theme-light .page-form-header {
+  border-bottom-color: var(--theme-hint-color-light);
+}
+
+html.theme-dark .page-form-header,
+body.theme-dark .page-form-header {
+  border-bottom-color: var(--theme-hint-color-light-dark);
+}
+
+.page-form-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--theme-current-text, var(--theme-text-color));
+}
+
+html.theme-light .page-form-header h2,
+body.theme-light .page-form-header h2 {
+  color: var(--theme-text-color);
+}
+
+html.theme-dark .page-form-header h2,
+body.theme-dark .page-form-header h2 {
+  color: var(--theme-text-color-dark);
+}
+
+.page-form {
+  padding: 0;
+}
+
+.page-form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+}
+
+html.theme-light .page-form-actions,
+body.theme-light .page-form-actions {
+  border-top-color: var(--theme-hint-color-light);
+}
+
+html.theme-dark .page-form-actions,
+body.theme-dark .page-form-actions {
+  border-top-color: var(--theme-hint-color-light-dark);
+}

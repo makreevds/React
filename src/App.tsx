@@ -4,6 +4,8 @@ import { WishesPage } from './pages/tsx/WishesPage'
 import { FriendsPage } from './pages/tsx/FriendsPage'
 import { SettingsPage } from './pages/tsx/SettingsPage'
 import { FeedPage } from './pages/tsx/FeedPage'
+import { AddWishlistPage } from './pages/tsx/AddWishlistPage'
+import { AddWishPage } from './pages/tsx/AddWishPage'
 import { BottomNavigation } from './utils/tsx/BottomNavigation'
 import { Head } from './utils/tsx/Head'
 import { ThemeProvider } from './contexts/ThemeContext'
@@ -194,6 +196,14 @@ function App() {
           <Route 
             path="/wishes" 
             element={<WishesPage />} 
+          />
+          <Route 
+            path="/wishes/add-wishlist" 
+            element={<AddWishlistPage />} 
+          />
+          <Route 
+            path="/wishes/add-wish" 
+            element={<AddWishPage />} 
           />
           <Route 
             path="/friends" 
