@@ -195,6 +195,7 @@ export function AddWishPage() {
                 onBlur={handleInputBlur}
                 required
                 autoFocus
+                placeholder="(Обязательно)"
               />
             </div>
             <div className="form-group">
@@ -207,6 +208,7 @@ export function AddWishPage() {
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
                 rows={3}
+                placeholder="(не обязательно)"
               />
             </div>
             <div className="form-group">
@@ -244,7 +246,7 @@ export function AddWishPage() {
                   onChange={(e) => setPrice(e.target.value)}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
-                  placeholder="0"
+                  placeholder="0 (не обязательно)"
                 />
               </div>
               <div className="form-group">
