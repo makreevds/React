@@ -457,9 +457,6 @@ export function UserProfilePage() {
                                         <p className="wish-description">{wish.comment}</p>
                                       )}
                                       <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
-                                      {wish.status === 'reserved' && (
-                                        <p className="wish-status wish-status-reserved">Зарезервировано</p>
-                                      )}
                                       {wish.status === 'fulfilled' && (
                                         <p className="wish-status wish-status-fulfilled">Исполнено</p>
                                       )}
@@ -479,8 +476,8 @@ export function UserProfilePage() {
                                             Снять бронь
                                           </button>
                                         ) : (
-                                          // Иначе просто показываем статус
-                                          <span className="wish-status wish-status-reserved">Зарезервировано</span>
+                                          // Иначе ничего не показываем (подарок зарезервирован другим пользователем)
+                                          null
                                         )
                                       ) : (
                                         // Если подарок не зарезервирован - показываем кнопку "Забронировать"
