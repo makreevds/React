@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from .models import User
 
 
@@ -108,3 +109,23 @@ class UserAdmin(admin.ModelAdmin):
     filter_horizontal = ('subscriptions',)
     
     ordering = ('-registration_time',)
+    
+    def save_model(self, request, obj, form, change):
+        """Переопределяем сохранение для валидации подписок."""
+        # Получаем выбранные подписки из формы
+        if 'subscriptions' in form.cleaned_data:
+            subscriptions = form.cleaned_data['subscriptions']
+            # Проверяем, что пользователь не подписан сам на себя
+            if obj.pk and obj in subscriptions:
+                raise ValidationError('Пользователь не может подписаться сам на себя')
+        super().save_model(request, obj, form, change)
+    
+    def save_related(self, request, form, formsets, change):
+        """Переопределяем сохранение связанных объектов для валидации подписок."""
+        # Получаем выбранные подписки из формы
+        if 'subscriptions' in form.cleaned_data:
+            subscriptions = form.cleaned_data['subscriptions']
+            # Проверяем, что пользователь не подписан сам на себя
+            if form.instance.pk and form.instance in subscriptions:
+                raise ValidationError('Пользователь не может подписаться сам на себя')
+        super().save_related(request, form, formsets, change)

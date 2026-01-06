@@ -1096,6 +1096,16 @@ body.theme-dark .form-group select {
   flex: 1;
 }
 
+/* Специфичные стили для полей цены и валюты */
+.form-row .form-group:first-child {
+  flex: 0 0 65%;
+}
+
+.form-row .form-group:last-child {
+  flex: 1;
+  min-width: 0;
+}
+
 .checkbox-label {
   display: flex;
   align-items: center;

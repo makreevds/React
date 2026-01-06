@@ -46,6 +46,13 @@ class UserSerializer(serializers.ModelSerializer):
             'registration_time',
             'last_visit',
         ]
+    
+    def validate_subscriptions(self, value):
+        """Валидация подписок: пользователь не может подписаться сам на себя."""
+        user = self.instance
+        if user and user.id in [sub.id for sub in value]:
+            raise serializers.ValidationError('Пользователь не может подписаться сам на себя')
+        return value
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -98,5 +105,13 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'birth_date',
             'address',
             'hobbies',
+            'subscriptions',
         ]
+    
+    def validate_subscriptions(self, value):
+        """Валидация подписок: пользователь не может подписаться сам на себя."""
+        user = self.instance
+        if user and user.id in [sub.id for sub in value]:
+            raise serializers.ValidationError('Пользователь не может подписаться сам на себя')
+        return value
 

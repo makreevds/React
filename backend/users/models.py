@@ -1,4 +1,7 @@
 from django.db import models
+from django.db.models.signals import m2m_changed
+from django.core.exceptions import ValidationError
+from django.dispatch import receiver
 from django.utils import timezone
 
 
@@ -123,3 +126,10 @@ class User(models.Model):
     def __str__(self) -> str:
         """Возвращает строковое представление пользователя."""
         return f"{self.first_name} {self.last_name or ''} ({self.telegram_id})".strip()
+
+
+@receiver(m2m_changed, sender=User.subscriptions.through)
+def validate_subscriptions(sender, instance, action, pk_set, **kwargs):
+    """Валидация подписок: пользователь не может подписаться сам на себя."""
+    if action == 'pre_add' and instance.pk and instance.pk in pk_set:
+        raise ValidationError('Пользователь не может подписаться сам на себя')
