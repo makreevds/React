@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { WishesPage } from './pages/tsx/WishesPage'
 import { FriendsPage } from './pages/tsx/FriendsPage'
 import { SettingsPage } from './pages/tsx/SettingsPage'
@@ -182,6 +182,68 @@ function UserRegistration({ onUserLoaded }: UserRegistrationProps) {
   return null
 }
 
+function AppContent() {
+  const location = useLocation()
+  
+  // Пути, на которых навбар не должен отображаться
+  const hideNavbarPaths = [
+    '/wishes/add-wishlist',
+    '/wishes/edit-wishlist',
+    '/wishes/add-wish',
+    '/wishes/edit-wish',
+  ]
+  
+  const shouldShowNavbar = !hideNavbarPaths.includes(location.pathname)
+
+  return (
+    <>
+      <Routes>
+        <Route 
+          path="/" 
+          element={<WishesPage />} 
+        />
+        <Route 
+          path="/wishes" 
+          element={<WishesPage />} 
+        />
+        <Route 
+          path="/wishes/add-wishlist" 
+          element={<AddWishlistPage />} 
+        />
+        <Route 
+          path="/wishes/edit-wishlist" 
+          element={<AddWishlistPage />} 
+        />
+        <Route 
+          path="/wishes/add-wish" 
+          element={<AddWishPage />} 
+        />
+        <Route 
+          path="/wishes/edit-wish" 
+          element={<AddWishPage />} 
+        />
+        <Route 
+          path="/friends" 
+          element={<FriendsPage />} 
+        />
+        <Route 
+          path="/user/:telegramId" 
+          element={<UserProfilePage />} 
+        />
+        <Route 
+          path="/feed" 
+          element={<FeedPage />} 
+        />
+        <Route 
+          path="/settings" 
+          element={<SettingsPage />} 
+        />
+      </Routes>
+      {shouldShowNavbar && <BottomNavigation />}
+    </>
+  )
+}
+
 function App() {
   // Конфигурация API (в продакшене должен быть в переменных окружения)
   const apiConfig = {
@@ -197,49 +259,7 @@ function App() {
         <TelegramInit />
         <UserRegistration onUserLoaded={setInitialTheme} />
         <Head />
-        <Routes>
-          <Route 
-            path="/" 
-            element={<WishesPage />} 
-          />
-          <Route 
-            path="/wishes" 
-            element={<WishesPage />} 
-          />
-          <Route 
-            path="/wishes/add-wishlist" 
-            element={<AddWishlistPage />} 
-          />
-          <Route 
-            path="/wishes/edit-wishlist" 
-            element={<AddWishlistPage />} 
-          />
-          <Route 
-            path="/wishes/add-wish" 
-            element={<AddWishPage />} 
-          />
-          <Route 
-            path="/wishes/edit-wish" 
-            element={<AddWishPage />} 
-          />
-          <Route 
-            path="/friends" 
-            element={<FriendsPage />} 
-          />
-          <Route 
-            path="/user/:telegramId" 
-            element={<UserProfilePage />} 
-          />
-          <Route 
-            path="/feed" 
-            element={<FeedPage />} 
-          />
-          <Route 
-            path="/settings" 
-            element={<SettingsPage />} 
-          />
-        </Routes>
-        <BottomNavigation />
+        <AppContent />
       </ApiProvider>
     </ThemeProvider>
   )
