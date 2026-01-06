@@ -502,34 +502,6 @@ export function WishesPage() {
     }
   }
 
-  const handleDeleteWishlist = async (wishlistId: number) => {
-    if (!confirm('Вы уверены, что хотите удалить этот вишлист? Все подарки в нём также будут удалены.')) {
-      return
-    }
-
-    try {
-      if (!wishlistsRepo) {
-        console.error('wishlistsRepo не доступен')
-        return
-      }
-      await wishlistsRepo.deleteWishlist(wishlistId)
-      // Удаляем вишлист из состояния
-      setWishlists(prev => prev.filter(wl => wl.id !== wishlistId))
-      // Удаляем желания этого вишлиста из состояния
-      const updatedWishesByWishlist = { ...wishesByWishlist }
-      delete updatedWishesByWishlist[wishlistId]
-      setWishesByWishlist(updatedWishesByWishlist)
-      // Удаляем из collapsedWishlists, если там был
-      setCollapsedWishlists(prev => {
-        const newSet = new Set(prev)
-        newSet.delete(wishlistId)
-        return newSet
-      })
-    } catch (err) {
-      console.error('Ошибка при удалении вишлиста:', err)
-      alert('Не удалось удалить вишлист')
-    }
-  }
 
   const handleMarkAsReceived = async (wishId: number, reservedById?: number) => {
     if (!confirm('Вы уверены, что получили подарок?')) {
@@ -701,10 +673,10 @@ export function WishesPage() {
                               + Добавить подарок
                             </button>
                             <button 
-                              className="btn-delete-wishlist"
-                              onClick={() => handleDeleteWishlist(wishlist.id)}
+                              className="btn-edit-wishlist"
+                              onClick={() => navigate(`/wishes/edit-wishlist?wishlistId=${wishlist.id}`)}
                             >
-                              Удалить вишлист
+                              Редактировать вишлист
                             </button>
                           </>
                         ) : (
@@ -776,10 +748,10 @@ export function WishesPage() {
                               + Добавить подарок
                             </button>
                             <button 
-                              className="btn-delete-wishlist"
-                              onClick={() => handleDeleteWishlist(wishlist.id)}
+                              className="btn-edit-wishlist"
+                              onClick={() => navigate(`/wishes/edit-wishlist?wishlistId=${wishlist.id}`)}
                             >
-                              Удалить вишлист
+                              Редактировать вишлист
                             </button>
                           </>
                         )}

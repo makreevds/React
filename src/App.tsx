@@ -5,6 +5,7 @@ import { FriendsPage } from './pages/tsx/FriendsPage'
 import { SettingsPage } from './pages/tsx/SettingsPage'
 import { FeedPage } from './pages/tsx/FeedPage'
 import { AddWishlistPage } from './pages/tsx/AddWishlistPage'
+import { EditWishlistPage } from './pages/tsx/EditWishlistPage'
 import { AddWishPage } from './pages/tsx/AddWishPage'
 import { UserProfilePage } from './pages/tsx/UserProfilePage'
 import { BottomNavigation } from './utils/tsx/BottomNavigation'
@@ -209,6 +210,10 @@ function App() {
           <Route 
             path="/wishes/add-wishlist" 
             element={<AddWishlistPage />} 
+          />
+          <Route 
+            path="/wishes/edit-wishlist" 
+            element={<EditWishlistPage />} 
           />
           <Route 
             path="/wishes/add-wish" 
