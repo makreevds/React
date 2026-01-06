@@ -93,12 +93,13 @@ class UserViewSet(viewsets.ModelViewSet):
                 'first_name': request.data.get('first_name', ''),
                 'last_name': request.data.get('last_name', ''),
                 'username': request.data.get('username', ''),
+                'photo_url': request.data.get('photo_url', ''),
                 'language': request.data.get('language', 'ru'),
                 'theme_color': request.data.get('theme_color', 'light'),
             }
         )
         
-        # Если пользователь уже существовал, обновляем его данные
+        # Если пользователь уже существовал, обновляем его данные (включая photo_url)
         if not created:
             updated = False
             if 'first_name' in request.data and user.first_name != request.data['first_name']:
@@ -110,6 +111,12 @@ class UserViewSet(viewsets.ModelViewSet):
             if 'username' in request.data and user.username != request.data.get('username', ''):
                 user.username = request.data.get('username', '')
                 updated = True
+            # Обновляем photo_url если он передан и отличается от текущего, или если у пользователя его нет
+            if 'photo_url' in request.data:
+                new_photo_url = request.data.get('photo_url', '')
+                if not user.photo_url or user.photo_url != new_photo_url:
+                    user.photo_url = new_photo_url
+                    updated = True
             if 'language' in request.data and user.language != request.data['language']:
                 user.language = request.data['language']
                 updated = True

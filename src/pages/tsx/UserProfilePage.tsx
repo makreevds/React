@@ -265,7 +265,8 @@ export function UserProfilePage() {
     return null
   }
 
-  const userPhotoUrl = undefined // TODO: добавить photo_url если будет нужно
+  // Используем photo_url из данных пользователя, если оно есть
+  const userPhotoUrl = viewedUser.photo_url || undefined
 
   return (
     <div className="page-container wishes-page user-profile-page">

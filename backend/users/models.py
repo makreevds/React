@@ -36,6 +36,14 @@ class User(models.Model):
         help_text='Username пользователя в Telegram'
     )
     
+    photo_url = models.URLField(
+        max_length=500,
+        blank=True,
+        null=True,
+        verbose_name='URL фотографии',
+        help_text='URL фотографии профиля пользователя из Telegram'
+    )
+    
     registration_time = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Время регистрации',

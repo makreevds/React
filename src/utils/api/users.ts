@@ -10,6 +10,7 @@ export interface User {
   first_name: string
   last_name?: string
   username?: string
+  photo_url?: string
   registration_time: string
   last_visit: string
   language: string
