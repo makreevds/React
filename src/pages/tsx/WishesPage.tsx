@@ -539,6 +539,10 @@ export function WishesPage() {
               </div>
             </div>
           )}
+        </section>
+
+        <section className="wishes-list-section">
+          <h3 className="wishes-list-title">Мои вишлисты</h3>
           
           {/* Кнопка добавления вишлиста */}
           <button 
@@ -547,10 +551,6 @@ export function WishesPage() {
           >
             + Добавить вишлист
           </button>
-        </section>
-
-        <section className="wishes-list-section">
-          <h3 className="wishes-list-title">Мои вишлисты</h3>
           
           {isLoading ? (
             <div className="wishes-loading">
@@ -582,81 +582,68 @@ export function WishesPage() {
                 try {
                   if (!wishlist || !wishlist.id) return null
                   const wishes = wishesByWishlist[wishlist.id] || []
-                  // Показываем вишлист даже если в нем нет желаний, но только если есть желания в других вишлистах
-                  // Если это единственный вишлист и в нем нет желаний, показываем сообщение "нет желаний"
-                  if (wishes.length === 0 && allWishes.length > 0) {
-                    // Есть желания в других вишлистах, но не в этом - показываем вишлист пустым
-                    const isCollapsed = collapsedWishlists.has(wishlist.id)
-
-                    return (
-                      <div key={wishlist.id} className="wishlist-group">
-                        <h4 
-                          className={`wishlist-name ${isCollapsed ? 'collapsed' : ''}`}
-                          onClick={() => toggleWishlist(wishlist.id)}
-                        >
-                          <span className="wishlist-name-text">{wishlist.name || 'Без названия'}</span>
-                          <span className="wishlist-toggle-icon">{isCollapsed ? '▼' : '▲'}</span>
-                        </h4>
-                        <WishlistContentWrapper 
-                          isCollapsed={isCollapsed}
-                          wishlistId={wishlist.id}
-                        >
-                          <div className="wishes-empty">
-                            <p>В этом вишлисте пока нет желаний</p>
-                          </div>
-                        </WishlistContentWrapper>
-                      </div>
-                    )
-                  }
-                  if (wishes.length === 0) return null
-
                   const isCollapsed = collapsedWishlists.has(wishlist.id)
 
                   return (
                     <div key={wishlist.id} className="wishlist-group">
-                      {/* Всегда показываем название вишлиста, если вишлистов больше одного или если есть желания */}
-                      {(wishlists.length > 1 || wishes.length > 0) && (
-                        <h4 
-                          className={`wishlist-name ${isCollapsed ? 'collapsed' : ''}`}
-                          onClick={() => toggleWishlist(wishlist.id)}
-                        >
-                          <span className="wishlist-name-text">{wishlist.name || 'Без названия'}</span>
-                          <span className="wishlist-toggle-icon">{isCollapsed ? '▼' : '▲'}</span>
-                        </h4>
-                      )}
+                      {/* Всегда показываем название вишлиста */}
+                      <h4 
+                        className={`wishlist-name ${isCollapsed ? 'collapsed' : ''}`}
+                        onClick={() => toggleWishlist(wishlist.id)}
+                      >
+                        <span className="wishlist-name-text">{wishlist.name || 'Без названия'}</span>
+                        <span className="wishlist-toggle-icon">{isCollapsed ? '▼' : '▲'}</span>
+                      </h4>
                       <WishlistContentWrapper 
                         isCollapsed={isCollapsed}
                         wishlistId={wishlist.id}
                       >
-                        <div className="wishes-list">
-                          {wishes.map((wish) => {
-                          if (!wish || !wish.id) return null
-                          return (
-                            <div key={wish.id} className="wish-item">
-                              <div className="wish-image-container">
-                                {wish.image_url ? (
-                                  <img 
-                                    src={wish.image_url} 
-                                    alt={wish.title || 'Желание'}
-                                    className="wish-image"
-                                    onError={(e) => {
-                                      e.currentTarget.style.display = 'none'
-                                      const container = e.currentTarget.parentElement
-                                      if (container) {
-                                        const placeholder = container.querySelector('.wish-image-placeholder')
-                                        if (placeholder) {
-                                          placeholder.classList.add('show')
-                                        }
-                                      }
-                                    }}
-                                  />
-                                ) : null}
-                                <div className={`wish-image-placeholder ${!wish.image_url ? 'show' : ''}`}>
-                                  <GiftIcon className="gift-icon" />
-                                </div>
-                              </div>
-                              <div className="wish-content">
-                                <h4 className="wish-title">{wish.title || 'Без названия'}</h4>
+                        {wishes.length === 0 ? (
+                          <>
+                            <div className="wishes-empty">
+                              <p>В этом вишлисте пока нет желаний</p>
+                            </div>
+                            <button 
+                              className="btn-add-wish"
+                              onClick={() => {
+                                setSelectedWishlistId(wishlist.id)
+                                setShowAddWishModal(true)
+                              }}
+                            >
+                              + Добавить подарок
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <div className="wishes-list">
+                              {wishes.map((wish) => {
+                                if (!wish || !wish.id) return null
+                                return (
+                                  <div key={wish.id} className="wish-item">
+                                    <div className="wish-image-container">
+                                      {wish.image_url ? (
+                                        <img 
+                                          src={wish.image_url} 
+                                          alt={wish.title || 'Желание'}
+                                          className="wish-image"
+                                          onError={(e) => {
+                                            e.currentTarget.style.display = 'none'
+                                            const container = e.currentTarget.parentElement
+                                            if (container) {
+                                              const placeholder = container.querySelector('.wish-image-placeholder')
+                                              if (placeholder) {
+                                                placeholder.classList.add('show')
+                                              }
+                                            }
+                                          }}
+                                        />
+                                      ) : null}
+                                      <div className={`wish-image-placeholder ${!wish.image_url ? 'show' : ''}`}>
+                                        <GiftIcon className="gift-icon" />
+                                      </div>
+                                    </div>
+                                    <div className="wish-content">
+                                      <h4 className="wish-title">{wish.title || 'Без названия'}</h4>
                                 {wish.description && (
                                   <p className="wish-description">{wish.description}</p>
                                 )}
@@ -689,16 +676,18 @@ export function WishesPage() {
                             </div>
                           )
                           })}
-                        </div>
-                        <button 
-                          className="btn-add-wish"
-                          onClick={() => {
-                            setSelectedWishlistId(wishlist.id)
-                            setShowAddWishModal(true)
-                          }}
-                        >
-                          + Добавить подарок
-                        </button>
+                            </div>
+                            <button 
+                              className="btn-add-wish"
+                              onClick={() => {
+                                setSelectedWishlistId(wishlist.id)
+                                setShowAddWishModal(true)
+                              }}
+                            >
+                              + Добавить подарок
+                            </button>
+                          </>
+                        )}
                       </WishlistContentWrapper>
                     </div>
                   )

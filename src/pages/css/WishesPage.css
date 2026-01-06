@@ -190,6 +190,10 @@ body.theme-dark .gifts-stat-divider {
 }
 
 .wishes-list-title {
+  margin-bottom: 0;
+}
+
+.wishes-list-title {
   font-size: 18px;
   font-weight: 600;
   margin: 0;
@@ -704,6 +708,7 @@ body.theme-dark .json-output {
   width: 100%;
   padding: 12px 20px;
   margin-top: 12px;
+  margin-bottom: 8px;
   background: var(--tg-theme-button-color, #0088cc);
   color: var(--tg-theme-button-text-color, #ffffff);
   border: none;
