@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import '../css/WishesPage.css'
 import { useApiContext } from '../../contexts/ApiContext'
+import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 
 /**
  * Страница для добавления нового желания в вишлист
  */
 export function AddWishPage() {
+  const { webApp } = useTelegramWebApp()
   const apiContext = useApiContext()
   const wishesRepo = apiContext?.wishes
   const navigate = useNavigate()
@@ -26,6 +28,29 @@ export function AddWishPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Управление кнопкой "Назад" в Telegram
+  useEffect(() => {
+    if (!webApp?.BackButton) {
+      return
+    }
+
+    const backButton = webApp.BackButton
+    const handleBackClick = () => {
+      navigate('/wishes')
+    }
+
+    // Показываем кнопку "Назад"
+    backButton.show()
+    // Устанавливаем обработчик клика
+    backButton.onClick(handleBackClick)
+
+    // При размонтировании скрываем кнопку и удаляем обработчик
+    return () => {
+      backButton.offClick(handleBackClick)
+      backButton.hide()
+    }
+  }, [webApp, navigate])
 
   // Загружаем данные желания для редактирования
   useEffect(() => {

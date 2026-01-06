@@ -6,6 +6,7 @@ import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { GiftIcon } from '../../utils/tsx/GiftIcon'
 import type { User } from '../../utils/api/users'
 import doneIcon from '../../assets/done.png'
+import lockIcon from '../../assets/lock.png'
 
 // Упрощенные типы
 interface Wishlist {
@@ -501,8 +502,10 @@ export function UserProfilePage() {
                                             Снять бронь
                                           </button>
                                         ) : (
-                                          // Иначе показываем текст "Забронировано"
-                                          <span className="wish-status wish-status-reserved">Забронировано</span>
+                                          // Иначе показываем иконку lock.png
+                                          <div className="wish-status-icon">
+                                            <img src={lockIcon} alt="Забронировано" className="gift-icon-small" />
+                                          </div>
                                         )
                                       ) : (
                                         // Если подарок не зарезервирован - показываем кнопку "Забронировать"

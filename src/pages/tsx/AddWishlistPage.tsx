@@ -8,7 +8,7 @@ import { useApiContext } from '../../contexts/ApiContext'
  * Страница для добавления или редактирования вишлиста
  */
 export function AddWishlistPage() {
-  const { user } = useTelegramWebApp()
+  const { user, webApp } = useTelegramWebApp()
   const apiContext = useApiContext()
   const wishlistsRepo = apiContext?.wishlists
   const navigate = useNavigate()
@@ -77,6 +77,29 @@ export function AddWishlistPage() {
       document.body.classList.remove('keyboard-open')
     }
   }, [])
+
+  // Управление кнопкой "Назад" в Telegram
+  useEffect(() => {
+    if (!webApp?.BackButton) {
+      return
+    }
+
+    const backButton = webApp.BackButton
+    const handleBackClick = () => {
+      navigate('/wishes')
+    }
+
+    // Показываем кнопку "Назад"
+    backButton.show()
+    // Устанавливаем обработчик клика
+    backButton.onClick(handleBackClick)
+
+    // При размонтировании скрываем кнопку и удаляем обработчик
+    return () => {
+      backButton.offClick(handleBackClick)
+      backButton.hide()
+    }
+  }, [webApp, navigate])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
