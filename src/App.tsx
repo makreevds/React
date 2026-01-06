@@ -175,6 +175,7 @@ function UserRegistration({ onUserLoaded }: UserRegistrationProps) {
       }
     }
 
+    
     registerUser()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, user?.id]) // Вызываем только при изменении isReady или user.id
