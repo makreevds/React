@@ -79,6 +79,7 @@ export function AddWishlistPage() {
           <form onSubmit={handleSubmit} className="page-form">
             <div className="form-group">
               <label htmlFor="wishlist-name">Название *</label>
+              <div className="form-example">Пример: День Рождения</div>
               <input
                 id="wishlist-name"
                 type="text"
@@ -87,19 +88,20 @@ export function AddWishlistPage() {
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
                 required
-                placeholder="Например: День рождения"
+                placeholder="(Обязательно)"
                 autoFocus
               />
             </div>
             <div className="form-group">
               <label htmlFor="wishlist-description">Описание</label>
+              <div className="form-example">Самое необходимое для меня</div>
               <textarea
                 id="wishlist-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder="Описание вишлиста (необязательно)"
+                placeholder="(необязательно)"
                 rows={3}
               />
             </div>
