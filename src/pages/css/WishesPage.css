@@ -253,9 +253,10 @@ body.theme-dark .wishes-empty {
 }
 
 .wishes-list {
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 .wish-item {
@@ -497,9 +498,9 @@ body.theme-dark .wishlist-group {
 .wishlist-name {
   font-size: 20px;
   font-weight: 600;
-  margin: 0 0 16px 0;
-  padding-bottom: 12px;
-  border-bottom: 2px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  /* margin: 0 0 16px 0;
+  padding-bottom: 12px; */
+  /* border-bottom: 2px solid var(--theme-current-hint-light, var(--theme-hint-color-light)); */
   color: var(--theme-current-text, var(--theme-text-color));
   display: flex;
   align-items: center;
