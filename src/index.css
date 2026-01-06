@@ -237,8 +237,18 @@ body.theme-dark {
 html.theme-ozon,
 body.theme-ozon {
   /* Фон — мягкий светлый с легким голубым оттенком */
-  background-color: #f5f7ff;
+  background-color: #6985f5;
   color: #001a34;
+
+    /* ozon-фон */
+  background: linear-gradient(
+    180deg,
+    #005bff 0%,
+    #3b1cff 55%,
+    #24006b 100%
+  );
+
+    font-family: system-ui, sans-serif;
 
   /* Текущие переменные темы */
   --theme-current-bg: #f5f7ff;
