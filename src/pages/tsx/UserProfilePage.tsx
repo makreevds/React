@@ -457,14 +457,11 @@ export function UserProfilePage() {
                                         <p className="wish-description">{wish.comment}</p>
                                       )}
                                       <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
-                                      {wish.status === 'fulfilled' && (
-                                        <p className="wish-status wish-status-fulfilled">Исполнено</p>
-                                      )}
                                     </div>
                                     <div className="wish-actions">
                                       {wish.status === 'fulfilled' ? (
-                                        // Если подарок исполнен - ничего не показываем
-                                        null
+                                        // Если подарок исполнен - показываем текст "Подарено"
+                                        <span className="wish-status wish-status-fulfilled">Подарено</span>
                                       ) : wish.status === 'reserved' ? (
                                         // Если подарок зарезервирован
                                         currentUser && wish.reserved_by_id === currentUser.id ? (
@@ -476,8 +473,8 @@ export function UserProfilePage() {
                                             Снять бронь
                                           </button>
                                         ) : (
-                                          // Иначе ничего не показываем (подарок зарезервирован другим пользователем)
-                                          null
+                                          // Иначе показываем текст "Забронировано"
+                                          <span className="wish-status wish-status-reserved">Забронировано</span>
                                         )
                                       ) : (
                                         // Если подарок не зарезервирован - показываем кнопку "Забронировать"
