@@ -35,39 +35,44 @@ function WishlistContentWrapper({ children, isCollapsed }: WishlistContentWrappe
   useEffect(() => {
     if (contentRef.current && wrapperRef.current) {
       if (!isCollapsed) {
+        // Разворачиваем: устанавливаем реальную высоту
         const height = contentRef.current.scrollHeight
         wrapperRef.current.style.maxHeight = `${height}px`
       } else {
+        // Сворачиваем: устанавливаем 0
         wrapperRef.current.style.maxHeight = '0px'
       }
     }
   }, [isCollapsed])
 
+  // Обновляем высоту при изменении содержимого
   useEffect(() => {
-    if (!contentRef.current || !wrapperRef.current) return
-
-    const resizeObserver = new ResizeObserver(() => {
-      if (wrapperRef.current && !isCollapsed) {
-        const height = contentRef.current?.scrollHeight || 0
-        wrapperRef.current.style.maxHeight = `${height}px`
+    if (contentRef.current && wrapperRef.current && !isCollapsed) {
+      const updateHeight = () => {
+        if (wrapperRef.current && contentRef.current) {
+          const height = contentRef.current.scrollHeight
+          wrapperRef.current.style.maxHeight = `${height}px`
+        }
       }
-    })
-
-    resizeObserver.observe(contentRef.current)
-
-    return () => {
-      resizeObserver.disconnect()
+      
+      // Используем ResizeObserver для отслеживания изменений размера
+      const resizeObserver = new ResizeObserver(updateHeight)
+      resizeObserver.observe(contentRef.current)
+      
+      return () => {
+        resizeObserver.disconnect()
+      }
     }
-  }, [isCollapsed])
+  }, [isCollapsed, children])
 
   return (
     <div 
       ref={wrapperRef}
       className="wishes-list-wrapper"
       style={{
-        overflow: 'hidden',
+        maxHeight: isCollapsed ? '0' : 'auto',
         transition: 'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-        maxHeight: isCollapsed ? '0px' : 'none'
+        overflow: 'hidden',
       }}
     >
       <div ref={contentRef}>
