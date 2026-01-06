@@ -510,12 +510,13 @@ body.theme-dark .wishlist-group {
 .wishlist-toggle-icon {
   font-size: 16px;
   color: var(--theme-current-hint, var(--theme-hint-color));
-  transition: transform 0.3s ease, color 0.2s;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-block;
+  transform-origin: center;
 }
 
-.wishlist-name:hover .wishlist-toggle-icon {
-  color: var(--tg-theme-button-color, #0088cc);
+.wishlist-toggle-icon.collapsed {
+  transform: rotate(180deg);
 }
 
 html.theme-light .wishlist-name,

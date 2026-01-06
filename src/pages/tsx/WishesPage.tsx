@@ -430,7 +430,7 @@ export function WishesPage() {
                         onClick={() => toggleWishlist(wishlist.id)}
                       >
                         <span className="wishlist-name-text">{wishlist.name || 'Без названия'}</span>
-                        <span className="wishlist-toggle-icon">{isCollapsed ? '▼' : '▲'}</span>
+                        <span className={`wishlist-toggle-icon ${isCollapsed ? 'collapsed' : ''}`}>▼</span>
                       </h4>
                       <WishlistContentWrapper 
                         isCollapsed={isCollapsed}
