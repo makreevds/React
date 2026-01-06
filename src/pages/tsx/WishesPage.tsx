@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate, useLocation } from 'react-router-dom'
 import '../css/WishesPage.css'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
@@ -14,6 +15,8 @@ interface WishMenuProps {
 function WishMenu({ onEdit, onDelete }: WishMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Закрываем меню при клике вне его
   useEffect(() => {
@@ -32,9 +35,22 @@ function WishMenu({ onEdit, onDelete }: WishMenuProps) {
     }
   }, [isOpen])
 
+  // Вычисляем позицию для dropdown при открытии
+  useEffect(() => {
+    if (isOpen && buttonRef.current && dropdownRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect()
+      const dropdown = dropdownRef.current
+      
+      // Позиционируем меню относительно кнопки
+      dropdown.style.top = `${buttonRect.bottom + 4}px`
+      dropdown.style.right = `${window.innerWidth - buttonRect.right}px`
+    }
+  }, [isOpen])
+
   return (
     <div className="wish-menu-container" ref={menuRef}>
       <button
+        ref={buttonRef}
         className="wish-menu-btn"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Меню"
@@ -42,8 +58,11 @@ function WishMenu({ onEdit, onDelete }: WishMenuProps) {
       >
         <span className="wish-menu-icon">⋯</span>
       </button>
-      {isOpen && (
-        <div className="wish-menu-dropdown">
+      {isOpen && createPortal(
+        <div 
+          ref={dropdownRef}
+          className="wish-menu-dropdown wish-menu-dropdown-portal"
+        >
           <button
             className="wish-menu-item"
             onClick={() => {
@@ -62,7 +81,8 @@ function WishMenu({ onEdit, onDelete }: WishMenuProps) {
           >
             Удалить
           </button>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
