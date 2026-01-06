@@ -86,5 +86,12 @@ export class UsersRepository {
       user_id: targetUserId
     })
   }
+
+  /**
+   * Получает список подписчиков пользователя
+   */
+  async getSubscribers(userId: number): Promise<User[]> {
+    return this.apiClient.get<User[]>(`/api/users/${userId}/subscribers/`)
+  }
 }
 

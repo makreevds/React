@@ -155,6 +155,14 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = UserSerializer(subscriptions, many=True)
         return Response(serializer.data)
     
+    @action(detail=True, methods=['get'], url_path='subscribers')
+    def subscribers(self, request: Request, pk: int = None) -> Response:
+        """Получает список подписчиков пользователя с полными данными."""
+        user = get_object_or_404(User, pk=pk)
+        subscribers = user.subscribers.all()
+        serializer = UserSerializer(subscribers, many=True)
+        return Response(serializer.data)
+    
     @action(detail=True, methods=['post'], url_path='subscribe')
     def subscribe(self, request: Request, pk: int = None) -> Response:
         """Подписывает пользователя на другого пользователя."""

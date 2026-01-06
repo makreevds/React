@@ -11,13 +11,15 @@ export function FriendsPage() {
   const { handleError } = useErrorHandler(webApp || undefined)
   const { users: usersRepository } = useApiContext()
   const navigate = useNavigate()
+  const [viewMode, setViewMode] = useState<'subscriptions' | 'subscribers'>('subscriptions')
   const [subscriptions, setSubscriptions] = useState<User[]>([])
+  const [subscribers, setSubscribers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [unsubscribing, setUnsubscribing] = useState<number | null>(null)
 
-  // Загружаем подписки пользователя
+  // Загружаем подписки и подписчиков пользователя
   useEffect(() => {
-    const loadSubscriptions = async () => {
+    const loadData = async () => {
       // currentUser из Telegram содержит telegram_id, а не id из БД
       // Нужно получить пользователя из БД по telegram_id
       const telegramId = currentUser?.id
@@ -30,20 +32,26 @@ export function FriendsPage() {
         setLoading(true)
         // Получаем пользователя из БД по telegram_id
         const dbUser = await usersRepository.getUserByTelegramId(telegramId)
-        console.log('Загружаем подписки для пользователя с id:', dbUser.id)
-        // Теперь используем id из БД
+        console.log('Загружаем данные для пользователя с id:', dbUser.id)
+        
+        // Загружаем подписки
         const subs = await usersRepository.getSubscriptions(dbUser.id)
         console.log('Получены подписки:', subs)
         setSubscriptions(subs)
+        
+        // Загружаем подписчиков
+        const subbers = await usersRepository.getSubscribers(dbUser.id)
+        console.log('Получены подписчики:', subbers)
+        setSubscribers(subbers)
       } catch (error) {
-        console.error('Ошибка при загрузке подписок:', error)
-        handleError(error, 'FriendsPage.loadSubscriptions')
+        console.error('Ошибка при загрузке данных:', error)
+        handleError(error, 'FriendsPage.loadData')
       } finally {
         setLoading(false)
       }
     }
 
-    loadSubscriptions()
+    loadData()
   }, [currentUser?.id])
 
   // Тот самый метод для приглашения
@@ -119,42 +127,67 @@ export function FriendsPage() {
     return user.username ? `@${user.username}` : ''
   }
 
+  // Получаем текущий список в зависимости от режима просмотра
+  const currentList = viewMode === 'subscriptions' ? subscriptions : subscribers
+  const isEmpty = currentList.length === 0
+  const emptyMessage = viewMode === 'subscriptions' 
+    ? 'У вас пока нет подписок' 
+    : 'У вас пока нет подписчиков'
+
   return (
     <div className="page-container">
-      <h1>Друзья</h1>
+      {/* Переключатель между подписками и подписчиками */}
+      <div className="friends-segmented-control">
+        <button
+          className={`friends-segment ${viewMode === 'subscriptions' ? 'active' : ''}`}
+          onClick={() => setViewMode('subscriptions')}
+          aria-label="Подписки"
+        >
+          Подписки
+        </button>
+        <button
+          className={`friends-segment ${viewMode === 'subscribers' ? 'active' : ''}`}
+          onClick={() => setViewMode('subscribers')}
+          aria-label="Подписчики"
+        >
+          Подписчики
+        </button>
+      </div>
 
-      {/* Список подписок */}
+      {/* Список подписок или подписчиков */}
       {loading ? (
         <div className="friends-loading">Загрузка...</div>
-      ) : subscriptions.length === 0 ? (
+      ) : isEmpty ? (
         <div className="friends-empty">
-          <p>У вас пока нет подписок</p>
+          <p>{emptyMessage}</p>
         </div>
       ) : (
         <div className="friends-list">
-          {subscriptions.map(subscription => (
+          {currentList.map(user => (
             <div 
-              key={subscription.id} 
+              key={user.id} 
               className="friend-row"
-              onClick={() => navigate(`/user/${subscription.telegram_id}`)}
+              onClick={() => navigate(`/user/${user.telegram_id}`)}
               style={{ cursor: 'pointer' }}
             >
               <div className="friend-info">
-                <div className="friend-name">{getUserDisplayName(subscription)}</div>
-                {subscription.username && (
-                  <div className="friend-username">{getUserUsername(subscription)}</div>
+                <div className="friend-name">{getUserDisplayName(user)}</div>
+                {user.username && (
+                  <div className="friend-username">{getUserUsername(user)}</div>
                 )}
               </div>
-              <button 
-                className="unsubscribe-btn"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleUnsubscribe(subscription.id)
-                }}
-                disabled={unsubscribing === subscription.id}
-              >
-                {unsubscribing === subscription.id ? 'Отписка...' : 'Отписаться'}
-              </button>
+              {viewMode === 'subscriptions' && (
+                <button 
+                  className="unsubscribe-btn"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleUnsubscribe(user.id)
+                  }}
+                  disabled={unsubscribing === user.id}
+                >
+                  {unsubscribing === user.id ? 'Отписка...' : 'Отписаться'}
+                </button>
+              )}
             </div>
           ))}
         </div>
