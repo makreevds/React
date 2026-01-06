@@ -10,7 +10,6 @@
   height: 64px;
   display: flex;
   justify-content: space-around;
-  position: relative;
 
   background: rgba(255, 255, 255, var(--opacity-nav-head));
   backdrop-filter: var(--blur-nav-head);
@@ -115,28 +114,48 @@ body.theme-ozon .nav-indicator {
 
 /* dark theme */
 @media (prefers-color-scheme: dark) {
-  :root:not(.theme-light) .bottom-navigation {
+  :root:not(.theme-light):not(.theme-ozon) .bottom-navigation {
     background: rgba(20, 20, 20, var(--opacity-nav-head));
+  }
+  :root:not(.theme-light):not(.theme-ozon) .bottom-navigation::before {
     border-color: rgba(255, 255, 255, 0.08);
   }
 }
 
-.theme-dark .bottom-navigation {
-  background: rgba(20, 20, 20, var(--opacity-nav-head));
-  border-color: rgba(255, 255, 255, 0.08);
+html.theme-dark .bottom-navigation,
+body.theme-dark .bottom-navigation {
+  background: rgba(20, 20, 20, var(--opacity-nav-head)) !important;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-.theme-light .bottom-navigation {
-  background: rgba(255, 255, 255, var(--opacity-nav-head));
-  border-color: var(--tg-accent-theme);
+html.theme-dark .bottom-navigation::before,
+body.theme-dark .bottom-navigation::before {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  transition: border-color 0.2s ease;
+}
+
+html.theme-light .bottom-navigation,
+body.theme-light .bottom-navigation {
+  background: rgba(255, 255, 255, var(--opacity-nav-head)) !important;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-.theme-ozon .bottom-navigation {
-  background: rgba(255, 255, 255, var(--opacity-nav-head));
-  border-color: var(--tg-accent-theme);
+html.theme-light .bottom-navigation::before,
+body.theme-light .bottom-navigation::before {
+  border-color: var(--tg-accent-theme) !important;
+  transition: border-color 0.2s ease;
+}
+
+html.theme-ozon .bottom-navigation,
+body.theme-ozon .bottom-navigation {
+  background: rgba(255, 255, 255, var(--opacity-nav-head)) !important;
   transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+html.theme-ozon .bottom-navigation::before,
+body.theme-ozon .bottom-navigation::before {
+  border-color: var(--tg-accent-theme) !important;
+  transition: border-color 0.2s ease;
 }
 
 /* Скрываем навбар, когда открыта клавиатура (фокус на инпуте/текстареа/селекте) */
