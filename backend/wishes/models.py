@@ -28,12 +28,6 @@ class Wishlist(models.Model):
         help_text='Описание вишлиста'
     )
     
-    is_public = models.BooleanField(
-        default=True,
-        verbose_name='Публичный',
-        help_text='Виден ли вишлист другим пользователям'
-    )
-    
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата создания',

@@ -32,7 +32,6 @@ class WishlistAdmin(admin.ModelAdmin):
         'id',
         'name',
         'user',
-        'is_public',
         'wishes_count',
         'order',
         'formatted_created_at',
@@ -40,7 +39,6 @@ class WishlistAdmin(admin.ModelAdmin):
     )
     
     list_filter = (
-        'is_public',
         'created_at',
         'updated_at',
     )
@@ -69,7 +67,6 @@ class WishlistAdmin(admin.ModelAdmin):
         }),
         ('Настройки', {
             'fields': (
-                'is_public',
                 'order',
             )
         }),

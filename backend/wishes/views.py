@@ -78,11 +78,6 @@ class WishlistViewSet(viewsets.ModelViewSet):
             except (User.DoesNotExist, ValueError):
                 queryset = queryset.none()
         
-        # Фильтрация по is_public
-        is_public = self.request.query_params.get('is_public', None)
-        if is_public is not None:
-            queryset = queryset.filter(is_public=is_public.lower() == 'true')
-        
         return queryset
     
     @action(detail=False, methods=['get'])

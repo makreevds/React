@@ -29,7 +29,6 @@ class WishlistSerializer(serializers.ModelSerializer):
             'user',
             'name',
             'description',
-            'is_public',
             'created_at',
             'updated_at',
             'order',
@@ -51,7 +50,6 @@ class WishlistCreateSerializer(serializers.ModelSerializer):
         fields = [
             'name',
             'description',
-            'is_public',
             'order',
         ]
     
@@ -75,7 +73,6 @@ class WishlistUpdateSerializer(serializers.ModelSerializer):
         fields = [
             'name',
             'description',
-            'is_public',
             'order',
         ]
 

@@ -94,7 +94,6 @@ interface AddWishlistModalProps {
 function AddWishlistModal({ user, wishlistsRepo, onClose, onSuccess }: AddWishlistModalProps) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [isPublic, setIsPublic] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,7 +105,6 @@ function AddWishlistModal({ user, wishlistsRepo, onClose, onSuccess }: AddWishli
       await wishlistsRepo.createWishlist({
         name: name.trim(),
         description: description.trim() || undefined,
-        is_public: isPublic,
         telegram_id: user.id,
       })
       onSuccess()
@@ -145,16 +143,6 @@ function AddWishlistModal({ user, wishlistsRepo, onClose, onSuccess }: AddWishli
               placeholder="Описание вишлиста (необязательно)"
               rows={3}
             />
-          </div>
-          <div className="form-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={isPublic}
-                onChange={(e) => setIsPublic(e.target.checked)}
-              />
-              <span>Публичный вишлист</span>
-            </label>
           </div>
           <div className="modal-actions">
             <button type="button" className="btn-cancel" onClick={onClose}>

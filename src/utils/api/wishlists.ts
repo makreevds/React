@@ -9,7 +9,6 @@ export interface Wishlist {
   user: number
   name: string
   description?: string
-  is_public: boolean
   created_at: string
   updated_at: string
   order: number
@@ -19,7 +18,6 @@ export interface Wishlist {
 export interface CreateWishlistRequest {
   name: string
   description?: string
-  is_public?: boolean
   order?: number
   telegram_id: number
 }
@@ -27,7 +25,6 @@ export interface CreateWishlistRequest {
 export interface UpdateWishlistRequest {
   name?: string
   description?: string
-  is_public?: boolean
   order?: number
 }
 
