@@ -34,28 +34,35 @@
   top: 50%;
   transform: translateY(-50%);
   width: 48px;
-  height: 48px;
+  height: 70px;
   background: var(--tg-theme-button-color, #0088cc);
   border-radius: 40px;
   transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s ease;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.15;
+  opacity: 1;
+  border: solid 2px var(--app-button-color);
 }
 
 html.theme-light .nav-indicator,
 body.theme-light .nav-indicator {
-  background: var(--tg-theme-button-color, #0088cc);
+  /* background: var(--tg-theme-button-color, #0088cc);
+  background: var(--app-button-color); */
+  background: none;
 }
 
 html.theme-dark .nav-indicator,
 body.theme-dark .nav-indicator {
-  background: var(--tg-theme-button-color, #0088cc);
+  /* background: var(--tg-theme-button-color, #0088cc);
+  background: var(--app-button-color); */
+  background: none;
 }
 
 html.theme-ozon .nav-indicator,
 body.theme-ozon .nav-indicator {
-  background: var(--tg-theme-button-color, #0088cc);
+  /* background: var(--tg-theme-button-color, #0088cc);
+  background: var(--app-button-color); */
+  background: none;
 }
 
 /* псевдоэлемент для чистого бордера */
