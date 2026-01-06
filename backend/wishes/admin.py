@@ -153,7 +153,7 @@ class WishAdmin(admin.ModelAdmin):
     
     search_fields = (
         'title',
-        'description',
+        'comment',
         'user__first_name',
         'user__last_name',
         'user__telegram_id',
@@ -173,7 +173,7 @@ class WishAdmin(admin.ModelAdmin):
                 'wishlist',
                 'user',
                 'title',
-                'description',
+                'comment',
             )
         }),
         ('Детали желания', {
