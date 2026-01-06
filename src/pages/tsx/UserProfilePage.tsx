@@ -229,6 +229,30 @@ export function UserProfilePage() {
     })
   }
 
+  // Обработчик бронирования/снятия брони подарка
+  const handleToggleReserve = async (wishId: number, currentStatus: string) => {
+    if (!wishesRepo) return
+
+    try {
+      const newStatus = currentStatus === 'reserved' ? 'active' : 'reserved'
+      await wishesRepo.updateWish(wishId, { status: newStatus })
+      
+      // Обновляем состояние локально
+      setWishesByWishlist(prev => {
+        const updated = { ...prev }
+        for (const wishlistId in updated) {
+          updated[Number(wishlistId)] = updated[Number(wishlistId)].map(w => 
+            w.id === wishId ? { ...w, status: newStatus as 'active' | 'reserved' | 'fulfilled' } : w
+          )
+        }
+        return updated
+      })
+    } catch (err) {
+      console.error('Ошибка при изменении статуса подарка:', err)
+      alert('Не удалось изменить статус подарка')
+    }
+  }
+
   const formatPrice = (price?: number | string, currency?: string) => {
     if (!price) return 'Цена не указана'
     const numPrice = typeof price === 'string' ? parseFloat(price) : price
@@ -396,6 +420,15 @@ export function UserProfilePage() {
                                       {wish.status === 'fulfilled' && (
                                         <p className="wish-status wish-status-fulfilled">Исполнено</p>
                                       )}
+                                    </div>
+                                    <div className="wish-actions">
+                                      <button
+                                        className={`btn-reserve ${wish.status === 'reserved' ? 'btn-reserve-active' : ''}`}
+                                        onClick={() => handleToggleReserve(wish.id, wish.status)}
+                                        disabled={wish.status === 'fulfilled'}
+                                      >
+                                        {wish.status === 'reserved' ? 'Снять бронь' : 'Забронировать'}
+                                      </button>
                                     </div>
                                   </div>
                                 )

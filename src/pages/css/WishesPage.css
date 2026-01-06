@@ -599,6 +599,48 @@ body.theme-dark .wish-price {
   flex-shrink: 0;
 }
 
+.btn-reserve {
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, opacity 0.2s;
+  white-space: nowrap;
+  background: var(--tg-theme-button-color, #0088cc);
+  color: var(--tg-theme-button-text-color, #ffffff);
+}
+
+.btn-reserve:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn-reserve:active:not(:disabled) {
+  opacity: 0.8;
+}
+
+.btn-reserve:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-reserve-active {
+  background: var(--theme-current-warning, #856404);
+  color: #ffffff;
+}
+
+html.theme-light .btn-reserve-active,
+body.theme-light .btn-reserve-active {
+  background: #856404;
+}
+
+html.theme-dark .btn-reserve-active,
+body.theme-dark .btn-reserve-active {
+  background: rgba(255, 193, 7, 0.8);
+  color: #000000;
+}
+
 .wish-action-btn {
   width: 36px;
   height: 36px;
