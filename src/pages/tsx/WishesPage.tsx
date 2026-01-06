@@ -3,6 +3,8 @@ import '../css/WishesPage.css'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { useApiContext } from '../../contexts/ApiContext'
 import { GiftIcon } from '../../utils/tsx/GiftIcon'
+import type { WishlistsRepository } from '../../utils/api/wishlists'
+import type { WishesRepository } from '../../utils/api/wishes'
 
 // Упрощенные типы для избежания проблем с импортом
 interface Wishlist {
@@ -81,6 +83,222 @@ function WishlistContentWrapper({ children, isCollapsed }: WishlistContentWrappe
   )
 }
 
+// Модальное окно для добавления вишлиста
+interface AddWishlistModalProps {
+  user: { id: number } | null
+  wishlistsRepo: WishlistsRepository | undefined
+  onClose: () => void
+  onSuccess: () => void
+}
+
+function AddWishlistModal({ user, wishlistsRepo, onClose, onSuccess }: AddWishlistModalProps) {
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [isPublic, setIsPublic] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!name.trim() || !user || !wishlistsRepo) return
+
+    setIsSubmitting(true)
+    try {
+      await wishlistsRepo.createWishlist({
+        name: name.trim(),
+        description: description.trim() || undefined,
+        is_public: isPublic,
+        telegram_id: user.id,
+      })
+      onSuccess()
+    } catch (err) {
+      alert('Не удалось создать вишлист')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3>Добавить вишлист</h3>
+          <button className="modal-close" onClick={onClose}>×</button>
+        </div>
+        <form onSubmit={handleSubmit} className="modal-form">
+          <div className="form-group">
+            <label htmlFor="wishlist-name">Название *</label>
+            <input
+              id="wishlist-name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              placeholder="Например: День рождения"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="wishlist-description">Описание</label>
+            <textarea
+              id="wishlist-description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Описание вишлиста (необязательно)"
+              rows={3}
+            />
+          </div>
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={(e) => setIsPublic(e.target.checked)}
+              />
+              <span>Публичный вишлист</span>
+            </label>
+          </div>
+          <div className="modal-actions">
+            <button type="button" className="btn-cancel" onClick={onClose}>
+              Отмена
+            </button>
+            <button type="submit" className="btn-submit" disabled={isSubmitting || !name.trim()}>
+              {isSubmitting ? 'Создание...' : 'Создать'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+// Модальное окно для добавления подарка
+interface AddWishModalProps {
+  wishlistId: number
+  wishesRepo: WishesRepository | undefined
+  onClose: () => void
+  onSuccess: () => void
+}
+
+function AddWishModal({ wishlistId, wishesRepo, onClose, onSuccess }: AddWishModalProps) {
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [link, setLink] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
+  const [price, setPrice] = useState('')
+  const [currency, setCurrency] = useState('₽')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!title.trim() || !wishesRepo) return
+
+    setIsSubmitting(true)
+    try {
+      await wishesRepo.createWish({
+        wishlist: wishlistId,
+        title: title.trim(),
+        description: description.trim() || undefined,
+        link: link.trim() || undefined,
+        image_url: imageUrl.trim() || undefined,
+        price: price ? parseFloat(price) : undefined,
+        currency: currency || '₽',
+      })
+      onSuccess()
+    } catch (err) {
+      alert('Не удалось добавить подарок')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3>Добавить подарок</h3>
+          <button className="modal-close" onClick={onClose}>×</button>
+        </div>
+        <form onSubmit={handleSubmit} className="modal-form">
+          <div className="form-group">
+            <label htmlFor="wish-title">Название *</label>
+            <input
+              id="wish-title"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              placeholder="Название подарка"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="wish-description">Описание</label>
+            <textarea
+              id="wish-description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Описание подарка (необязательно)"
+              rows={3}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="wish-link">Ссылка</label>
+            <input
+              id="wish-link"
+              type="url"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              placeholder="https://..."
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="wish-image">URL изображения</label>
+            <input
+              id="wish-image"
+              type="url"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              placeholder="https://..."
+            />
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="wish-price">Цена</label>
+              <input
+                id="wish-price"
+                type="number"
+                step="0.01"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="0"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="wish-currency">Валюта</label>
+              <select
+                id="wish-currency"
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+              >
+                <option value="₽">₽</option>
+                <option value="$">$</option>
+                <option value="€">€</option>
+                <option value="¥">¥</option>
+              </select>
+            </div>
+          </div>
+          <div className="modal-actions">
+            <button type="button" className="btn-cancel" onClick={onClose}>
+              Отмена
+            </button>
+            <button type="submit" className="btn-submit" disabled={isSubmitting || !title.trim()}>
+              {isSubmitting ? 'Добавление...' : 'Добавить'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
 export function WishesPage() {
   const { user, webApp } = useTelegramWebApp()
   const apiContext = useApiContext()
@@ -94,6 +312,9 @@ export function WishesPage() {
   const [error, setError] = useState<string | null>(null)
   const [collapsedWishlists, setCollapsedWishlists] = useState<Set<number>>(new Set())
   const [userData, setUserData] = useState<{ gifts_given: number; gifts_received: number } | null>(null)
+  const [showAddWishlistModal, setShowAddWishlistModal] = useState(false)
+  const [showAddWishModal, setShowAddWishModal] = useState(false)
+  const [selectedWishlistId, setSelectedWishlistId] = useState<number | null>(null)
 
   // Загружаем данные пользователя
   useEffect(() => {
@@ -318,6 +539,14 @@ export function WishesPage() {
               </div>
             </div>
           )}
+          
+          {/* Кнопка добавления вишлиста */}
+          <button 
+            className="btn-add-wishlist"
+            onClick={() => setShowAddWishlistModal(true)}
+          >
+            + Добавить вишлист
+          </button>
         </section>
 
         <section className="wishes-list-section">
@@ -459,8 +688,17 @@ export function WishesPage() {
                               </div>
                             </div>
                           )
-                        })}
+                          })}
                         </div>
+                        <button 
+                          className="btn-add-wish"
+                          onClick={() => {
+                            setSelectedWishlistId(wishlist.id)
+                            setShowAddWishModal(true)
+                          }}
+                        >
+                          + Добавить подарок
+                        </button>
                       </WishlistContentWrapper>
                     </div>
                   )
@@ -473,6 +711,96 @@ export function WishesPage() {
           )}
         </section>
       </div>
+
+      {/* Модальное окно для добавления вишлиста */}
+      {showAddWishlistModal && (
+        <AddWishlistModal
+          user={user}
+          wishlistsRepo={wishlistsRepo}
+          onClose={() => setShowAddWishlistModal(false)}
+          onSuccess={async () => {
+            setShowAddWishlistModal(false)
+            // Перезагружаем данные
+            if (user?.id && wishlistsRepo && wishesRepo) {
+              const response = await wishlistsRepo.getWishlistsByTelegramId(user.id)
+              if (Array.isArray(response)) {
+                const loadedWishlists = response.map((wl: any) => ({
+                  id: Number(wl.id) || 0,
+                  name: String(wl.name || ''),
+                }))
+                setWishlists(loadedWishlists)
+                setCollapsedWishlists(new Set(loadedWishlists.map(wl => wl.id)))
+                
+                // Загружаем желания для новых вишлистов
+                const wishesMap: Record<number, Wish[]> = {}
+                for (const wishlist of loadedWishlists) {
+                  try {
+                    const wishesResponse = await wishesRepo.getWishesByWishlistId(wishlist.id)
+                    if (Array.isArray(wishesResponse)) {
+                      const processedWishes: Wish[] = wishesResponse.map((w: any) => ({
+                        id: Number(w.id) || 0,
+                        title: String(w.title || 'Без названия'),
+                        price: w.price !== null && w.price !== undefined 
+                          ? (typeof w.price === 'string' ? parseFloat(w.price) : Number(w.price))
+                          : undefined,
+                        currency: w.currency ? String(w.currency) : undefined,
+                        image_url: w.image_url ? String(w.image_url) : undefined,
+                        description: w.description ? String(w.description) : undefined,
+                        status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
+                      }))
+                      wishesMap[wishlist.id] = processedWishes
+                    }
+                  } catch (err) {
+                    wishesMap[wishlist.id] = []
+                  }
+                }
+                setWishesByWishlist(wishesMap)
+              }
+            }
+          }}
+        />
+      )}
+
+      {/* Модальное окно для добавления подарка */}
+      {showAddWishModal && selectedWishlistId && (
+        <AddWishModal
+          wishlistId={selectedWishlistId}
+          wishesRepo={wishesRepo}
+          onClose={() => {
+            setShowAddWishModal(false)
+            setSelectedWishlistId(null)
+          }}
+          onSuccess={async () => {
+            setShowAddWishModal(false)
+            setSelectedWishlistId(null)
+            // Перезагружаем желания для вишлиста
+            if (selectedWishlistId && wishesRepo) {
+              try {
+                const wishesResponse = await wishesRepo.getWishesByWishlistId(selectedWishlistId)
+                if (Array.isArray(wishesResponse)) {
+                  const processedWishes: Wish[] = wishesResponse.map((w: any) => ({
+                    id: Number(w.id) || 0,
+                    title: String(w.title || 'Без названия'),
+                    price: w.price !== null && w.price !== undefined 
+                      ? (typeof w.price === 'string' ? parseFloat(w.price) : Number(w.price))
+                      : undefined,
+                    currency: w.currency ? String(w.currency) : undefined,
+                    image_url: w.image_url ? String(w.image_url) : undefined,
+                    description: w.description ? String(w.description) : undefined,
+                    status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
+                  }))
+                  setWishesByWishlist(prev => ({
+                    ...prev,
+                    [selectedWishlistId]: processedWishes,
+                  }))
+                }
+              } catch (err) {
+                // Игнорируем ошибки
+              }
+            }
+          }}
+        />
+      )}
 
       <div className="developer-section">
         <button

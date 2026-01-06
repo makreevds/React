@@ -698,3 +698,326 @@ html.theme-dark .json-output,
 body.theme-dark .json-output {
   background: var(--theme-hint-color-light-dark);
 }
+
+/* Кнопки добавления */
+.btn-add-wishlist {
+  width: 100%;
+  padding: 12px 20px;
+  margin-top: 12px;
+  background: var(--tg-theme-button-color, #0088cc);
+  color: var(--tg-theme-button-text-color, #ffffff);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-add-wishlist:hover {
+  opacity: 0.9;
+}
+
+.btn-add-wishlist:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+.btn-add-wish {
+  width: 100%;
+  padding: 10px 16px;
+  margin-top: 12px;
+  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
+  color: var(--theme-current-text, var(--theme-text-color));
+  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+html.theme-light .btn-add-wish,
+body.theme-light .btn-add-wish {
+  background: var(--theme-secondary-bg);
+  color: var(--theme-text-color);
+  border-color: var(--theme-hint-color-light);
+}
+
+html.theme-dark .btn-add-wish,
+body.theme-dark .btn-add-wish {
+  background: var(--theme-secondary-bg-dark);
+  color: var(--theme-text-color-dark);
+  border-color: var(--theme-hint-color-light-dark);
+}
+
+.btn-add-wish:hover {
+  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+  border-color: var(--theme-current-hint, var(--theme-hint-color));
+}
+
+/* Модальные окна */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.modal-content {
+  background: var(--theme-current-bg, var(--theme-bg-color));
+  border-radius: var(--radius-md);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+html.theme-light .modal-content,
+body.theme-light .modal-content {
+  background: var(--theme-bg-color);
+}
+
+html.theme-dark .modal-content,
+body.theme-dark .modal-content {
+  background: var(--theme-bg-color-dark);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+}
+
+html.theme-light .modal-header,
+body.theme-light .modal-header {
+  border-bottom-color: var(--theme-hint-color-light);
+}
+
+html.theme-dark .modal-header,
+body.theme-dark .modal-header {
+  border-bottom-color: var(--theme-hint-color-light-dark);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--theme-current-text, var(--theme-text-color));
+}
+
+html.theme-light .modal-header h3,
+body.theme-light .modal-header h3 {
+  color: var(--theme-text-color);
+}
+
+html.theme-dark .modal-header h3,
+body.theme-dark .modal-header h3 {
+  color: var(--theme-text-color-dark);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s, color 0.2s;
+}
+
+.modal-close:hover {
+  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+  color: var(--theme-current-text, var(--theme-text-color));
+}
+
+.modal-form {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--theme-current-text, var(--theme-text-color));
+}
+
+html.theme-light .form-group label,
+body.theme-light .form-group label {
+  color: var(--theme-text-color);
+}
+
+html.theme-dark .form-group label,
+body.theme-dark .form-group label {
+  color: var(--theme-text-color-dark);
+}
+
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group input[type="number"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  background: var(--theme-current-bg, var(--theme-bg-color));
+  color: var(--theme-current-text, var(--theme-text-color));
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+html.theme-light .form-group input,
+html.theme-light .form-group textarea,
+html.theme-light .form-group select,
+body.theme-light .form-group input,
+body.theme-light .form-group textarea,
+body.theme-light .form-group select {
+  background: var(--theme-bg-color);
+  color: var(--theme-text-color);
+  border-color: var(--theme-hint-color-light);
+}
+
+html.theme-dark .form-group input,
+html.theme-dark .form-group textarea,
+html.theme-dark .form-group select,
+body.theme-dark .form-group input,
+body.theme-dark .form-group textarea,
+body.theme-dark .form-group select {
+  background: var(--theme-bg-color-dark);
+  color: var(--theme-text-color-dark);
+  border-color: var(--theme-hint-color-light-dark);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--tg-theme-button-color, #0088cc);
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+}
+
+html.theme-light .modal-actions,
+body.theme-light .modal-actions {
+  border-top-color: var(--theme-hint-color-light);
+}
+
+html.theme-dark .modal-actions,
+body.theme-dark .modal-actions {
+  border-top-color: var(--theme-hint-color-light-dark);
+}
+
+.btn-cancel,
+.btn-submit {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-cancel {
+  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
+  color: var(--theme-current-text, var(--theme-text-color));
+}
+
+html.theme-light .btn-cancel,
+body.theme-light .btn-cancel {
+  background: var(--theme-secondary-bg);
+  color: var(--theme-text-color);
+}
+
+html.theme-dark .btn-cancel,
+body.theme-dark .btn-cancel {
+  background: var(--theme-secondary-bg-dark);
+  color: var(--theme-text-color-dark);
+}
+
+.btn-cancel:hover {
+  opacity: 0.8;
+}
+
+.btn-submit {
+  background: var(--tg-theme-button-color, #0088cc);
+  color: var(--tg-theme-button-text-color, #ffffff);
+}
+
+.btn-submit:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-cancel:active,
+.btn-submit:active:not(:disabled) {
+  transform: scale(0.98);
+}
