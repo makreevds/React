@@ -304,6 +304,20 @@ export function WishesPage() {
   const [showAddWishModal, setShowAddWishModal] = useState(false)
   const [selectedWishlistId, setSelectedWishlistId] = useState<number | null>(null)
 
+  // Скрываем навбар когда открыто модальное окно
+  useEffect(() => {
+    const hasModalOpen = showAddWishlistModal || showAddWishModal
+    if (hasModalOpen) {
+      document.body.classList.add('modal-open')
+    } else {
+      document.body.classList.remove('modal-open')
+    }
+    
+    return () => {
+      document.body.classList.remove('modal-open')
+    }
+  }, [showAddWishlistModal, showAddWishModal])
+
   // Загружаем данные пользователя
   useEffect(() => {
     if (!user?.id || !apiContext?.users) {

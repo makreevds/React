@@ -90,3 +90,8 @@
   background: rgba(255, 255, 255, var(--opacity-nav-head));
   border-color: var(--tg-accent-theme);
 }
+
+/* Скрытие навбара при открытом модальном окне */
+body.modal-open .bottom-navigation {
+  display: none;
+}
