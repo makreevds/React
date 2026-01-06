@@ -5,6 +5,7 @@ import { useApiContext } from '../../contexts/ApiContext'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { GiftIcon } from '../../utils/tsx/GiftIcon'
 import type { User } from '../../utils/api/users'
+import doneIcon from '../../assets/done.png'
 
 // Упрощенные типы
 interface Wishlist {
@@ -462,8 +463,10 @@ export function UserProfilePage() {
                                     </div>
                                     <div className="wish-actions">
                                       {wish.status === 'fulfilled' ? (
-                                        // Если подарок исполнен - показываем текст "Подарено"
-                                        <span className="wish-status wish-status-fulfilled">Подарено</span>
+                                        // Если подарок исполнен - показываем иконку done.png
+                                        <div className="wish-status-icon">
+                                          <img src={doneIcon} alt="Исполнено" className="gift-icon-small" />
+                                        </div>
                                       ) : wish.status === 'reserved' ? (
                                         // Если подарок зарезервирован
                                         currentUser && wish.reserved_by_id === currentUser.id ? (
