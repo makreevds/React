@@ -212,6 +212,10 @@ function App() {
             element={<AddWishPage />} 
           />
           <Route 
+            path="/wishes/edit-wish" 
+            element={<AddWishPage />} 
+          />
+          <Route 
             path="/friends" 
             element={<FriendsPage />} 
           />

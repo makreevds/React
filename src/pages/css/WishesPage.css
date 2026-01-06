@@ -633,6 +633,136 @@ body.theme-dark .wish-action-btn {
   background: rgba(255, 59, 48, 0.1);
 }
 
+/* Меню для желания (три точки) */
+.wish-menu-container {
+  position: relative;
+}
+
+.wish-menu-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--theme-current-bg, var(--theme-bg-color));
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  padding: 0;
+}
+
+html.theme-light .wish-menu-btn,
+body.theme-light .wish-menu-btn {
+  background: var(--theme-bg-color);
+}
+
+html.theme-dark .wish-menu-btn,
+body.theme-dark .wish-menu-btn {
+  background: var(--theme-bg-color-dark);
+}
+
+.wish-menu-btn:hover {
+  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+}
+
+.wish-menu-btn:active {
+  transform: scale(0.95);
+}
+
+.wish-menu-icon {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--theme-current-text, var(--theme-text-color));
+  line-height: 1;
+  transform: rotate(90deg);
+  display: inline-block;
+}
+
+.wish-menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--theme-current-bg, var(--theme-bg-color));
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  z-index: 1000;
+  min-width: 160px;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-out;
+}
+
+html.theme-light .wish-menu-dropdown,
+body.theme-light .wish-menu-dropdown {
+  background: var(--theme-bg-color);
+  border-color: var(--theme-hint-color-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+html.theme-dark .wish-menu-dropdown,
+body.theme-dark .wish-menu-dropdown {
+  background: var(--theme-bg-color-dark);
+  border-color: var(--theme-hint-color-light-dark);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.wish-menu-item {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 14px;
+  color: var(--theme-current-text, var(--theme-text-color));
+  cursor: pointer;
+  transition: background 0.2s;
+  display: block;
+}
+
+html.theme-light .wish-menu-item,
+body.theme-light .wish-menu-item {
+  color: var(--theme-text-color);
+}
+
+html.theme-dark .wish-menu-item,
+body.theme-dark .wish-menu-item {
+  color: var(--theme-text-color-dark);
+}
+
+.wish-menu-item:hover {
+  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+}
+
+.wish-menu-item:first-child {
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+}
+
+.wish-menu-item:last-child {
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.wish-menu-item-danger {
+  color: #ff3b30;
+}
+
+html.theme-light .wish-menu-item-danger,
+body.theme-light .wish-menu-item-danger {
+  color: #ff3b30;
+}
+
+html.theme-dark .wish-menu-item-danger,
+body.theme-dark .wish-menu-item-danger {
+  color: #ff453a;
+}
+
+.wish-menu-item-danger:hover {
+  background: rgba(255, 59, 48, 0.1);
+}
+
 /* Секция для разработчика */
 .developer-section {
   margin-top: 32px;

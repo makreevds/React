@@ -12,7 +12,10 @@ export function AddWishPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const wishlistIdParam = searchParams.get('wishlistId')
-  const wishlistId = wishlistIdParam ? parseInt(wishlistIdParam, 10) : null
+  const wishIdParam = searchParams.get('wishId')
+  const [wishlistId, setWishlistId] = useState<number | null>(wishlistIdParam ? parseInt(wishlistIdParam, 10) : null)
+  const wishId = wishIdParam ? parseInt(wishIdParam, 10) : null
+  const isEditMode = !!wishId
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -21,13 +24,42 @@ export function AddWishPage() {
   const [price, setPrice] = useState('')
   const [currency, setCurrency] = useState('₽')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Загружаем данные желания для редактирования
+  useEffect(() => {
+    if (isEditMode && wishId && wishesRepo) {
+      setIsLoading(true)
+      wishesRepo.getWishById(wishId)
+        .then((wish) => {
+          setTitle(wish.title || '')
+          setDescription(wish.description || '')
+          setLink(wish.link || '')
+          setImageUrl(wish.image_url || '')
+          setPrice(wish.price ? wish.price.toString() : '')
+          setCurrency(wish.currency || '₽')
+          // Если wishlistId не передан в URL, используем из данных желания
+          if (!wishlistId && wish.wishlist_id) {
+            setWishlistId(wish.wishlist_id)
+          }
+        })
+        .catch((err: any) => {
+          setError(err?.message || 'Не удалось загрузить данные желания')
+        })
+        .finally(() => {
+          setIsLoading(false)
+        })
+    }
+  }, [isEditMode, wishId, wishesRepo, wishlistId])
 
   useEffect(() => {
     if (!wishlistId || isNaN(wishlistId)) {
-      setError('Не указан вишлист')
+      if (!isEditMode) {
+        setError('Не указан вишлист')
+      }
     }
-  }, [wishlistId])
+  }, [wishlistId, isEditMode])
 
   // Обработчики для скрытия навбара при фокусе на поле ввода
   const handleInputFocus = () => {
@@ -58,24 +90,47 @@ export function AddWishPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!title.trim() || !wishesRepo || !wishlistId) return
+    if (!title.trim() || !wishesRepo) return
+
+    // В режиме редактирования нужен wishId, в режиме создания - wishlistId
+    if (isEditMode && !wishId) {
+      setError('Не указано желание для редактирования')
+      return
+    }
+    if (!isEditMode && (!wishlistId || isNaN(wishlistId))) {
+      setError('Не указан вишлист')
+      return
+    }
 
     setIsSubmitting(true)
     setError(null)
     try {
-      await wishesRepo.createWish({
-        wishlist: wishlistId,
-        title: title.trim(),
-        description: description.trim() || undefined,
-        link: link.trim() || undefined,
-        image_url: imageUrl.trim() || undefined,
-        price: price ? parseFloat(price) : undefined,
-        currency: currency || '₽',
-      })
-      // Возвращаемся на страницу желаний после успешного создания
+      if (isEditMode && wishId) {
+        // Режим редактирования
+        await wishesRepo.updateWish(wishId, {
+          title: title.trim(),
+          description: description.trim() || undefined,
+          link: link.trim() || undefined,
+          image_url: imageUrl.trim() || undefined,
+          price: price ? parseFloat(price) : undefined,
+          currency: currency || '₽',
+        })
+      } else if (wishlistId) {
+        // Режим создания
+        await wishesRepo.createWish({
+          wishlist: wishlistId,
+          title: title.trim(),
+          description: description.trim() || undefined,
+          link: link.trim() || undefined,
+          image_url: imageUrl.trim() || undefined,
+          price: price ? parseFloat(price) : undefined,
+          currency: currency || '₽',
+        })
+      }
+      // Возвращаемся на страницу желаний после успешного сохранения
       navigate('/wishes')
     } catch (err: any) {
-      const errorMessage = err?.message || 'Не удалось добавить подарок'
+      const errorMessage = err?.message || (isEditMode ? 'Не удалось обновить подарок' : 'Не удалось добавить подарок')
       setError(errorMessage)
       alert(errorMessage)
     } finally {
@@ -87,7 +142,19 @@ export function AddWishPage() {
     navigate('/wishes')
   }
 
-  if (!wishlistId || isNaN(wishlistId)) {
+  if (isLoading) {
+    return (
+      <div className="page-container wishes-page">
+        <div className="wishes-main-content">
+          <div className="wishes-loading">
+            <p>Загрузка...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isEditMode && (!wishlistId || isNaN(wishlistId))) {
     return (
       <div className="page-container wishes-page">
         <div className="wishes-main-content">
@@ -107,7 +174,7 @@ export function AddWishPage() {
       <div className="wishes-main-content">
         <div className="page-form-container">
           <div className="page-form-header">
-            <h2>Добавить подарок</h2>
+            <h2>{isEditMode ? 'Редактировать подарок' : 'Добавить подарок'}</h2>
             <button className="modal-close" onClick={handleCancel}>×</button>
           </div>
           {error && (
@@ -201,7 +268,7 @@ export function AddWishPage() {
                 Отмена
               </button>
               <button type="submit" className="btn-submit" disabled={isSubmitting || !title.trim()}>
-                {isSubmitting ? 'Добавление...' : 'Добавить'}
+                {isSubmitting ? (isEditMode ? 'Сохранение...' : 'Добавление...') : (isEditMode ? 'Сохранить' : 'Добавить')}
               </button>
             </div>
           </form>

@@ -5,6 +5,69 @@ import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { useApiContext } from '../../contexts/ApiContext'
 import { GiftIcon } from '../../utils/tsx/GiftIcon'
 
+// Компонент меню для желания (три точки)
+interface WishMenuProps {
+  onEdit: () => void
+  onDelete: () => void
+}
+
+function WishMenu({ onEdit, onDelete }: WishMenuProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  // Закрываем меню при клике вне его
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen])
+
+  return (
+    <div className="wish-menu-container" ref={menuRef}>
+      <button
+        className="wish-menu-btn"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Меню"
+        title="Меню"
+      >
+        <span className="wish-menu-icon">⋯</span>
+      </button>
+      {isOpen && (
+        <div className="wish-menu-dropdown">
+          <button
+            className="wish-menu-item"
+            onClick={() => {
+              onEdit()
+              setIsOpen(false)
+            }}
+          >
+            Редактировать
+          </button>
+          <button
+            className="wish-menu-item wish-menu-item-danger"
+            onClick={() => {
+              onDelete()
+              setIsOpen(false)
+            }}
+          >
+            Удалить
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // Упрощенные типы для избежания проблем с импортом
 interface Wishlist {
   id: number
@@ -282,8 +345,8 @@ export function WishesPage() {
     }
   }, [location.pathname, user?.id, wishlistsRepo, wishesRepo])
 
-  const handleEdit = (_wishId: number) => {
-    // TODO: Реализовать редактирование
+  const handleEdit = (wishId: number, wishlistId: number) => {
+    navigate(`/wishes/edit-wish?wishId=${wishId}&wishlistId=${wishlistId}`)
   }
 
   const handleDelete = async (wishId: number) => {
@@ -477,22 +540,10 @@ export function WishesPage() {
                                 )}
                               </div>
                               <div className="wish-actions">
-                                <button
-                                  className="wish-action-btn wish-edit-btn"
-                                  onClick={() => handleEdit(wish.id)}
-                                  aria-label="Редактировать"
-                                  title="Редактировать"
-                                >
-                                  ✏️
-                                </button>
-                                <button
-                                  className="wish-action-btn wish-delete-btn"
-                                  onClick={() => handleDelete(wish.id)}
-                                  aria-label="Удалить"
-                                  title="Удалить"
-                                >
-                                  🗑️
-                                </button>
+                                <WishMenu
+                                  onEdit={() => handleEdit(wish.id, wishlist.id)}
+                                  onDelete={() => handleDelete(wish.id)}
+                                />
                               </div>
                             </div>
                           )
