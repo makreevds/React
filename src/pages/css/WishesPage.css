@@ -113,8 +113,8 @@ body.theme-dark .user-username {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 8px 0 0 0;
-  margin-top: 8px;
+  padding: 12px 0 0 0;
+  margin-top: 12px;
   border-top: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
   gap: 16px;
   width: 100%;
@@ -147,10 +147,10 @@ body.theme-dark .gifts-stats-section {
 
 .gifts-stat-label {
   font-size: 14px;
-  font-weight: 500;
+  /* font-weight: 500; */
   color: var(--theme-current-hint, var(--theme-hint-color));
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  /* text-transform: uppercase; */
+  /* letter-spacing: 0.5px; */
 }
 
 html.theme-light .gifts-stat-label,
