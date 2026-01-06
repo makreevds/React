@@ -21,6 +21,7 @@ interface Wish {
   comment?: string
   status: 'active' | 'reserved' | 'fulfilled'
   reserved_by_id?: number
+  gifted_by_id?: number
 }
 
 // Компонент-обертка для плавной анимации сворачивания/разворачивания
@@ -206,6 +207,7 @@ export function UserProfilePage() {
                     comment: w.comment ? String(w.comment) : undefined,
                     status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
                     reserved_by_id: w.reserved_by_id ? Number(w.reserved_by_id) : undefined,
+                    gifted_by_id: w.gifted_by_id ? Number(w.gifted_by_id) : undefined,
                   }
                   console.log('Обработано желание:', processed.id, 'image_url:', processed.image_url)
                   processedWishes.push(processed)
@@ -459,8 +461,8 @@ export function UserProfilePage() {
                                       <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
                                     </div>
                                     <div className="wish-actions">
-                                      {wish.status === 'fulfilled' ? (
-                                        // Если подарок исполнен - показываем текст "Подарено"
+                                      {wish.gifted_by_id ? (
+                                        // Если подарок подарен (есть gifted_by_id) - показываем текст "Подарено"
                                         <span className="wish-status wish-status-fulfilled">Подарено</span>
                                       ) : wish.status === 'reserved' ? (
                                         // Если подарок зарезервирован
