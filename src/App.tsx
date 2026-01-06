@@ -62,7 +62,7 @@ function TelegramInit() {
  * Компонент для автоматической регистрации пользователя
  */
 interface UserRegistrationProps {
-  onUserLoaded?: (theme: 'light' | 'dark' | 'ozon') => void
+  onUserLoaded?: (theme: 'light' | 'dark') => void
 }
 
 function UserRegistration({ onUserLoaded }: UserRegistrationProps) {
@@ -106,18 +106,12 @@ function UserRegistration({ onUserLoaded }: UserRegistrationProps) {
         }
         
         // Определяем тему для применения
-        let themeToApply: 'light' | 'dark' | 'ozon'
+        let themeToApply: 'light' | 'dark'
         if (userData) {
           // Если пользователь найден - используем его сохранённую тему
-          if (userData.theme_color === 'dark') {
-            themeToApply = 'dark'
-          } else if (userData.theme_color === 'ozon') {
-            themeToApply = 'ozon'
-          } else {
-            themeToApply = 'light'
-          }
+          themeToApply = userData.theme_color === 'dark' ? 'dark' : 'light'
         } else {
-          // Если пользователь новый - используем системную тему (только light/dark)
+          // Если пользователь новый - используем системную тему
           themeToApply = systemThemeColor
         }
         
@@ -186,7 +180,7 @@ function App() {
     timeout: 30000,
   }
 
-  const [initialTheme, setInitialTheme] = useState<'light' | 'dark' | 'ozon'>('light')
+  const [initialTheme, setInitialTheme] = useState<'light' | 'dark'>('light')
 
   return (
     <ThemeProvider initialTheme={initialTheme}>

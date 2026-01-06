@@ -479,6 +479,22 @@ body.theme-dark .wishlist-group {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+html.theme-ozon .wishlist-group,
+body.theme-ozon .wishlist-group {
+  border-radius: 26px;
+
+  background: linear-gradient(
+      135deg,
+      #1f6fff 0%,
+      #4c3cff 50%,
+      #6a00ff 100%
+  );
+
+  box-shadow:
+      0 14px 30px rgba(0, 0, 0, 0.25),
+      0 50px 100px rgba(0, 0, 0, 0.45);
+}
+
 .wishlist-group:last-child {
   margin-bottom: 0;
 }
