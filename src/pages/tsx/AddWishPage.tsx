@@ -185,6 +185,7 @@ export function AddWishPage() {
           <form onSubmit={handleSubmit} className="page-form">
             <div className="form-group">
               <label htmlFor="wish-title">Название *</label>
+              <div className="form-example">Пример: Часы</div>
               <input
                 id="wish-title"
                 type="text"
@@ -193,19 +194,18 @@ export function AddWishPage() {
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
                 required
-                placeholder="Название подарка"
                 autoFocus
               />
             </div>
             <div className="form-group">
               <label htmlFor="wish-comment">Комментарий</label>
+              <div className="form-example">Пример: Старые сломались</div>
               <textarea
                 id="wish-comment"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder="Комментарий к подарку (необязательно)"
                 rows={3}
               />
             </div>
@@ -218,11 +218,11 @@ export function AddWishPage() {
                 onChange={(e) => setLink(e.target.value)}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder="https://..."
+                placeholder="https://... (не обязательно)"
               />
             </div>
             <div className="form-group">
-              <label htmlFor="wish-image">URL изображения (не обязательно)</label>
+              <label htmlFor="wish-image">URL изображения</label>
               <input
                 id="wish-image"
                 type="url"
@@ -230,7 +230,7 @@ export function AddWishPage() {
                 onChange={(e) => setImageUrl(e.target.value)}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder="https://..."
+                placeholder="https://... (не обязательно)"
               />
             </div>
             <div className="form-row">

@@ -1009,10 +1009,27 @@ body.theme-dark .modal-header h3 {
 
 .form-group label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   font-size: 14px;
   font-weight: 500;
   color: var(--theme-current-text, var(--theme-text-color));
+}
+
+.form-example {
+  font-size: 12px;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+  margin-bottom: 6px;
+  font-style: italic;
+}
+
+html.theme-light .form-example,
+body.theme-light .form-example {
+  color: var(--theme-hint-color);
+}
+
+html.theme-dark .form-example,
+body.theme-dark .form-example {
+  color: var(--theme-hint-color-dark);
 }
 
 html.theme-light .form-group label,

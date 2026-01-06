@@ -92,6 +92,11 @@ class UserAdmin(admin.ModelAdmin):
                 'invited_by',
             )
         }),
+        ('Подписки', {
+            'fields': (
+                'subscriptions',
+            )
+        }),
         ('Временные метки', {
             'fields': (
                 'formatted_registration_time',
@@ -99,5 +104,7 @@ class UserAdmin(admin.ModelAdmin):
             )
         }),
     )
+    
+    filter_horizontal = ('subscriptions',)
     
     ordering = ('-registration_time',)
