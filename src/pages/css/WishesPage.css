@@ -139,7 +139,7 @@ body.theme-dark .gifts-stats-section {
 }
 
 .gifts-stat-value {
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--tg-theme-button-color, #0088cc);
   line-height: 1;
