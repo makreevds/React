@@ -88,7 +88,7 @@ function WishlistContentWrapper({ children, isCollapsed }: WishlistContentWrappe
 
 export function UserProfilePage() {
   const { telegramId } = useParams<{ telegramId: string }>()
-  const { user: currentTelegramUser } = useTelegramWebApp()
+  const { user: currentTelegramUser, webApp } = useTelegramWebApp()
   const apiContext = useApiContext()
   const wishlistsRepo = apiContext?.wishlists
   const wishesRepo = apiContext?.wishes
@@ -102,6 +102,29 @@ export function UserProfilePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [collapsedWishlists, setCollapsedWishlists] = useState<Set<number>>(new Set())
+
+  // Управление кнопкой "Назад" в Telegram
+  useEffect(() => {
+    if (!webApp?.BackButton) {
+      return
+    }
+
+    const backButton = webApp.BackButton
+    const handleBackClick = () => {
+      navigate('/friends')
+    }
+
+    // Показываем кнопку "Назад"
+    backButton.show()
+    // Устанавливаем обработчик клика
+    backButton.onClick(handleBackClick)
+
+    // При размонтировании скрываем кнопку и удаляем обработчик
+    return () => {
+      backButton.offClick(handleBackClick)
+      backButton.hide()
+    }
+  }, [webApp, navigate])
 
   // Загружаем данные пользователя по telegram_id
   useEffect(() => {
