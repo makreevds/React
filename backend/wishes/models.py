@@ -29,7 +29,7 @@ class Wishlist(models.Model):
     )
     
     is_public = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name='Публичный',
         help_text='Виден ли вишлист другим пользователям'
     )

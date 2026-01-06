@@ -94,7 +94,7 @@ interface AddWishlistModalProps {
 function AddWishlistModal({ user, wishlistsRepo, onClose, onSuccess }: AddWishlistModalProps) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [isPublic, setIsPublic] = useState(false)
+  const [isPublic, setIsPublic] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -250,7 +250,7 @@ function AddWishModal({ wishlistId, wishesRepo, onClose, onSuccess }: AddWishMod
             />
           </div>
           <div className="form-group">
-            <label htmlFor="wish-image">URL изображения</label>
+            <label htmlFor="wish-image">URL изображения (не обязательно)</label>
             <input
               id="wish-image"
               type="url"
