@@ -190,8 +190,8 @@ p {
 ================================ */
 
 /* Системная тема по умолчанию (светлая) */
-html:not(.theme-light):not(.theme-dark),
-body:not(.theme-light):not(.theme-dark) {
+html:not(.theme-light):not(.theme-dark):not(.theme-ozon),
+body:not(.theme-light):not(.theme-dark):not(.theme-ozon) {
   background-color: var(--theme-bg-color);
   color: var(--theme-text-color);
   --theme-current-bg: var(--theme-bg-color);
@@ -233,10 +233,36 @@ body.theme-dark {
   --app-button-text-color: #fff;
 }
 
+/* Тема в стиле OZON */
+html.theme-ozon,
+body.theme-ozon {
+  /* Фон — мягкий светлый с легким голубым оттенком */
+  background-color: #f5f7ff;
+  color: #001a34;
+
+  /* Текущие переменные темы */
+  --theme-current-bg: #f5f7ff;
+  --theme-current-text: #001a34;
+  --theme-current-secondary-bg: #ffffff;
+  --theme-current-hint: rgba(0, 26, 52, 0.6);
+  --theme-current-hint-light: rgba(0, 26, 52, 0.18);
+
+  /* Акцентные цвета в стиле OZON */
+  --tg-accent-theme: #005bff;        /* яркий синий */
+  --app-button-color: #005bff;
+  --app-button-text-color: #ffffff;
+
+  /* Базовые фоновые/подсказочные (на всякий случай) */
+  --theme-secondary-bg: #ffffff;
+  --theme-secondary-bg-dark: #ffffff;
+  --theme-hint-color: rgba(0, 26, 52, 0.6);
+  --theme-hint-color-light: rgba(0, 26, 52, 0.18);
+}
+
 /* Поддержка системной темы через media query (если класс темы не установлен) */
 @media (prefers-color-scheme: dark) {
-  html:not(.theme-light):not(.theme-dark),
-  body:not(.theme-light):not(.theme-dark) {
+  html:not(.theme-light):not(.theme-dark):not(.theme-ozon),
+  body:not(.theme-light):not(.theme-dark):not(.theme-ozon) {
     background-color: var(--theme-bg-color-dark);
     color: var(--theme-text-color-dark);
     --theme-current-bg: var(--theme-bg-color-dark);

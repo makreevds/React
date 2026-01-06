@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 
-type Theme = 'light' | 'dark'
+type Theme = 'light' | 'dark' | 'ozon'
 
 interface ThemeContextType {
   theme: Theme
@@ -29,8 +29,8 @@ export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
     // Иначе проверяем localStorage
     try {
       const savedTheme = localStorage.getItem(THEME_STORAGE_KEY)
-      // Строгая проверка: только 'light' или 'dark' считаются валидными
-      if (savedTheme === 'light' || savedTheme === 'dark') {
+      // Строгая проверка: только известные значения темы считаются валидными
+      if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'ozon') {
         return savedTheme as Theme
       }
     } catch (e) {
@@ -64,12 +64,15 @@ export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
     const body = document.body
     
     // Всегда сначала удаляем все классы темы
-    root.classList.remove('theme-dark', 'theme-light')
-    body.classList.remove('theme-dark', 'theme-light')
+    root.classList.remove('theme-dark', 'theme-light', 'theme-ozon')
+    body.classList.remove('theme-dark', 'theme-light', 'theme-ozon')
     
     if (theme === 'dark') {
       root.classList.add('theme-dark')
       body.classList.add('theme-dark')
+    } else if (theme === 'ozon') {
+      root.classList.add('theme-ozon')
+      body.classList.add('theme-ozon')
     } else {
       root.classList.add('theme-light')
       body.classList.add('theme-light')
@@ -85,7 +88,12 @@ export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
 
   const toggleTheme = () => {
     hasUserChangedTheme.current = true
-    setTheme(prev => prev === 'light' ? 'dark' : 'light')
+    setTheme(prev => {
+      // Цикл по темам: light → dark → ozon → light
+      if (prev === 'light') return 'dark'
+      if (prev === 'dark') return 'ozon'
+      return 'light'
+    })
   }
 
   return (
