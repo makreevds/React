@@ -272,14 +272,13 @@ function WishlistContentWrapper({ children, isCollapsed }: WishlistContentWrappe
 }
 
 export function WishesPage() {
-  const { user, webApp } = useTelegramWebApp()
+  const { user } = useTelegramWebApp()
   const apiContext = useApiContext()
   const wishlistsRepo = apiContext?.wishlists
   const wishesRepo = apiContext?.wishes
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [showDeveloperData, setShowDeveloperData] = useState(false)
   const [wishlists, setWishlists] = useState<Wishlist[]>([])
   const [wishesByWishlist, setWishesByWishlist] = useState<Record<number, Wish[]>>({})
   const [isLoading, setIsLoading] = useState(true)
@@ -766,37 +765,6 @@ export function WishesPage() {
             </>
           )}
         </section>
-      </div>
-
-
-      <div className="developer-section">
-        <button
-          className="developer-toggle-btn"
-          onClick={() => setShowDeveloperData(!showDeveloperData)}
-        >
-          {showDeveloperData ? '▼' : '▶'} Данные для разработчика
-        </button>
-        {showDeveloperData && webApp && (
-          <div className="developer-data">
-            <pre className="json-output">
-              {(() => {
-                try {
-                  return JSON.stringify(
-                    {
-                      user: user,
-                      wishlists: wishlists,
-                      wishesByWishlist: wishesByWishlist,
-                    },
-                    null,
-                    2
-                  )
-                } catch (err) {
-                  return `Ошибка при сериализации данных: ${err}`
-                }
-              })()}
-            </pre>
-          </div>
-        )}
       </div>
     </div>
   )

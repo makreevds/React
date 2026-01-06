@@ -922,8 +922,8 @@ body.theme-dark .json-output {
 .btn-add-wishlist {
   width: 100%;
   padding: 12px 20px;
-  background: var(--tg-theme-button-color, #0088cc);
-  color: var(--tg-theme-button-text-color, #ffffff);
+  background: var(--app-button-color);
+  color: var(--app-button-text-color);
   border: none;
   border-radius: var(--radius-md);
   font-size: 16px;
@@ -1336,8 +1336,8 @@ body.theme-dark .btn-cancel {
 }
 
 .btn-submit {
-  background: var(--tg-theme-button-color, #0088cc);
-  color: var(--tg-theme-button-text-color, #ffffff);
+  background: var(--app-button-color);
+  color: var(--app-button-text-color);
 }
 
 .btn-submit:hover:not(:disabled) {
