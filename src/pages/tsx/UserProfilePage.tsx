@@ -461,8 +461,8 @@ export function UserProfilePage() {
                                       <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
                                     </div>
                                     <div className="wish-actions">
-                                      {wish.gifted_by_id ? (
-                                        // Если подарок подарен (есть gifted_by_id) - показываем текст "Подарено"
+                                      {wish.status === 'fulfilled' ? (
+                                        // Если подарок исполнен - показываем текст "Подарено"
                                         <span className="wish-status wish-status-fulfilled">Подарено</span>
                                       ) : wish.status === 'reserved' ? (
                                         // Если подарок зарезервирован
