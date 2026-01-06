@@ -6,6 +6,7 @@ import { SettingsPage } from './pages/tsx/SettingsPage'
 import { FeedPage } from './pages/tsx/FeedPage'
 import { AddWishlistPage } from './pages/tsx/AddWishlistPage'
 import { AddWishPage } from './pages/tsx/AddWishPage'
+import { UserProfilePage } from './pages/tsx/UserProfilePage'
 import { BottomNavigation } from './utils/tsx/BottomNavigation'
 import { Head } from './utils/tsx/Head'
 import { ThemeProvider } from './contexts/ThemeContext'
@@ -218,6 +219,10 @@ function App() {
           <Route 
             path="/friends" 
             element={<FriendsPage />} 
+          />
+          <Route 
+            path="/user/:telegramId" 
+            element={<UserProfilePage />} 
           />
           <Route 
             path="/feed" 

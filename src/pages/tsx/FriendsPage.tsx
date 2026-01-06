@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../css/FriendsPage.css'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { useErrorHandler } from '../../hooks/useErrorHandler'
@@ -9,6 +10,7 @@ export function FriendsPage() {
   const { webApp, getUserId, user: currentUser } = useTelegramWebApp()
   const { handleError } = useErrorHandler(webApp || undefined)
   const { users: usersRepository } = useApiContext()
+  const navigate = useNavigate()
   const [subscriptions, setSubscriptions] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [unsubscribing, setUnsubscribing] = useState<number | null>(null)
@@ -122,7 +124,12 @@ export function FriendsPage() {
       ) : (
         <div className="friends-list">
           {subscriptions.map(subscription => (
-            <div key={subscription.id} className="friend-row">
+            <div 
+              key={subscription.id} 
+              className="friend-row"
+              onClick={() => navigate(`/user/${subscription.telegram_id}`)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="friend-info">
                 <div className="friend-name">{getUserDisplayName(subscription)}</div>
                 {subscription.username && (
@@ -131,7 +138,10 @@ export function FriendsPage() {
               </div>
               <button 
                 className="unsubscribe-btn"
-                onClick={() => handleUnsubscribe(subscription.id)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleUnsubscribe(subscription.id)
+                }}
                 disabled={unsubscribing === subscription.id}
               >
                 {unsubscribing === subscription.id ? 'Отписка...' : 'Отписаться'}
