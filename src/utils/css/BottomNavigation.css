@@ -33,7 +33,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 48px;
+  width: 70px;
   height: 70px;
   background: var(--tg-theme-button-color, #0088cc);
   border-radius: 40px;
