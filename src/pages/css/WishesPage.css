@@ -724,6 +724,23 @@ body.theme-dark .wish-menu-btn {
   display: inline-block;
 }
 
+.wish-menu-btn-reserved {
+  background: transparent !important;
+  border: none !important;
+  padding: 4px !important;
+}
+
+.wish-menu-btn-reserved:hover {
+  background: transparent !important;
+  opacity: 0.7;
+}
+
+.gift-icon-small {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
 .wish-menu-dropdown {
   position: absolute;
   top: 100%;

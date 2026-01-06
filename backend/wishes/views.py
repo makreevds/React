@@ -224,6 +224,10 @@ class WishViewSet(viewsets.ModelViewSet):
         # Получаем пользователя, который дарит (из request или query params)
         gifted_by_id = request.data.get('gifted_by_id') or request.query_params.get('gifted_by_id')
         
+        # Если gifted_by_id не передан, но подарок зарезервирован, используем reserved_by
+        if not gifted_by_id and wish.reserved_by:
+            gifted_by_id = wish.reserved_by.id
+        
         if gifted_by_id:
             try:
                 gifted_by = User.objects.get(id=int(gifted_by_id))
