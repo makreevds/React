@@ -109,6 +109,8 @@ export function UserProfilePage() {
         }
 
         const userData = await usersRepo.getUserByTelegramId(telegramIdNum)
+        console.log('Загружены данные пользователя:', userData)
+        console.log('gifts_given:', userData.gifts_given, 'gifts_received:', userData.gifts_received)
         setViewedUser(userData)
       } catch (err) {
         console.error('Ошибка загрузки данных пользователя:', err)
@@ -177,8 +179,10 @@ export function UserProfilePage() {
                     comment: w.comment ? String(w.comment) : undefined,
                     status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
                   }
+                  console.log('Обработано желание:', processed.id, 'image_url:', processed.image_url)
                   processedWishes.push(processed)
                 } catch (err) {
+                  console.error('Ошибка обработки желания:', err, w)
                   // Пропускаем некорректные желания
                 }
               }
@@ -292,19 +296,17 @@ export function UserProfilePage() {
           </div>
           
           {/* Блок статистики подарков */}
-          {(viewedUser.gifts_given || viewedUser.gifts_received) && (
-            <div className="gifts-stats-section">
-              <div className="gifts-stat-item">
-                <div className="gifts-stat-value">{viewedUser.gifts_given || 0}</div>
-                <div className="gifts-stat-label">Подарено</div>
-              </div>
-              <div className="gifts-stat-divider"></div>
-              <div className="gifts-stat-item">
-                <div className="gifts-stat-value">{viewedUser.gifts_received || 0}</div>
-                <div className="gifts-stat-label">Получено</div>
-              </div>
+          <div className="gifts-stats-section">
+            <div className="gifts-stat-item">
+              <div className="gifts-stat-value">{viewedUser.gifts_given || 0}</div>
+              <div className="gifts-stat-label">Подарено</div>
             </div>
-          )}
+            <div className="gifts-stat-divider"></div>
+            <div className="gifts-stat-item">
+              <div className="gifts-stat-value">{viewedUser.gifts_received || 0}</div>
+              <div className="gifts-stat-label">Получено</div>
+            </div>
+          </div>
         </section>
 
         <section className="wishes-list-section">
@@ -358,27 +360,30 @@ export function UserProfilePage() {
                                       {wish.image_url ? (
                                         <img 
                                           src={wish.image_url} 
-                                          alt={wish.title}
+                                          alt={wish.title || 'Желание'}
                                           className="wish-image"
                                           onError={(e) => {
-                                            const target = e.target as HTMLImageElement
-                                            target.style.display = 'none'
+                                            e.currentTarget.style.display = 'none'
+                                            const container = e.currentTarget.parentElement
+                                            if (container) {
+                                              const placeholder = container.querySelector('.wish-image-placeholder')
+                                              if (placeholder) {
+                                                placeholder.classList.add('show')
+                                              }
+                                            }
                                           }}
                                         />
-                                      ) : (
-                                        <div className="wish-image-placeholder">
-                                          <GiftIcon className="wish-image-placeholder-icon" />
-                                        </div>
-                                      )}
+                                      ) : null}
+                                      <div className={`wish-image-placeholder ${!wish.image_url ? 'show' : ''}`}>
+                                        <GiftIcon className="gift-icon" />
+                                      </div>
                                     </div>
-                                    <div className="wish-details">
-                                      <h4 className="wish-title">{wish.title}</h4>
+                                    <div className="wish-content">
+                                      <h4 className="wish-title">{wish.title || 'Без названия'}</h4>
                                       {wish.comment && (
                                         <p className="wish-description">{wish.comment}</p>
                                       )}
-                                      {wish.price && (
-                                        <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
-                                      )}
+                                      <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
                                       {wish.status === 'reserved' && (
                                         <p className="wish-status wish-status-reserved">Зарезервировано</p>
                                       )}
