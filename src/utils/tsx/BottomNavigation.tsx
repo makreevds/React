@@ -37,7 +37,7 @@ export function BottomNavigation() {
   const navRef = useRef<HTMLElement>(null)
   const itemRefs = useRef<(HTMLAnchorElement | null)[]>([])
   const indicatorRef = useRef<HTMLDivElement>(null)
-  const [indicatorStyle, setIndicatorStyle] = useState<{ left: string; width: string }>({ left: '0%', width: '0%' })
+  const [indicatorStyle, setIndicatorStyle] = useState<{ left: string; width: string; height: string }>({ left: '0%', width: '0%', height: '0%' })
 
   // Определяем активный путь
   const getActivePath = () => {
@@ -65,11 +65,12 @@ export function BottomNavigation() {
 
       // Вычисляем центр иконки для позиционирования круга
       const itemCenterX = itemRect.left - navRect.left + itemRect.width / 2
-      const indicatorSize = 48 // Размер круга
+      const indicatorSize = 70 // Размер круга
 
       setIndicatorStyle({
         left: `${itemCenterX - indicatorSize / 2}px`,
         width: `${indicatorSize}px`,
+        height: `${indicatorSize}px`,
       })
     }
 
@@ -94,6 +95,7 @@ export function BottomNavigation() {
         style={{
           left: indicatorStyle.left,
           width: indicatorStyle.width,
+          height: indicatorStyle.height,
         }}
       />
       <NavLink 
