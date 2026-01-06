@@ -60,5 +60,30 @@ export class UsersRepository {
   async updateUser(userId: number, data: Partial<RegisterUserRequest>): Promise<User> {
     return this.apiClient.patch<User>(`/api/users/${userId}/`, data)
   }
+
+  /**
+   * Получает список подписок пользователя
+   */
+  async getSubscriptions(userId: number): Promise<User[]> {
+    return this.apiClient.get<User[]>(`/api/users/${userId}/subscriptions/`)
+  }
+
+  /**
+   * Подписывает пользователя на другого пользователя
+   */
+  async subscribe(userId: number, targetUserId: number): Promise<{ success: boolean }> {
+    return this.apiClient.post<{ success: boolean }>(`/api/users/${userId}/subscribe/`, {
+      user_id: targetUserId
+    })
+  }
+
+  /**
+   * Отписывает пользователя от другого пользователя
+   */
+  async unsubscribe(userId: number, targetUserId: number): Promise<{ success: boolean }> {
+    return this.apiClient.post<{ success: boolean }>(`/api/users/${userId}/unsubscribe/`, {
+      user_id: targetUserId
+    })
+  }
 }
 

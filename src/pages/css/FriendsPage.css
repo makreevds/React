@@ -46,7 +46,19 @@
   padding-bottom: var(--spacing-xl);
 }
 
-/* .placeholder-text {
-  padding-top: var(--spacing-lg);
-  padding-bottom: var(--spacing-lg);
-} */
+.friends-loading,
+.friends-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+}
+
+.friends-empty p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.unsubscribe-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -139,3 +139,60 @@ class UserViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(user)
         return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['get'], url_path='subscriptions')
+    def subscriptions(self, request: Request, pk: int = None) -> Response:
+        """Получает список подписок пользователя с полными данными."""
+        user = get_object_or_404(User, pk=pk)
+        subscriptions = user.subscriptions.all()
+        serializer = UserSerializer(subscriptions, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'], url_path='subscribe')
+    def subscribe(self, request: Request, pk: int = None) -> Response:
+        """Подписывает пользователя на другого пользователя."""
+        user = get_object_or_404(User, pk=pk)
+        target_user_id = request.data.get('user_id')
+        
+        if not target_user_id:
+            return Response(
+                {'error': 'Параметр user_id обязателен'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            target_user = get_object_or_404(User, pk=int(target_user_id))
+            if target_user.id == user.id:
+                return Response(
+                    {'error': 'Пользователь не может подписаться сам на себя'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            user.subscriptions.add(target_user)
+            return Response({'success': True}, status=status.HTTP_200_OK)
+        except ValueError:
+            return Response(
+                {'error': 'Некорректный user_id'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
+    @action(detail=True, methods=['post'], url_path='unsubscribe')
+    def unsubscribe(self, request: Request, pk: int = None) -> Response:
+        """Отписывает пользователя от другого пользователя."""
+        user = get_object_or_404(User, pk=pk)
+        target_user_id = request.data.get('user_id')
+        
+        if not target_user_id:
+            return Response(
+                {'error': 'Параметр user_id обязателен'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            target_user = get_object_or_404(User, pk=int(target_user_id))
+            user.subscriptions.remove(target_user)
+            return Response({'success': True}, status=status.HTTP_200_OK)
+        except ValueError:
+            return Response(
+                {'error': 'Некорректный user_id'},
+                status=status.HTTP_400_BAD_REQUEST
+            )

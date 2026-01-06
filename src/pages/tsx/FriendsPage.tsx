@@ -1,10 +1,39 @@
+import { useState, useEffect } from 'react'
 import '../css/FriendsPage.css'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { useErrorHandler } from '../../hooks/useErrorHandler'
+import { useApiContext } from '../../contexts/ApiContext'
+import type { User } from '../../utils/api/users'
 
 export function FriendsPage() {
-  const { webApp, getUserId } = useTelegramWebApp()
+  const { webApp, getUserId, user: currentUser } = useTelegramWebApp()
   const { handleError } = useErrorHandler(webApp || undefined)
+  const { users: usersRepository } = useApiContext()
+  const [subscriptions, setSubscriptions] = useState<User[]>([])
+  const [loading, setLoading] = useState(true)
+  const [unsubscribing, setUnsubscribing] = useState<number | null>(null)
+
+  // Загружаем подписки пользователя
+  useEffect(() => {
+    const loadSubscriptions = async () => {
+      if (!currentUser?.id) {
+        setLoading(false)
+        return
+      }
+
+      try {
+        setLoading(true)
+        const subs = await usersRepository.getSubscriptions(currentUser.id)
+        setSubscriptions(subs)
+      } catch (error) {
+        handleError(error, 'FriendsPage.loadSubscriptions')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadSubscriptions()
+  }, [currentUser?.id])
 
   // Тот самый метод для приглашения
   const handleInvite = () => {
@@ -36,34 +65,72 @@ export function FriendsPage() {
     }
   }
 
-  // Фейковые данные для теста верстки
-  const friendsInApp = [
-    { id: 1, name: 'Алексей', username: '@alex_dev' },
-    { id: 2, name: 'Мария', username: '@mary_design' }
-  ];
+  // Обработчик отписки
+  const handleUnsubscribe = async (targetUserId: number) => {
+    if (!currentUser?.id) {
+      return
+    }
+
+    try {
+      setUnsubscribing(targetUserId)
+      await usersRepository.unsubscribe(currentUser.id, targetUserId)
+      // Удаляем пользователя из списка
+      setSubscriptions(prev => prev.filter(sub => sub.id !== targetUserId))
+    } catch (error) {
+      handleError(error, 'FriendsPage.handleUnsubscribe')
+    } finally {
+      setUnsubscribing(null)
+    }
+  }
+
+  // Форматирование имени пользователя
+  const getUserDisplayName = (user: User): string => {
+    if (user.last_name) {
+      return `${user.first_name} ${user.last_name}`
+    }
+    return user.first_name
+  }
+
+  // Форматирование username
+  const getUserUsername = (user: User): string => {
+    return user.username ? `@${user.username}` : ''
+  }
 
   return (
     <div className="page-container">
       <h1>Друзья</h1>
 
-      {/* Список тех, кто уже в БД */}
-      <div className="friends-list">
-        {friendsInApp.map(friend => (
-          <div key={friend.id} className="friend-row">
-             <div className="friend-info">
-                <div className="friend-name">{friend.name}</div>
-                <div className="friend-username">{friend.username}</div>
-             </div>
-             <button className="unsubscribe-btn">Отписаться</button>
-          </div>
-        ))}
-      </div>
+      {/* Список подписок */}
+      {loading ? (
+        <div className="friends-loading">Загрузка...</div>
+      ) : subscriptions.length === 0 ? (
+        <div className="friends-empty">
+          <p>У вас пока нет подписок</p>
+        </div>
+      ) : (
+        <div className="friends-list">
+          {subscriptions.map(subscription => (
+            <div key={subscription.id} className="friend-row">
+              <div className="friend-info">
+                <div className="friend-name">{getUserDisplayName(subscription)}</div>
+                {subscription.username && (
+                  <div className="friend-username">{getUserUsername(subscription)}</div>
+                )}
+              </div>
+              <button 
+                className="unsubscribe-btn"
+                onClick={() => handleUnsubscribe(subscription.id)}
+                disabled={unsubscribing === subscription.id}
+              >
+                {unsubscribing === subscription.id ? 'Отписка...' : 'Отписаться'}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
-      {/* Секция приглашения, если кого-то нет */}
+      {/* Секция приглашения */}
       <div className="invite-section">
-        {/* <p className="placeholder-text">
-          Пригласи друзей!
-        </p> */}
         <button className="invite-main-btn" onClick={handleInvite}>
           Пригласить друзей
         </button>
