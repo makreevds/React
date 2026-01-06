@@ -41,7 +41,7 @@ export function SettingsPage() {
     return () => clearTimeout(timeoutId)
   }, [theme, telegramUser?.id, users, isUpdating])
 
-  const handleThemeChange = (newTheme: 'light' | 'dark') => {
+  const handleThemeChange = (newTheme: 'light' | 'dark' | 'ozon') => {
     setTheme(newTheme)
   }
 
@@ -54,7 +54,7 @@ export function SettingsPage() {
           <div className="setting-info">
             <span className="setting-label">Тема</span>
             <span className="setting-description">
-              {theme === 'dark' ? 'Темная' : 'Светлая'}
+              {theme === 'dark' ? 'Темная' : theme === 'ozon' ? 'OZON стиль' : 'Светлая'}
             </span>
           </div>
           <div className="theme-segmented-control">
@@ -75,6 +75,15 @@ export function SettingsPage() {
               disabled={isUpdating}
             >
               🌙
+            </button>
+            <button
+              className={`theme-segment ${theme === 'ozon' ? 'active' : ''}`}
+              onClick={() => handleThemeChange('ozon')}
+              aria-label="OZON стиль"
+              title="OZON стиль"
+              disabled={isUpdating}
+            >
+              OZ
             </button>
           </div>
         </div>
