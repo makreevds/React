@@ -90,3 +90,8 @@
   background: rgba(255, 255, 255, var(--opacity-nav-head));
   border-color: var(--tg-accent-theme);
 }
+
+/* Скрываем навбар, когда открыта клавиатура (фокус на инпуте/текстареа/селекте) */
+body.keyboard-open .bottom-navigation {
+  display: none;
+}

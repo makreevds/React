@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../css/WishesPage.css'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
@@ -16,6 +16,39 @@ export function AddWishlistPage() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Скрываем нижний навбар, когда открыта клавиатура (фокус на поле ввода)
+  useEffect(() => {
+    const isFormElement = (el: Element | null) => {
+      if (!el) return false
+      const tag = el.tagName.toLowerCase()
+      return tag === 'input' || tag === 'textarea' || tag === 'select'
+    }
+
+    const handleFocusIn = (event: FocusEvent) => {
+      if (isFormElement(event.target as Element)) {
+        document.body.classList.add('keyboard-open')
+      }
+    }
+
+    const handleFocusOut = () => {
+      // Небольшая задержка, чтобы дождаться перехода фокуса
+      setTimeout(() => {
+        if (!isFormElement(document.activeElement)) {
+          document.body.classList.remove('keyboard-open')
+        }
+      }, 50)
+    }
+
+    window.addEventListener('focusin', handleFocusIn)
+    window.addEventListener('focusout', handleFocusOut)
+
+    return () => {
+      document.body.classList.remove('keyboard-open')
+      window.removeEventListener('focusin', handleFocusIn)
+      window.removeEventListener('focusout', handleFocusOut)
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
