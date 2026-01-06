@@ -16,6 +16,7 @@
   margin-top: 24px;
   background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
   border-radius: var(--radius-md);
+  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out forwards;
 }
@@ -254,7 +255,6 @@ body.theme-dark .wishes-empty {
   padding: 16px;
   background: var(--theme-current-bg, var(--theme-bg-color));
   border-radius: var(--radius-md);
-  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
@@ -289,6 +289,10 @@ body.theme-dark .wish-item:hover {
 
 .wish-item:active {
   transform: scale(0.98);
+}
+
+.user-profile-page .wishes-list .wish-item:last-child {
+  margin-bottom: 10px;
 }
 
 .wish-image-container {

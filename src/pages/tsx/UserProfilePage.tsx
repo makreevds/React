@@ -268,7 +268,7 @@ export function UserProfilePage() {
   const userPhotoUrl = undefined // TODO: добавить photo_url если будет нужно
 
   return (
-    <div className="page-container wishes-page">
+    <div className="page-container wishes-page user-profile-page">
       <div className="wishes-main-content">
         <section className="user-profile-section">
           <div className="user-profile-top">
