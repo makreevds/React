@@ -325,7 +325,7 @@ export function WishesPage() {
                     : undefined,
                   currency: w.currency ? String(w.currency) : undefined,
                   image_url: w.image_url ? String(w.image_url) : undefined,
-                  description: w.description ? String(w.description) : undefined,
+                  comment: w.comment ? String(w.comment) : undefined,
                   status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
                 }))
                 wishesMap[wishlist.id] = processedWishes
