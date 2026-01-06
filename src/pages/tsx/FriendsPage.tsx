@@ -83,6 +83,15 @@ export function FriendsPage() {
       return
     }
 
+    // Находим пользователя в списке подписок для отображения имени
+    const targetUser = subscriptions.find(sub => sub.id === targetUserId)
+    const userName = targetUser ? getUserDisplayName(targetUser) : 'этого пользователя'
+    
+    // Показываем окно подтверждения
+    if (!confirm(`Вы уверены, что хотите отписаться от ${userName}?`)) {
+      return
+    }
+
     try {
       setUnsubscribing(targetUserId)
       // Получаем пользователя из БД по telegram_id
