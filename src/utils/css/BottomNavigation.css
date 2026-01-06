@@ -37,7 +37,7 @@
   height: 70px;
   background: var(--tg-theme-button-color, #0088cc);
   border-radius: 40px;
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s ease;
+  transition: left 0.3s cubic-bezier(0.59, 0.16, 0.75, 0.16), background 0.2s ease;
   pointer-events: none;
   z-index: 0;
   opacity: 1;
