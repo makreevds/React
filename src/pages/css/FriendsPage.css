@@ -71,6 +71,7 @@
   padding: 3px;
   gap: 3px;
   margin-bottom: 20px;
+  margin-top: 24px;
 }
 
 html.theme-light .friends-segmented-control,
