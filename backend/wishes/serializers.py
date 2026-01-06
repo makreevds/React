@@ -228,6 +228,26 @@ class WishUpdateSerializer(serializers.ModelSerializer):
             'price',
             'currency',
             'status',
+            'reserved_by',
             'order',
         ]
+    
+    def update(self, instance: Wish, validated_data: dict) -> Wish:
+        """Обновляет желание с обработкой reserved_at."""
+        from django.utils import timezone
+        
+        # Сохраняем старое значение статуса
+        old_status = instance.status
+        new_status = validated_data.get('status', old_status)
+        
+        # Если статус меняется на 'reserved', устанавливаем reserved_at
+        if old_status != 'reserved' and new_status == 'reserved':
+            instance.reserved_at = timezone.now()
+        # Если статус меняется с 'reserved' на другой, очищаем reserved_at и reserved_by
+        elif old_status == 'reserved' and new_status != 'reserved':
+            instance.reserved_at = None
+            if 'reserved_by' not in validated_data:
+                validated_data['reserved_by'] = None
+        
+        return super().update(instance, validated_data)
 

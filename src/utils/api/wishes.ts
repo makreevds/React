@@ -54,6 +54,7 @@ export interface UpdateWishRequest {
   price?: number
   currency?: string
   status?: 'active' | 'reserved' | 'fulfilled'
+  reserved_by?: number | null
   order?: number
 }
 

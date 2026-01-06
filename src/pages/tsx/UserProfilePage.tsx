@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import '../css/WishesPage.css'
 import { useApiContext } from '../../contexts/ApiContext'
+import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { GiftIcon } from '../../utils/tsx/GiftIcon'
 import type { User } from '../../utils/api/users'
 
@@ -19,6 +20,7 @@ interface Wish {
   image_url?: string
   comment?: string
   status: 'active' | 'reserved' | 'fulfilled'
+  reserved_by_id?: number
 }
 
 // Компонент-обертка для плавной анимации сворачивания/разворачивания
@@ -84,6 +86,7 @@ function WishlistContentWrapper({ children, isCollapsed }: WishlistContentWrappe
 
 export function UserProfilePage() {
   const { telegramId } = useParams<{ telegramId: string }>()
+  const { user: currentTelegramUser } = useTelegramWebApp()
   const apiContext = useApiContext()
   const wishlistsRepo = apiContext?.wishlists
   const wishesRepo = apiContext?.wishes
@@ -91,6 +94,7 @@ export function UserProfilePage() {
   const navigate = useNavigate()
 
   const [viewedUser, setViewedUser] = useState<User | null>(null)
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [wishlists, setWishlists] = useState<Wishlist[]>([])
   const [wishesByWishlist, setWishesByWishlist] = useState<Record<number, Wish[]>>({})
   const [isLoading, setIsLoading] = useState(true)
@@ -126,6 +130,24 @@ export function UserProfilePage() {
 
     loadUserData()
   }, [telegramId, usersRepo])
+
+  // Загружаем данные текущего пользователя (кто смотрит профиль)
+  useEffect(() => {
+    if (!currentTelegramUser?.id || !usersRepo) {
+      return
+    }
+
+    const loadCurrentUser = async () => {
+      try {
+        const userData = await usersRepo.getUserByTelegramId(currentTelegramUser.id)
+        setCurrentUser(userData)
+      } catch (err) {
+        console.error('Ошибка загрузки данных текущего пользователя:', err)
+      }
+    }
+
+    loadCurrentUser()
+  }, [currentTelegramUser?.id, usersRepo])
 
   // Загружаем вишлисты и желания пользователя
   useEffect(() => {
@@ -183,6 +205,7 @@ export function UserProfilePage() {
                     image_url: w.image_url ? String(w.image_url) : undefined,
                     comment: w.comment ? String(w.comment) : undefined,
                     status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
+                    reserved_by_id: w.reserved_by_id ? Number(w.reserved_by_id) : undefined,
                   }
                   console.log('Обработано желание:', processed.id, 'image_url:', processed.image_url)
                   processedWishes.push(processed)
@@ -230,19 +253,39 @@ export function UserProfilePage() {
   }
 
   // Обработчик бронирования/снятия брони подарка
-  const handleToggleReserve = async (wishId: number, currentStatus: string) => {
-    if (!wishesRepo) return
+  const handleToggleReserve = async (wishId: number, currentStatus: string, reservedById?: number) => {
+    if (!wishesRepo || !currentUser) return
+
+    // Проверяем, что снять бронь может только тот, кто зарезервировал
+    if (currentStatus === 'reserved' && reservedById !== currentUser.id) {
+      alert('Вы можете снять бронь только с подарков, которые вы зарезервировали')
+      return
+    }
 
     try {
       const newStatus = currentStatus === 'reserved' ? 'active' : 'reserved'
-      await wishesRepo.updateWish(wishId, { status: newStatus })
+      const updateData: any = { status: newStatus }
+      
+      if (newStatus === 'reserved') {
+        // При бронировании устанавливаем reserved_by (ID пользователя)
+        updateData.reserved_by = currentUser.id
+      } else {
+        // При снятии брони очищаем reserved_by
+        updateData.reserved_by = null
+      }
+      
+      await wishesRepo.updateWish(wishId, updateData)
       
       // Обновляем состояние локально
       setWishesByWishlist(prev => {
         const updated = { ...prev }
         for (const wishlistId in updated) {
           updated[Number(wishlistId)] = updated[Number(wishlistId)].map(w => 
-            w.id === wishId ? { ...w, status: newStatus as 'active' | 'reserved' | 'fulfilled' } : w
+            w.id === wishId ? { 
+              ...w, 
+              status: newStatus as 'active' | 'reserved' | 'fulfilled',
+              reserved_by_id: newStatus === 'reserved' ? currentUser.id : undefined
+            } : w
           )
         }
         return updated
@@ -422,13 +465,32 @@ export function UserProfilePage() {
                                       )}
                                     </div>
                                     <div className="wish-actions">
-                                      <button
-                                        className={`btn-reserve ${wish.status === 'reserved' ? 'btn-reserve-active' : ''}`}
-                                        onClick={() => handleToggleReserve(wish.id, wish.status)}
-                                        disabled={wish.status === 'fulfilled'}
-                                      >
-                                        {wish.status === 'reserved' ? 'Снять бронь' : 'Забронировать'}
-                                      </button>
+                                      {wish.status === 'fulfilled' ? (
+                                        // Если подарок исполнен - ничего не показываем
+                                        null
+                                      ) : wish.status === 'reserved' ? (
+                                        // Если подарок зарезервирован
+                                        currentUser && wish.reserved_by_id === currentUser.id ? (
+                                          // И зарезервирован текущим пользователем - показываем кнопку "Снять бронь"
+                                          <button
+                                            className="btn-reserve btn-reserve-active"
+                                            onClick={() => handleToggleReserve(wish.id, wish.status, wish.reserved_by_id)}
+                                          >
+                                            Снять бронь
+                                          </button>
+                                        ) : (
+                                          // Иначе просто показываем статус
+                                          <span className="wish-status wish-status-reserved">Зарезервировано</span>
+                                        )
+                                      ) : (
+                                        // Если подарок не зарезервирован - показываем кнопку "Забронировать"
+                                        <button
+                                          className="btn-reserve"
+                                          onClick={() => handleToggleReserve(wish.id, wish.status, wish.reserved_by_id)}
+                                        >
+                                          Забронировать
+                                        </button>
+                                      )}
                                     </div>
                                   </div>
                                 )
