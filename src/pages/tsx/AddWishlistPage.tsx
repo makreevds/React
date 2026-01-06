@@ -94,14 +94,14 @@ export function AddWishlistPage() {
             </div>
             <div className="form-group">
               <label htmlFor="wishlist-description">Описание</label>
-              <div className="form-example">Самое необходимое для меня</div>
+              <div className="form-example">Пример: Самое необходимое для меня</div>
               <textarea
                 id="wishlist-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder="(необязательно)"
+                placeholder="(Необязательно)"
                 rows={3}
               />
             </div>

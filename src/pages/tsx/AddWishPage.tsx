@@ -208,7 +208,7 @@ export function AddWishPage() {
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
                 rows={3}
-                placeholder="(не обязательно)"
+                placeholder="(Не обязательно)"
               />
             </div>
             <div className="form-group">
@@ -220,7 +220,7 @@ export function AddWishPage() {
                 onChange={(e) => setLink(e.target.value)}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder="https://... (не обязательно)"
+                placeholder="https://... (Не обязательно)"
               />
             </div>
             <div className="form-group">
@@ -232,7 +232,7 @@ export function AddWishPage() {
                 onChange={(e) => setImageUrl(e.target.value)}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder="https://... (не обязательно)"
+                placeholder="https://... (Не обязательно)"
               />
             </div>
             <div className="form-row">
@@ -246,7 +246,7 @@ export function AddWishPage() {
                   onChange={(e) => setPrice(e.target.value)}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
-                  placeholder="0 (не обязательно)"
+                  placeholder="0 (Не обязательно)"
                 />
               </div>
               <div className="form-group">
