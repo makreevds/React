@@ -438,8 +438,8 @@ body.theme-dark .wish-status-fulfilled {
 }
 
 .wishlist-group {
-  margin-bottom: 0px;
   padding: 20px;
+  margin-bottom: 14px;
   background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
   border-radius: var(--radius-md);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
