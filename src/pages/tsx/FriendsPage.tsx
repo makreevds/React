@@ -16,16 +16,25 @@ export function FriendsPage() {
   // Загружаем подписки пользователя
   useEffect(() => {
     const loadSubscriptions = async () => {
-      if (!currentUser?.id) {
+      // currentUser из Telegram содержит telegram_id, а не id из БД
+      // Нужно получить пользователя из БД по telegram_id
+      const telegramId = currentUser?.id
+      if (!telegramId) {
         setLoading(false)
         return
       }
 
       try {
         setLoading(true)
-        const subs = await usersRepository.getSubscriptions(currentUser.id)
+        // Получаем пользователя из БД по telegram_id
+        const dbUser = await usersRepository.getUserByTelegramId(telegramId)
+        console.log('Загружаем подписки для пользователя с id:', dbUser.id)
+        // Теперь используем id из БД
+        const subs = await usersRepository.getSubscriptions(dbUser.id)
+        console.log('Получены подписки:', subs)
         setSubscriptions(subs)
       } catch (error) {
+        console.error('Ошибка при загрузке подписок:', error)
         handleError(error, 'FriendsPage.loadSubscriptions')
       } finally {
         setLoading(false)
@@ -67,13 +76,16 @@ export function FriendsPage() {
 
   // Обработчик отписки
   const handleUnsubscribe = async (targetUserId: number) => {
-    if (!currentUser?.id) {
+    const telegramId = currentUser?.id
+    if (!telegramId) {
       return
     }
 
     try {
       setUnsubscribing(targetUserId)
-      await usersRepository.unsubscribe(currentUser.id, targetUserId)
+      // Получаем пользователя из БД по telegram_id
+      const dbUser = await usersRepository.getUserByTelegramId(telegramId)
+      await usersRepository.unsubscribe(dbUser.id, targetUserId)
       // Удаляем пользователя из списка
       setSubscriptions(prev => prev.filter(sub => sub.id !== targetUserId))
     } catch (error) {
