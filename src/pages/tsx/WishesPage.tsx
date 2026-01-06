@@ -5,6 +5,8 @@ import '../css/WishesPage.css'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { useApiContext } from '../../contexts/ApiContext'
 import { GiftIcon } from '../../utils/tsx/GiftIcon'
+import doneIcon from '../../assets/done.png'
+import whatIcon from '../../assets/what.png'
 
 // Компонент меню для зарезервированного подарка (иконка подарка)
 interface ReservedWishMenuProps {
@@ -61,7 +63,7 @@ function ReservedWishMenu({ onMarkAsReceived }: ReservedWishMenuProps) {
         aria-label="Меню подарка"
         title="Меню подарка"
       >
-        <GiftIcon className="gift-icon-small" />
+        <img src={whatIcon} alt="Зарезервировано" className="gift-icon-small" />
       </button>
       {isOpen && createPortal(
         <div 
@@ -748,7 +750,11 @@ export function WishesPage() {
                                 )}
                               </div>
                               <div className="wish-actions">
-                                {wish.status === 'reserved' ? (
+                                {wish.status === 'fulfilled' ? (
+                                  <div className="wish-status-icon">
+                                    <img src={doneIcon} alt="Исполнено" className="gift-icon-small" />
+                                  </div>
+                                ) : wish.status === 'reserved' ? (
                                   <ReservedWishMenu
                                     onMarkAsReceived={() => handleMarkAsReceived(wish.id, wish.reserved_by_id)}
                                   />

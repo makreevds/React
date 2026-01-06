@@ -741,6 +741,15 @@ body.theme-dark .wish-menu-btn {
   object-fit: contain;
 }
 
+.wish-status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  pointer-events: none;
+}
+
 .wish-menu-dropdown {
   position: absolute;
   top: 100%;
