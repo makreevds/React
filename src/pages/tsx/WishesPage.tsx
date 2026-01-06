@@ -413,6 +413,35 @@ export function WishesPage() {
     }
   }
 
+  const handleDeleteWishlist = async (wishlistId: number) => {
+    if (!confirm('Вы уверены, что хотите удалить этот вишлист? Все подарки в нём также будут удалены.')) {
+      return
+    }
+
+    try {
+      if (!wishlistsRepo) {
+        console.error('wishlistsRepo не доступен')
+        return
+      }
+      await wishlistsRepo.deleteWishlist(wishlistId)
+      // Удаляем вишлист из состояния
+      setWishlists(prev => prev.filter(wl => wl.id !== wishlistId))
+      // Удаляем желания этого вишлиста из состояния
+      const updatedWishesByWishlist = { ...wishesByWishlist }
+      delete updatedWishesByWishlist[wishlistId]
+      setWishesByWishlist(updatedWishesByWishlist)
+      // Удаляем из collapsedWishlists, если там был
+      setCollapsedWishlists(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(wishlistId)
+        return newSet
+      })
+    } catch (err) {
+      console.error('Ошибка при удалении вишлиста:', err)
+      alert('Не удалось удалить вишлист')
+    }
+  }
+
   const formatPrice = (price?: number | string, currency?: string) => {
     if (!price) return 'Цена не указана'
     const numPrice = typeof price === 'string' ? parseFloat(price) : price
@@ -540,6 +569,12 @@ export function WishesPage() {
                             >
                               + Добавить подарок
                             </button>
+                            <button 
+                              className="btn-delete-wishlist"
+                              onClick={() => handleDeleteWishlist(wishlist.id)}
+                            >
+                              Удалить вишлист
+                            </button>
                           </>
                         ) : (
                           <>
@@ -598,6 +633,12 @@ export function WishesPage() {
                               onClick={() => navigate(`/wishes/add-wish?wishlistId=${wishlist.id}`)}
                             >
                               + Добавить подарок
+                            </button>
+                            <button 
+                              className="btn-delete-wishlist"
+                              onClick={() => handleDeleteWishlist(wishlist.id)}
+                            >
+                              Удалить вишлист
                             </button>
                           </>
                         )}
