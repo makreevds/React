@@ -17,36 +17,30 @@ export function AddWishlistPage() {
   const [description, setDescription] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Скрываем нижний навбар, когда открыта клавиатура (фокус на поле ввода)
-  useEffect(() => {
-    const isFormElement = (el: Element | null) => {
-      if (!el) return false
-      const tag = el.tagName.toLowerCase()
-      return tag === 'input' || tag === 'textarea' || tag === 'select'
-    }
+  // Обработчики для скрытия навбара при фокусе на поле ввода
+  const handleInputFocus = () => {
+    document.body.classList.add('keyboard-open')
+  }
 
-    const handleFocusIn = (event: FocusEvent) => {
-      if (isFormElement(event.target as Element)) {
-        document.body.classList.add('keyboard-open')
+  const handleInputBlur = () => {
+    // Небольшая задержка, чтобы дождаться перехода фокуса на другое поле
+    setTimeout(() => {
+      const activeElement = document.activeElement
+      const isFormElement = activeElement && (
+        activeElement.tagName.toLowerCase() === 'input' ||
+        activeElement.tagName.toLowerCase() === 'textarea' ||
+        activeElement.tagName.toLowerCase() === 'select'
+      )
+      if (!isFormElement) {
+        document.body.classList.remove('keyboard-open')
       }
-    }
+    }, 100)
+  }
 
-    const handleFocusOut = () => {
-      // Небольшая задержка, чтобы дождаться перехода фокуса
-      setTimeout(() => {
-        if (!isFormElement(document.activeElement)) {
-          document.body.classList.remove('keyboard-open')
-        }
-      }, 50)
-    }
-
-    window.addEventListener('focusin', handleFocusIn)
-    window.addEventListener('focusout', handleFocusOut)
-
+  // Очистка при размонтировании
+  useEffect(() => {
     return () => {
       document.body.classList.remove('keyboard-open')
-      window.removeEventListener('focusin', handleFocusIn)
-      window.removeEventListener('focusout', handleFocusOut)
     }
   }, [])
 
@@ -90,6 +84,8 @@ export function AddWishlistPage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
                 required
                 placeholder="Например: День рождения"
                 autoFocus
@@ -101,6 +97,8 @@ export function AddWishlistPage() {
                 id="wishlist-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
                 placeholder="Описание вишлиста (необязательно)"
                 rows={3}
               />

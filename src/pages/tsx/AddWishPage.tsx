@@ -29,35 +29,30 @@ export function AddWishPage() {
     }
   }, [wishlistId])
 
-  // Скрываем нижний навбар, когда открыта клавиатура (фокус на поле ввода)
-  useEffect(() => {
-    const isFormElement = (el: Element | null) => {
-      if (!el) return false
-      const tag = el.tagName.toLowerCase()
-      return tag === 'input' || tag === 'textarea' || tag === 'select'
-    }
+  // Обработчики для скрытия навбара при фокусе на поле ввода
+  const handleInputFocus = () => {
+    document.body.classList.add('keyboard-open')
+  }
 
-    const handleFocusIn = (event: FocusEvent) => {
-      if (isFormElement(event.target as Element)) {
-        document.body.classList.add('keyboard-open')
+  const handleInputBlur = () => {
+    // Небольшая задержка, чтобы дождаться перехода фокуса на другое поле
+    setTimeout(() => {
+      const activeElement = document.activeElement
+      const isFormElement = activeElement && (
+        activeElement.tagName.toLowerCase() === 'input' ||
+        activeElement.tagName.toLowerCase() === 'textarea' ||
+        activeElement.tagName.toLowerCase() === 'select'
+      )
+      if (!isFormElement) {
+        document.body.classList.remove('keyboard-open')
       }
-    }
+    }, 100)
+  }
 
-    const handleFocusOut = () => {
-      setTimeout(() => {
-        if (!isFormElement(document.activeElement)) {
-          document.body.classList.remove('keyboard-open')
-        }
-      }, 50)
-    }
-
-    window.addEventListener('focusin', handleFocusIn)
-    window.addEventListener('focusout', handleFocusOut)
-
+  // Очистка при размонтировании
+  useEffect(() => {
     return () => {
       document.body.classList.remove('keyboard-open')
-      window.removeEventListener('focusin', handleFocusIn)
-      window.removeEventListener('focusout', handleFocusOut)
     }
   }, [])
 
@@ -128,6 +123,8 @@ export function AddWishPage() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
                 required
                 placeholder="Название подарка"
                 autoFocus
@@ -139,6 +136,8 @@ export function AddWishPage() {
                 id="wish-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
                 placeholder="Описание подарка (необязательно)"
                 rows={3}
               />
@@ -150,6 +149,8 @@ export function AddWishPage() {
                 type="url"
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
                 placeholder="https://..."
               />
             </div>
@@ -160,6 +161,8 @@ export function AddWishPage() {
                 type="url"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
                 placeholder="https://..."
               />
             </div>
@@ -172,6 +175,8 @@ export function AddWishPage() {
                   step="0.01"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
                   placeholder="0"
                 />
               </div>
@@ -181,6 +186,8 @@ export function AddWishPage() {
                   id="wish-currency"
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value)}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
                 >
                   <option value="₽">₽</option>
                   <option value="$">$</option>
