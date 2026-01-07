@@ -224,7 +224,7 @@ body.theme-light {
   color: var(--theme-text-color);
   --theme-current-bg: var(--theme-bg-color);
   --theme-current-text: var(--theme-text-color);
-  --theme-current-secondary-bg: rgba(0, 0, 0, 0.05);
+  --theme-current-secondary-bg: #ececec;
   --theme-current-hint: var(--theme-hint-color);
   --theme-current-hint-light: var(--theme-hint-color-light);
   --theme-current-warning: var(--theme-warning);
@@ -235,8 +235,8 @@ body.theme-light {
   --tg-accent-theme: #000000;
   --app-button-color: #0088cc;
   --app-button-text-color: #fff;
-  --color-box-shadow: #000000;
-  --box-shadow: 0 4px 12px var(--color-box-shadow);
+  --color-box-shadow: rgba(0, 0, 0, 0.66);
+  --box-shadow: 0px 7px 16px -11px var(--color-box-shadow);
 }
 
 /* Темная тема */
