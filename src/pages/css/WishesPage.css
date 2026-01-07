@@ -299,7 +299,7 @@
   padding: 20px;
   background: var(--theme-current-secondary-bg);
   border-radius: var(--radius-md);
-  transition: box-shadow 0.2s, transform 0.2s, opacity 0.3s ease;
+  transition: box-shadow 0.2s;
   animation: fadeIn 0.3s ease-in-out forwards;
 }
 
@@ -333,11 +333,15 @@ body.theme-ozon .wishlist-group {
 }
 
 
+.wishlist-clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
 .wishlist-clickable:hover {
   transform: translateY(-2px);
   box-shadow: var(--box-shadow);
 }
-
 
 .wishlist-clickable:active {
   transform: translateY(0);
