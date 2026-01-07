@@ -6,8 +6,6 @@ import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { GiftIcon } from '../../utils/tsx/GiftIcon'
 import type { Wish } from '../../utils/api/wishes'
 import type { User } from '../../utils/api/users'
-import doneIcon from '../../assets/done.png'
-import lockIcon from '../../assets/lock.png'
 
 interface WishWithExtras extends Wish {
   wishlist_name?: string
