@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { WishesPage } from './pages/tsx/WishesPage'
+import { WishlistPage } from './pages/tsx/WishlistPage'
 import { FriendsPage } from './pages/tsx/FriendsPage'
 import { SettingsPage } from './pages/tsx/SettingsPage'
 import { FeedPage } from './pages/tsx/FeedPage'
@@ -223,6 +224,10 @@ function AppContent() {
         <Route 
           path="/wishes/edit-wish" 
           element={<AddWishPage />} 
+        />
+        <Route 
+          path="/wishes/wishlist/:wishlistId" 
+          element={<WishlistPage />} 
         />
         <Route 
           path="/friends" 

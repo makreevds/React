@@ -502,6 +502,30 @@ body.theme-ozon .wishlist-group {
   margin-bottom: 0;
 }
 
+.wishlist-clickable {
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.wishlist-clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+html.theme-light .wishlist-clickable:hover,
+body.theme-light .wishlist-clickable:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+html.theme-dark .wishlist-clickable:hover,
+body.theme-dark .wishlist-clickable:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.wishlist-clickable:active {
+  transform: translateY(0);
+}
+
 .wishlist-name {
   font-size: 20px;
   font-weight: 600;
@@ -520,6 +544,17 @@ body.theme-ozon .wishlist-group {
 
 .wishlist-name:hover {
   color: var(--tg-theme-button-color, #0088cc);
+}
+
+.wishlist-arrow-icon {
+  font-size: 18px;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+  transition: transform 0.2s, color 0.2s;
+}
+
+.wishlist-clickable:hover .wishlist-arrow-icon {
+  color: var(--tg-theme-button-color, #0088cc);
+  transform: translateX(4px);
 }
 
 .wishlist-name-text {
