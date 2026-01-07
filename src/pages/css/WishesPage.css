@@ -5,7 +5,7 @@
 .wishes-main-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 /* Блок профиля пользователя */
@@ -185,7 +185,7 @@ body.theme-dark .gifts-stat-divider {
 .wishes-list-section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   opacity: 0;
   animation: fadeIn 0.4s ease-in-out 0.1s forwards;
 }
@@ -1039,8 +1039,6 @@ body.theme-dark .json-output {
 .btn-add-wish {
   width: 100%;
   padding: 10px 16px;
-  margin-top: 12px;
-  margin-bottom: 10px;
   background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
   color: var(--theme-current-text, var(--theme-text-color));
   border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
@@ -1121,8 +1119,6 @@ body.theme-dark .btn-delete-wishlist:hover {
 .btn-edit-wishlist {
   width: 100%;
   padding: 10px 16px;
-  margin-top: 10px;
-  margin-bottom: 10px;
   background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
   color: var(--theme-current-text, var(--theme-text-color));
   border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
