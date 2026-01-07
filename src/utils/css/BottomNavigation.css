@@ -55,26 +55,6 @@
   z-index: -1; /* Под border индикатора, но над border навбара */
 }
 
-html.theme-light .nav-indicator,
-body.theme-light .nav-indicator {
-  /* background: var(--tg-theme-button-color, #0088cc);
-  background: var(--app-button-color); */
-  background: none;
-}
-
-html.theme-dark .nav-indicator,
-body.theme-dark .nav-indicator {
-  /* background: var(--tg-theme-button-color, #0088cc);
-  background: var(--app-button-color); */
-  background: none;
-}
-
-html.theme-ozon .nav-indicator,
-body.theme-ozon .nav-indicator {
-  /* background: var(--tg-theme-button-color, #0088cc);
-  background: var(--app-button-color); */
-  background: none;
-}
 
 /* псевдоэлемент для чистого бордера */
 .bottom-navigation::before {

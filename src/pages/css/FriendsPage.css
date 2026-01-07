@@ -50,7 +50,7 @@
 .friends-empty {
   padding: 20px;
   text-align: center;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
 }
 
 .friends-empty p {
@@ -66,7 +66,7 @@
 /* Переключатель между подписками и подписчиками */
 .friends-segmented-control {
   display: flex;
-  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+  background: var(--theme-current-hint-light);
   border-radius: 10px;
   padding: 3px;
   gap: 3px;
@@ -74,15 +74,6 @@
   margin-top: 24px;
 }
 
-html.theme-light .friends-segmented-control,
-body.theme-light .friends-segmented-control {
-  background: var(--theme-hint-color-light);
-}
-
-html.theme-dark .friends-segmented-control,
-body.theme-dark .friends-segmented-control {
-  background: var(--theme-hint-color-light-dark);
-}
 
 .friends-segment {
   padding: 8px 16px;
@@ -90,7 +81,7 @@ body.theme-dark .friends-segmented-control {
   font-weight: 500;
   border: none;
   background: transparent;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
   border-radius: 7px;
   cursor: pointer;
   transition: all 0.2s;
@@ -99,48 +90,18 @@ body.theme-dark .friends-segmented-control {
   min-width: 0;
 }
 
-html.theme-light .friends-segment,
-body.theme-light .friends-segment {
-  color: var(--theme-hint-color);
-}
-
-html.theme-dark .friends-segment,
-body.theme-dark .friends-segment {
-  color: var(--theme-hint-color-dark);
-}
 
 .friends-segment:hover {
-  color: var(--theme-current-text, var(--theme-text-color));
+  color: var(--theme-current-text);
 }
 
-html.theme-light .friends-segment:hover,
-body.theme-light .friends-segment:hover {
-  color: var(--theme-text-color);
-}
-
-html.theme-dark .friends-segment:hover,
-body.theme-dark .friends-segment:hover {
-  color: var(--theme-text-color-dark);
-}
 
 .friends-segment.active {
-  background: var(--theme-current-bg, var(--theme-bg-color));
-  color: var(--theme-current-text, var(--theme-text-color));
+  background: var(--theme-current-bg);
+  color: var(--theme-current-text);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-html.theme-light .friends-segment.active,
-body.theme-light .friends-segment.active {
-  background: var(--theme-bg-color);
-  color: var(--theme-text-color);
-}
-
-html.theme-dark .friends-segment.active,
-body.theme-dark .friends-segment.active {
-  background: var(--theme-bg-color-dark);
-  color: var(--theme-text-color-dark);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
 
 .friends-segment:active {
   transform: scale(0.95);

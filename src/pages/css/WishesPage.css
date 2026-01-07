@@ -14,9 +14,9 @@
   flex-direction: column;
   padding: 20px;
   margin-top: 24px;
-  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
+  background: var(--theme-current-secondary-bg);
   border-radius: var(--radius-md);
-  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  border: 1px solid var(--theme-current-hint-light);
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out forwards;
 }
@@ -38,15 +38,6 @@
   gap: 16px;
 }
 
-html.theme-light .user-profile-section,
-body.theme-light .user-profile-section {
-  background: var(--theme-secondary-bg);
-}
-
-html.theme-dark .user-profile-section,
-body.theme-dark .user-profile-section {
-  background: var(--theme-secondary-bg-dark);
-}
 
 .user-avatar-container {
   flex-shrink: 0;
@@ -79,35 +70,17 @@ body.theme-dark .user-profile-section {
   font-size: 20px;
   font-weight: 600;
   margin: 0 0 4px 0;
-  color: var(--theme-current-text, var(--theme-text-color));
+  color: var(--theme-current-text);
   word-break: break-word;
 }
 
-html.theme-light .user-name,
-body.theme-light .user-name {
-  color: var(--theme-text-color);
-}
-
-html.theme-dark .user-name,
-body.theme-dark .user-name {
-  color: var(--theme-text-color-dark);
-}
 
 .user-username {
   font-size: 14px;
   margin: 0;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
 }
 
-html.theme-light .user-username,
-body.theme-light .user-username {
-  color: var(--theme-hint-color);
-}
-
-html.theme-dark .user-username,
-body.theme-dark .user-username {
-  color: var(--theme-hint-color-dark);
-}
 
 /* Блок статистики подарков */
 .gifts-stats-section {
@@ -116,20 +89,11 @@ body.theme-dark .user-username {
   justify-content: space-around;
   padding: 12px 0 0 0;
   margin-top: 12px;
-  border-top: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  border-top: 1px solid var(--theme-current-hint-light);
   gap: 16px;
   width: 100%;
 }
 
-html.theme-light .gifts-stats-section,
-body.theme-light .gifts-stats-section {
-  border-top-color: var(--theme-hint-color-light);
-}
-
-html.theme-dark .gifts-stats-section,
-body.theme-dark .gifts-stats-section {
-  border-top-color: var(--theme-hint-color-light-dark);
-}
 
 .gifts-stat-item {
   flex: 1;
@@ -149,37 +113,19 @@ body.theme-dark .gifts-stats-section {
 .gifts-stat-label {
   font-size: 14px;
   /* font-weight: 500; */
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
   /* text-transform: uppercase; */
   /* letter-spacing: 0.5px; */
 }
 
-html.theme-light .gifts-stat-label,
-body.theme-light .gifts-stat-label {
-  color: var(--theme-hint-color);
-}
-
-html.theme-dark .gifts-stat-label,
-body.theme-dark .gifts-stat-label {
-  color: var(--theme-hint-color-dark);
-}
 
 .gifts-stat-divider {
   width: 1px;
   height: 40px;
-  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+  background: var(--theme-current-hint-light);
   flex-shrink: 0;
 }
 
-html.theme-light .gifts-stat-divider,
-body.theme-light .gifts-stat-divider {
-  background: var(--theme-hint-color-light);
-}
-
-html.theme-dark .gifts-stat-divider,
-body.theme-dark .gifts-stat-divider {
-  background: var(--theme-hint-color-light-dark);
-}
 
 /* Список желаний */
 .wishes-list-section {
@@ -195,37 +141,19 @@ body.theme-dark .gifts-stat-divider {
   font-weight: 600;
   margin-top: 24px;
   padding: 20px;
-  color: var(--theme-current-text, var(--theme-text-color));
-  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  color: var(--theme-current-text);
+  border: 1px solid var(--theme-current-hint-light);
   border-radius: var(--radius-md);
   background: var(--theme-secondary-bg-dark)
 }
 
-html.theme-light .wishes-list-title,
-body.theme-light .wishes-list-title {
-  color: var(--theme-text-color);
-}
-
-html.theme-dark .wishes-list-title,
-body.theme-dark .wishes-list-title {
-  color: var(--theme-text-color-dark);
-}
 
 .wishes-empty {
   text-align: center;
   padding: 10px 20px;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
 }
 
-html.theme-light .wishes-empty,
-body.theme-light .wishes-empty {
-  color: var(--theme-hint-color);
-}
-
-html.theme-dark .wishes-empty,
-body.theme-dark .wishes-empty {
-  color: var(--theme-hint-color-dark);
-}
 
 
 .btn-add-wish:hover {
@@ -252,39 +180,17 @@ body.theme-dark .wishes-empty {
   align-items: center;
   gap: 12px;
   padding: 16px;
-  background: var(--theme-current-bg, var(--theme-bg-color));
+  background: var(--theme-current-bg);
   border-radius: var(--radius-md);
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
-html.theme-light .wish-item,
-body.theme-light .wish-item {
-  background: var(--theme-bg-color);
-  border-color: var(--theme-hint-color-light);
-}
-
-html.theme-dark .wish-item,
-body.theme-dark .wish-item {
-  background: var(--theme-bg-color-dark);
-  border-color: var(--theme-hint-color-light-dark);
-}
 
 .wish-item:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-color: var(--theme-current-hint, var(--theme-hint-color));
+  border-color: var(--theme-current-hint);
 }
 
-html.theme-light .wish-item:hover,
-body.theme-light .wish-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-color: var(--theme-hint-color);
-}
-
-html.theme-dark .wish-item:hover,
-body.theme-dark .wish-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  border-color: var(--theme-hint-color-dark);
-}
 
 .wish-item:active {
   transform: scale(0.98);
@@ -320,7 +226,7 @@ body.theme-dark .wish-item:hover {
   align-items: center;
   justify-content: center;
   background: transparent;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
   position: absolute;
   top: 0;
   left: 0;
@@ -336,25 +242,7 @@ body.theme-dark .wish-item:hover {
   object-fit: contain;
 }
 
-html.theme-light .wish-image-placeholder,
-body.theme-light .wish-image-placeholder {
-  color: var(--theme-hint-color);
-}
 
-html.theme-dark .wish-image-placeholder,
-body.theme-dark .wish-image-placeholder {
-  color: var(--theme-hint-color-dark);
-}
-
-/* html.theme-light .wish-image-placeholder,
-body.theme-light .wish-image-placeholder {
-  background: var(--theme-hint-color-light);
-}
-
-html.theme-dark .wish-image-placeholder,
-body.theme-dark .wish-image-placeholder {
-  background: var(--theme-hint-color-light-dark);
-} */
 
 .wish-content {
   flex: 1;
@@ -368,31 +256,22 @@ body.theme-dark .wish-image-placeholder {
   font-size: 16px;
   font-weight: 500;
   margin: 0;
-  color: var(--theme-current-text, var(--theme-text-color));
+  color: var(--theme-current-text);
   word-break: break-word;
 }
 
-html.theme-light .wish-title,
-body.theme-light .wish-title {
-  color: var(--theme-text-color);
-}
-
-html.theme-dark .wish-title,
-body.theme-dark .wish-title {
-  color: var(--theme-text-color-dark);
-}
 
 .wish-price {
   font-size: 14px;
   margin: 0;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
   font-weight: 500;
 }
 
 .wish-description {
   font-size: 14px;
   margin: 4px 0;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
   line-height: 1.4;
   word-break: break-word;
 }
@@ -407,43 +286,19 @@ body.theme-dark .wish-title {
 }
 
 .wish-status-reserved {
-  background: var(--theme-current-warning-light, #fff3cd);
-  color: var(--theme-current-warning, #856404);
-}
-
-html.theme-light .wish-status-reserved,
-body.theme-light .wish-status-reserved {
-  background: #fff3cd;
-  color: #856404;
-}
-
-html.theme-dark .wish-status-reserved,
-body.theme-dark .wish-status-reserved {
-  background: rgba(255, 193, 7, 0.2);
-  color: #ffc107;
+  background: var(--theme-current-warning-light);
+  color: var(--theme-current-warning);
 }
 
 .wish-status-fulfilled {
-  background: var(--theme-current-success-light, #d4edda);
-  color: var(--theme-current-success, #155724);
-}
-
-html.theme-light .wish-status-fulfilled,
-body.theme-light .wish-status-fulfilled {
-  background: #d4edda;
-  color: #155724;
-}
-
-html.theme-dark .wish-status-fulfilled,
-body.theme-dark .wish-status-fulfilled {
-  background: rgba(40, 167, 69, 0.2);
-  color: #28a745;
+  background: var(--theme-current-success-light);
+  color: var(--theme-current-success);
 }
 
 .wishlist-group {
   padding: 20px;
   /* margin-bottom: 14px; */
-  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
+  background: var(--theme-current-secondary-bg);
   border-radius: var(--radius-md);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.2s, transform 0.2s, opacity 0.3s ease;
@@ -467,30 +322,9 @@ body.theme-dark .wish-status-fulfilled {
   animation-delay: 0.25s;
 }
 
-html.theme-light .wishlist-group,
-body.theme-light .wishlist-group {
-  background: var(--theme-secondary-bg);
-  border-color: var(--theme-hint-color-light);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-html.theme-dark .wishlist-group,
-body.theme-dark .wishlist-group {
-  background: var(--theme-secondary-bg-dark);
-  border-color: var(--theme-hint-color-light-dark);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
 html.theme-ozon .wishlist-group,
 body.theme-ozon .wishlist-group {
   border-radius: 26px;
-
-  /* background: linear-gradient(
-      135deg,
-      #1f6fff 0%,
-      #4c3cff 50%,
-      #6a00ff 100%
-  ); */
   background-color: #562aaf;
   box-shadow:
       0 14px 30px rgba(0, 0, 0, 0.25),
@@ -511,15 +345,6 @@ body.theme-ozon .wishlist-group {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-html.theme-light .wishlist-clickable:hover,
-body.theme-light .wishlist-clickable:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-html.theme-dark .wishlist-clickable:hover,
-body.theme-dark .wishlist-clickable:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
 
 .wishlist-clickable:active {
   transform: translateY(0);
@@ -531,7 +356,7 @@ body.theme-dark .wishlist-clickable:hover {
   /* margin: 0 0 16px 0;
   padding-bottom: 12px; */
   /* border-bottom: 2px solid var(--theme-current-hint-light, var(--theme-hint-color-light)); */
-  color: var(--theme-current-text, var(--theme-text-color));
+  color: var(--theme-current-text);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -547,7 +372,7 @@ body.theme-dark .wishlist-clickable:hover {
 
 .wishlist-arrow-icon {
   font-size: 18px;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
   transition: transform 0.2s, color 0.2s;
 }
 
@@ -562,7 +387,7 @@ body.theme-dark .wishlist-clickable:hover {
 
 .wishlist-toggle-icon {
   font-size: 16px;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-block;
   transform-origin: center;
@@ -572,24 +397,13 @@ body.theme-dark .wishlist-clickable:hover {
   transform: rotate(180deg);
 }
 
-html.theme-light .wishlist-name,
-body.theme-light .wishlist-name {
-  color: var(--theme-text-color);
-  border-bottom-color: var(--theme-hint-color-light);
-}
-
-html.theme-dark .wishlist-name,
-body.theme-dark .wishlist-name {
-  color: var(--theme-text-color-dark);
-  border-bottom-color: var(--theme-hint-color-light-dark);
-}
 
 
 .wishes-loading,
 .wishes-error {
   text-align: center;
   padding: 40px 20px;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
 }
 
 .wishes-error {
@@ -625,17 +439,14 @@ body.theme-dark .wishlist-name {
   background: rgba(0, 0, 0, 0.04);
   font-size: 14px;
   font-weight: 500;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
 }
 
-html.theme-dark .wish-details-wishlist-name {
-  background: rgba(255, 255, 255, 0.04);
-}
 
 .wish-details-card {
   padding: 16px;
   border-radius: var(--radius-md);
-  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
+  background: var(--theme-current-secondary-bg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -675,18 +486,9 @@ html.theme-dark .wish-details-wishlist-name {
 .wish-details-comment {
   margin-top: 8px;
   font-size: 14px;
-  color: var(--theme-current-text, var(--theme-text-color));
+  color: var(--theme-current-text);
 }
 
-html.theme-light .wish-price,
-body.theme-light .wish-price {
-  color: var(--theme-hint-color);
-}
-
-html.theme-dark .wish-price,
-body.theme-dark .wish-price {
-  color: var(--theme-hint-color-dark);
-}
 
 .wish-actions {
   display: flex;
@@ -721,18 +523,11 @@ body.theme-dark .wish-price {
 }
 
 .btn-reserve-active {
-  background: var(--theme-current-warning, #856404);
+  background: var(--theme-current-warning);
   color: #ffffff;
 }
 
-html.theme-light .btn-reserve-active,
-body.theme-light .btn-reserve-active {
-  background: #856404;
-}
-
-html.theme-dark .btn-reserve-active,
-body.theme-dark .btn-reserve-active {
-  background: rgba(255, 193, 7, 0.8);
+html.theme-dark .btn-reserve-active {
   color: #000000;
 }
 
@@ -744,29 +539,20 @@ body.theme-dark .btn-reserve-active {
   justify-content: center;
   border: none;
   border-radius: var(--radius-sm);
-  background: var(--theme-current-bg, var(--theme-bg-color));
+  background: var(--theme-current-bg);
   cursor: pointer;
   font-size: 18px;
   transition: background 0.2s, transform 0.1s;
   padding: 0;
 }
 
-html.theme-light .wish-action-btn,
-body.theme-light .wish-action-btn {
-  background: var(--theme-bg-color);
-}
-
-html.theme-dark .wish-action-btn,
-body.theme-dark .wish-action-btn {
-  background: var(--theme-bg-color-dark);
-}
 
 .wish-action-btn:active {
   transform: scale(0.95);
 }
 
 .wish-edit-btn:hover {
-  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+  background: var(--theme-current-hint-light);
 }
 
 .wish-delete-btn:hover {
@@ -786,24 +572,15 @@ body.theme-dark .wish-action-btn {
   justify-content: center;
   border: none;
   border-radius: var(--radius-sm);
-  background: var(--theme-current-bg, var(--theme-bg-color));
+  background: var(--theme-current-bg);
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
   padding: 0;
 }
 
-html.theme-light .wish-menu-btn,
-body.theme-light .wish-menu-btn {
-  background: var(--theme-bg-color);
-}
-
-html.theme-dark .wish-menu-btn,
-body.theme-dark .wish-menu-btn {
-  background: var(--theme-bg-color-dark);
-}
 
 .wish-menu-btn:hover {
-  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+  background: var(--theme-current-hint-light);
 }
 
 .wish-menu-btn:active {
@@ -813,7 +590,7 @@ body.theme-dark .wish-menu-btn {
 .wish-menu-icon {
   font-size: 20px;
   font-weight: bold;
-  color: var(--theme-current-text, var(--theme-text-color));
+  color: var(--theme-current-text);
   line-height: 1;
   transform: rotate(90deg);
   display: inline-block;
@@ -850,10 +627,10 @@ body.theme-dark .wish-menu-btn {
   top: 100%;
   right: 0;
   margin-top: 4px;
-  background: var(--theme-current-bg, var(--theme-bg-color));
+  background: var(--theme-current-bg);
   border-radius: var(--radius-md);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  border: 1px solid var(--theme-current-hint-light);
   z-index: 9999;
   min-width: 160px;
   overflow: hidden;
@@ -868,19 +645,6 @@ body.theme-dark .wish-menu-btn {
   z-index: 10000;
 }
 
-html.theme-light .wish-menu-dropdown,
-body.theme-light .wish-menu-dropdown {
-  background: var(--theme-bg-color);
-  border-color: var(--theme-hint-color-light);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-html.theme-dark .wish-menu-dropdown,
-body.theme-dark .wish-menu-dropdown {
-  background: var(--theme-bg-color-dark);
-  border-color: var(--theme-hint-color-light-dark);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
 
 .wish-menu-item {
   width: 100%;
@@ -889,24 +653,15 @@ body.theme-dark .wish-menu-dropdown {
   background: transparent;
   text-align: left;
   font-size: 14px;
-  color: var(--theme-current-text, var(--theme-text-color));
+  color: var(--theme-current-text);
   cursor: pointer;
   transition: background 0.2s;
   display: block;
 }
 
-html.theme-light .wish-menu-item,
-body.theme-light .wish-menu-item {
-  color: var(--theme-text-color);
-}
-
-html.theme-dark .wish-menu-item,
-body.theme-dark .wish-menu-item {
-  color: var(--theme-text-color-dark);
-}
 
 .wish-menu-item:hover {
-  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+  background: var(--theme-current-hint-light);
 }
 
 .wish-menu-item:first-child {
@@ -923,14 +678,8 @@ body.theme-dark .wish-menu-item {
   color: #ff3b30;
 }
 
-html.theme-light .wish-menu-item-danger,
-body.theme-light .wish-menu-item-danger {
-  color: #ff3b30;
-}
-
-html.theme-dark .wish-menu-item-danger,
-body.theme-dark .wish-menu-item-danger {
-  color: #ff453a;
+.wish-menu-item-danger {
+  color: var(--theme-current-error);
 }
 
 .wish-menu-item-danger:hover {
@@ -941,18 +690,9 @@ body.theme-dark .wish-menu-item-danger {
 .developer-section {
   margin-top: 32px;
   padding-top: 24px;
-  border-top: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  border-top: 1px solid var(--theme-current-hint-light);
 }
 
-html.theme-light .developer-section,
-body.theme-light .developer-section {
-  border-top-color: var(--theme-hint-color-light);
-}
-
-html.theme-dark .developer-section,
-body.theme-dark .developer-section {
-  border-top-color: var(--theme-hint-color-light-dark);
-}
 
 .developer-toggle-btn {
   width: 100%;
@@ -962,7 +702,7 @@ body.theme-dark .developer-section {
   text-align: left;
   font-size: 14px;
   font-weight: 500;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -970,18 +710,9 @@ body.theme-dark .developer-section {
   transition: color 0.2s;
 }
 
-html.theme-light .developer-toggle-btn,
-body.theme-light .developer-toggle-btn {
-  color: var(--theme-hint-color);
-}
-
-html.theme-dark .developer-toggle-btn,
-body.theme-dark .developer-toggle-btn {
-  color: var(--theme-hint-color-dark);
-}
 
 .developer-toggle-btn:hover {
-  color: var(--theme-current-text, var(--theme-text-color));
+  color: var(--theme-current-text);
 }
 
 .developer-data {
@@ -993,7 +724,7 @@ body.theme-dark .developer-toggle-btn {
   font-size: 11px;
   line-height: 1.5;
   padding: 12px;
-  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
+  background: var(--theme-current-hint-light);
   border-radius: var(--radius-sm);
   overflow-x: auto;
   white-space: pre-wrap;
@@ -1003,15 +734,6 @@ body.theme-dark .developer-toggle-btn {
   margin: 0;
 }
 
-html.theme-light .json-output,
-body.theme-light .json-output {
-  background: var(--theme-hint-color-light);
-}
-
-html.theme-dark .json-output,
-body.theme-dark .json-output {
-  background: var(--theme-hint-color-light-dark);
-}
 
 /* Кнопки добавления */
 .btn-add-wishlist {
@@ -1039,9 +761,9 @@ body.theme-dark .json-output {
 .btn-add-wish {
   width: 100%;
   padding: 10px 16px;
-  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
-  color: var(--theme-current-text, var(--theme-text-color));
-  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  background: var(--theme-current-secondary-bg);
+  color: var(--theme-current-text);
+  border: 1px solid var(--theme-current-hint-light);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 500;
@@ -1049,23 +771,10 @@ body.theme-dark .json-output {
   transition: background 0.2s, border-color 0.2s;
 }
 
-html.theme-light .btn-add-wish,
-body.theme-light .btn-add-wish {
-  background: var(--theme-secondary-bg);
-  color: var(--theme-text-color);
-  border-color: var(--theme-hint-color-light);
-}
-
-html.theme-dark .btn-add-wish,
-body.theme-dark .btn-add-wish {
-  background: var(--theme-secondary-bg-dark);
-  color: var(--theme-text-color-dark);
-  border-color: var(--theme-hint-color-light-dark);
-}
 
 .btn-add-wish:hover {
-  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
-  border-color: var(--theme-current-hint, var(--theme-hint-color));
+  background: var(--theme-current-hint-light);
+  border-color: var(--theme-current-hint);
 }
 
 .btn-delete-wishlist {
@@ -1083,34 +792,12 @@ body.theme-dark .btn-add-wish {
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
-html.theme-light .btn-delete-wishlist,
-body.theme-light .btn-delete-wishlist {
-  color: #ff3b30;
-  border-color: #ff3b30;
-}
-
-html.theme-dark .btn-delete-wishlist,
-body.theme-dark .btn-delete-wishlist {
-  color: #ff453a;
-  border-color: #ff453a;
-}
 
 .btn-delete-wishlist:hover {
   background: rgba(255, 59, 48, 0.1);
   border-color: #ff3b30;
 }
 
-html.theme-light .btn-delete-wishlist:hover,
-body.theme-light .btn-delete-wishlist:hover {
-  background: rgba(255, 59, 48, 0.1);
-  border-color: #ff3b30;
-}
-
-html.theme-dark .btn-delete-wishlist:hover,
-body.theme-dark .btn-delete-wishlist:hover {
-  background: rgba(255, 69, 58, 0.15);
-  border-color: #ff453a;
-}
 
 .btn-delete-wishlist:active {
   opacity: 0.8;
@@ -1119,9 +806,9 @@ body.theme-dark .btn-delete-wishlist:hover {
 .btn-edit-wishlist {
   width: 100%;
   padding: 10px 16px;
-  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
-  color: var(--theme-current-text, var(--theme-text-color));
-  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  background: var(--theme-current-secondary-bg);
+  color: var(--theme-current-text);
+  border: 1px solid var(--theme-current-hint-light);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 500;
@@ -1129,23 +816,10 @@ body.theme-dark .btn-delete-wishlist:hover {
   transition: background 0.2s, border-color 0.2s;
 }
 
-html.theme-light .btn-edit-wishlist,
-body.theme-light .btn-edit-wishlist {
-  background: var(--theme-secondary-bg);
-  color: var(--theme-text-color);
-  border-color: var(--theme-hint-color-light);
-}
-
-html.theme-dark .btn-edit-wishlist,
-body.theme-dark .btn-edit-wishlist {
-  background: var(--theme-secondary-bg-dark);
-  color: var(--theme-text-color-dark);
-  border-color: var(--theme-hint-color-light-dark);
-}
 
 .btn-edit-wishlist:hover {
-  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
-  border-color: var(--theme-current-hint, var(--theme-hint-color));
+  background: var(--theme-current-hint-light);
+  border-color: var(--theme-current-hint);
 }
 
 .btn-edit-wishlist:active {
@@ -1169,7 +843,7 @@ body.theme-dark .btn-edit-wishlist {
 }
 
 .modal-content {
-  background: var(--theme-current-bg, var(--theme-bg-color));
+  background: var(--theme-current-bg);
   border-radius: var(--radius-md);
   width: 100%;
   max-width: 500px;
@@ -1179,15 +853,6 @@ body.theme-dark .btn-edit-wishlist {
   animation: slideUp 0.3s ease-out;
 }
 
-html.theme-light .modal-content,
-body.theme-light .modal-content {
-  background: var(--theme-bg-color);
-}
-
-html.theme-dark .modal-content,
-body.theme-dark .modal-content {
-  background: var(--theme-bg-color-dark);
-}
 
 @keyframes slideUp {
   from {
@@ -1208,32 +873,14 @@ body.theme-dark .modal-content {
   border-bottom: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
 }
 
-html.theme-light .modal-header,
-body.theme-light .modal-header {
-  border-bottom-color: var(--theme-hint-color-light);
-}
-
-html.theme-dark .modal-header,
-body.theme-dark .modal-header {
-  border-bottom-color: var(--theme-hint-color-light-dark);
-}
 
 .modal-header h3 {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
-  color: var(--theme-current-text, var(--theme-text-color));
+  color: var(--theme-current-text);
 }
 
-html.theme-light .modal-header h3,
-body.theme-light .modal-header h3 {
-  color: var(--theme-text-color);
-}
-
-html.theme-dark .modal-header h3,
-body.theme-dark .modal-header h3 {
-  color: var(--theme-text-color-dark);
-}
 
 .modal-close {
   width: 32px;
@@ -1244,15 +891,15 @@ body.theme-dark .modal-header h3 {
   background: transparent;
   border: none;
   font-size: 24px;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
   cursor: pointer;
   border-radius: var(--radius-sm);
   transition: background 0.2s, color 0.2s;
 }
 
 .modal-close:hover {
-  background: var(--theme-current-hint-light, var(--theme-hint-color-light));
-  color: var(--theme-current-text, var(--theme-text-color));
+  background: var(--theme-current-hint-light);
+  color: var(--theme-current-text);
 }
 
 .modal-form {
@@ -1268,35 +915,17 @@ body.theme-dark .modal-header h3 {
   margin-bottom: 4px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--theme-current-text, var(--theme-text-color));
+  color: var(--theme-current-text);
 }
 
 .form-example {
   font-size: 12px;
-  color: var(--theme-current-hint, var(--theme-hint-color));
+  color: var(--theme-current-hint);
   margin-bottom: 6px;
   font-style: italic;
 }
 
-html.theme-light .form-example,
-body.theme-light .form-example {
-  color: var(--theme-hint-color);
-}
 
-html.theme-dark .form-example,
-body.theme-dark .form-example {
-  color: var(--theme-hint-color-dark);
-}
-
-html.theme-light .form-group label,
-body.theme-light .form-group label {
-  color: var(--theme-text-color);
-}
-
-html.theme-dark .form-group label,
-body.theme-dark .form-group label {
-  color: var(--theme-text-color-dark);
-}
 
 .form-group input[type="text"],
 .form-group input[type="url"],
@@ -1305,36 +934,15 @@ body.theme-dark .form-group label {
 .form-group select {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  border: 1px solid var(--theme-current-hint-light);
   border-radius: var(--radius-sm);
   font-size: 14px;
-  background: var(--theme-current-bg, var(--theme-bg-color));
-  color: var(--theme-current-text, var(--theme-text-color));
+  background: var(--theme-current-bg);
+  color: var(--theme-current-text);
   transition: border-color 0.2s;
   box-sizing: border-box;
 }
 
-html.theme-light .form-group input,
-html.theme-light .form-group textarea,
-html.theme-light .form-group select,
-body.theme-light .form-group input,
-body.theme-light .form-group textarea,
-body.theme-light .form-group select {
-  background: var(--theme-bg-color);
-  color: var(--theme-text-color);
-  border-color: var(--theme-hint-color-light);
-}
-
-html.theme-dark .form-group input,
-html.theme-dark .form-group textarea,
-html.theme-dark .form-group select,
-body.theme-dark .form-group input,
-body.theme-dark .form-group textarea,
-body.theme-dark .form-group select {
-  background: var(--theme-bg-color-dark);
-  color: var(--theme-text-color-dark);
-  border-color: var(--theme-hint-color-light-dark);
-}
 
 .form-group input:focus,
 .form-group textarea:focus,
@@ -1380,18 +988,9 @@ body.theme-dark .form-group select {
   gap: 12px;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  border-top: 1px solid var(--theme-current-hint-light);
 }
 
-html.theme-light .modal-actions,
-body.theme-light .modal-actions {
-  border-top-color: var(--theme-hint-color-light);
-}
-
-html.theme-dark .modal-actions,
-body.theme-dark .modal-actions {
-  border-top-color: var(--theme-hint-color-light-dark);
-}
 
 .btn-cancel,
 .btn-submit {
@@ -1406,21 +1005,10 @@ body.theme-dark .modal-actions {
 }
 
 .btn-cancel {
-  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
-  color: var(--theme-current-text, var(--theme-text-color));
+  background: var(--theme-current-secondary-bg);
+  color: var(--theme-current-text);
 }
 
-html.theme-light .btn-cancel,
-body.theme-light .btn-cancel {
-  background: var(--theme-secondary-bg);
-  color: var(--theme-text-color);
-}
-
-html.theme-dark .btn-cancel,
-body.theme-dark .btn-cancel {
-  background: var(--theme-secondary-bg-dark);
-  color: var(--theme-text-color-dark);
-}
 
 .btn-cancel:hover {
   opacity: 0.8;
@@ -1449,19 +1037,10 @@ body.theme-dark .btn-cancel {
 .page-form-container {
   padding: 20px;
   margin-top: 24px;
-  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
+  background: var(--theme-current-secondary-bg);
   border-radius: var(--radius-md);
 }
 
-html.theme-light .page-form-container,
-body.theme-light .page-form-container {
-  background: var(--theme-secondary-bg);
-}
-
-html.theme-dark .page-form-container,
-body.theme-dark .page-form-container {
-  background: var(--theme-secondary-bg-dark);
-}
 
 .page-form-header {
   display: flex;
@@ -1472,32 +1051,14 @@ body.theme-dark .page-form-container {
   border-bottom: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
 }
 
-html.theme-light .page-form-header,
-body.theme-light .page-form-header {
-  border-bottom-color: var(--theme-hint-color-light);
-}
-
-html.theme-dark .page-form-header,
-body.theme-dark .page-form-header {
-  border-bottom-color: var(--theme-hint-color-light-dark);
-}
 
 .page-form-header h2 {
   margin: 0;
   font-size: 24px;
   font-weight: 600;
-  color: var(--theme-current-text, var(--theme-text-color));
+  color: var(--theme-current-text);
 }
 
-html.theme-light .page-form-header h2,
-body.theme-light .page-form-header h2 {
-  color: var(--theme-text-color);
-}
-
-html.theme-dark .page-form-header h2,
-body.theme-dark .page-form-header h2 {
-  color: var(--theme-text-color-dark);
-}
 
 .page-form {
   padding: 0;
@@ -1508,15 +1069,6 @@ body.theme-dark .page-form-header h2 {
   gap: 12px;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  border-top: 1px solid var(--theme-current-hint-light);
 }
 
-html.theme-light .page-form-actions,
-body.theme-light .page-form-actions {
-  border-top-color: var(--theme-hint-color-light);
-}
-
-html.theme-dark .page-form-actions,
-body.theme-dark .page-form-actions {
-  border-top-color: var(--theme-hint-color-light-dark);
-}

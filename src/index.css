@@ -75,6 +75,11 @@ html, body {
   --theme-secondary-bg: rgba(0, 0, 0, 0.05);
   --theme-hint-color: rgba(0, 0, 0, 0.5);
   --theme-hint-color-light: rgba(0, 0, 0, 0.2);
+  --theme-warning: #856404;
+  --theme-warning-light: #fff3cd;
+  --theme-success: #155724;
+  --theme-success-light: #d4edda;
+  --theme-error: #ff4444;
 
   /* Темная тема */
   --theme-bg-color-dark: #000000;
@@ -82,6 +87,11 @@ html, body {
   --theme-secondary-bg-dark: rgba(255, 255, 255, 0.1);
   --theme-hint-color-dark: rgba(255, 255, 255, 0.5);
   --theme-hint-color-light-dark: rgba(255, 255, 255, 0.2);
+  --theme-warning-dark: #ffc107;
+  --theme-warning-light-dark: rgba(255, 193, 7, 0.2);
+  --theme-success-dark: #28a745;
+  --theme-success-light-dark: rgba(40, 167, 69, 0.2);
+  --theme-error-dark: #ff453a;
 
   /* === SPACING === */
   --spacing-sm: 12px;
@@ -199,6 +209,11 @@ body:not(.theme-light):not(.theme-dark):not(.theme-ozon) {
   --theme-current-secondary-bg: var(--theme-secondary-bg);
   --theme-current-hint: var(--theme-hint-color);
   --theme-current-hint-light: var(--theme-hint-color-light);
+  --theme-current-warning: var(--theme-warning);
+  --theme-current-warning-light: var(--theme-warning-light);
+  --theme-current-success: var(--theme-success);
+  --theme-current-success-light: var(--theme-success-light);
+  --theme-current-error: var(--theme-error);
   --tg-accent-theme: #000000;
   --app-button-color: #0088cc;
   --app-button-text-color: #fff;
@@ -213,6 +228,11 @@ body.theme-light {
   --theme-current-secondary-bg: var(--theme-secondary-bg);
   --theme-current-hint: var(--theme-hint-color);
   --theme-current-hint-light: var(--theme-hint-color-light);
+  --theme-current-warning: var(--theme-warning);
+  --theme-current-warning-light: var(--theme-warning-light);
+  --theme-current-success: var(--theme-success);
+  --theme-current-success-light: var(--theme-success-light);
+  --theme-current-error: var(--theme-error);
   --tg-accent-theme: #000000;
   --app-button-color: #0088cc;
   --app-button-text-color: #fff;
@@ -228,6 +248,11 @@ body.theme-dark {
   --theme-current-secondary-bg: var(--theme-secondary-bg-dark);
   --theme-current-hint: var(--theme-hint-color-dark);
   --theme-current-hint-light: var(--theme-hint-color-light-dark);
+  --theme-current-warning: var(--theme-warning-dark);
+  --theme-current-warning-light: var(--theme-warning-light-dark);
+  --theme-current-success: var(--theme-success-dark);
+  --theme-current-success-light: var(--theme-success-light-dark);
+  --theme-current-error: var(--theme-error-dark);
   --tg-accent-theme: #ffffff;
   --app-button-color: #0088cc;
   --app-button-text-color: #fff;
@@ -257,6 +282,11 @@ body.theme-ozon {
   --theme-current-secondary-bg: #ffffff;
   --theme-current-hint: rgba(0, 26, 52, 0.6);
   --theme-current-hint-light: rgba(0, 26, 52, 0.18);
+  --theme-current-warning: #856404;
+  --theme-current-warning-light: #fff3cd;
+  --theme-current-success: #155724;
+  --theme-current-success-light: #d4edda;
+  --theme-current-error: #ff4444;
 
   /* Акцентные цвета в стиле OZON */
   --tg-accent-theme: #005bff;        /* яркий синий */
