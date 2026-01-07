@@ -207,7 +207,6 @@ export function UserProfilePage() {
         </section>
 
         <section className="wishes-list-section">
-          <h3 className="wishes-list-title">Вишлисты</h3>
           
           {isLoading ? (
             <div className="wishes-loading">

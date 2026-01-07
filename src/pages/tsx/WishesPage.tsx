@@ -183,7 +183,6 @@ export function WishesPage() {
         </section>
 
         <section className="wishes-list-section">
-          <h3 className="wishes-list-title">Мои вишлисты</h3>
           
           {/* Кнопка добавления вишлиста */}
           <button 

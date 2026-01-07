@@ -191,15 +191,14 @@ body.theme-dark .gifts-stat-divider {
 }
 
 .wishes-list-title {
-  margin-bottom: 0;
-}
-
-.wishes-list-title {
   font-size: 18px;
   font-weight: 600;
-  margin: 0;
-  padding-left: 20px;
+  margin-top: 24px;
+  padding: 20px;
   color: var(--theme-current-text, var(--theme-text-color));
+  border: 1px solid var(--theme-current-hint-light, var(--theme-hint-color-light));
+  border-radius: var(--radius-md);
+  background: var(--theme-secondary-bg-dark)
 }
 
 html.theme-light .wishes-list-title,
@@ -1017,7 +1016,7 @@ body.theme-dark .json-output {
 /* Кнопки добавления */
 .btn-add-wishlist {
   width: 100%;
-  padding: 12px 20px;
+  padding: 10px 16px;
   background: var(--app-button-color);
   color: var(--app-button-text-color);
   border: none;
@@ -1122,7 +1121,7 @@ body.theme-dark .btn-delete-wishlist:hover {
 .btn-edit-wishlist {
   width: 100%;
   padding: 10px 16px;
-  margin-top: 8px;
+  margin-top: 10px;
   margin-bottom: 10px;
   background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
   color: var(--theme-current-text, var(--theme-text-color));
