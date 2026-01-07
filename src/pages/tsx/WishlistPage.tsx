@@ -207,7 +207,6 @@ export function WishlistPage() {
   const apiContext = useApiContext()
   const wishlistsRepo = apiContext?.wishlists
   const wishesRepo = apiContext?.wishes
-  const usersRepo = apiContext?.users
   const navigate = useNavigate()
 
   const [wishlist, setWishlist] = useState<Wishlist | null>(null)
