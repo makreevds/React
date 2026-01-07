@@ -583,6 +583,67 @@ body.theme-dark .wishlist-name {
   opacity: 0.8;
 }
 
+/* Детальная страница подарка */
+.wish-details-wishlist-name {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.04);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--theme-current-hint, var(--theme-hint-color));
+}
+
+html.theme-dark .wish-details-wishlist-name {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.wish-details-card {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--theme-current-secondary-bg, var(--theme-secondary-bg));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.wish-details-main-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.wish-details-image-block {
+  flex: 1 1 auto;
+}
+
+.wish-details-side-block {
+  flex: 0 0 130px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wish-details-side-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.wish-details-text-block {
+  margin-top: 16px;
+}
+
+.wish-details-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.wish-details-comment {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--theme-current-text, var(--theme-text-color));
+}
+
 html.theme-light .wish-price,
 body.theme-light .wish-price {
   color: var(--theme-hint-color);

@@ -16,13 +16,14 @@ interface WishWithExtras extends Wish {
 export function WishDetailsPage() {
   const { telegramId, wishId } = useParams<{ telegramId: string; wishId: string }>()
   const navigate = useNavigate()
-  const { webApp } = useTelegramWebApp()
+  const { webApp, user: currentTelegramUser } = useTelegramWebApp()
   const apiContext = useApiContext()
   const usersRepo = apiContext?.users
   const wishesRepo = apiContext?.wishes
 
   const [wish, setWish] = useState<WishWithExtras | null>(null)
   const [owner, setOwner] = useState<User | null>(null)
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -37,6 +38,22 @@ export function WishDetailsPage() {
     const num = Number(telegramId)
     return Number.isFinite(num) ? num : null
   }, [telegramId])
+
+  // Загружаем текущего пользователя (кто смотрит подарок)
+  useEffect(() => {
+    if (!currentTelegramUser?.id || !usersRepo) return
+
+    const loadCurrentUser = async () => {
+      try {
+        const userData = await usersRepo.getUserByTelegramId(currentTelegramUser.id)
+        setCurrentUser(userData)
+      } catch (e) {
+        console.error('Ошибка загрузки текущего пользователя для WishDetailsPage:', e)
+      }
+    }
+
+    loadCurrentUser()
+  }, [currentTelegramUser?.id, usersRepo])
 
   useEffect(() => {
     if (!webApp?.BackButton) return
@@ -96,6 +113,81 @@ export function WishDetailsPage() {
     const numPrice = typeof price === 'string' ? parseFloat(price) : price
     if (!Number.isFinite(numPrice)) return 'Цена не указана'
     return `${numPrice.toLocaleString('ru-RU')} ${currency || '₽'}`
+  }
+
+  const handleCopyToMe = () => {
+    if (!wish) return
+    // В перспективе можно добавить создание подарка у себя,
+    // пока просто открываем страницу добавления с подсказкой
+    navigate(
+      `/wishes/add-wish?title=${encodeURIComponent(wish.title || '')}` +
+        `&comment=${encodeURIComponent(wish.comment || '')}` +
+        (wish.link ? `&link=${encodeURIComponent(wish.link)}` : '') +
+        (wish.image_url ? `&image_url=${encodeURIComponent(wish.image_url)}` : '') +
+        (wish.price ? `&price=${encodeURIComponent(String(wish.price))}` : '') +
+        (wish.currency ? `&currency=${encodeURIComponent(wish.currency)}` : ''),
+    )
+  }
+
+  const handleOpenLink = () => {
+    if (!wish?.link) return
+    try {
+      if (webApp?.openLink) {
+        webApp.openLink(wish.link)
+      } else {
+        window.open(wish.link, '_blank', 'noopener,noreferrer')
+      }
+    } catch {
+      window.open(wish.link, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  const handleToggleReserve = async () => {
+    if (!wish || !wishesRepo || !currentUser) return
+
+    // Снять бронь может только тот, кто её поставил
+    if (wish.status === 'reserved' && wish.reserved_by_id && wish.reserved_by_id !== currentUser.id) {
+      alert('Снять бронь может только тот, кто её поставил')
+      return
+    }
+
+    try {
+      const newStatus: 'active' | 'reserved' | 'fulfilled' =
+        wish.status === 'reserved' ? 'active' : 'reserved'
+
+      const updateData: any = { status: newStatus }
+      if (newStatus === 'reserved') {
+        updateData.reserved_by = currentUser.id
+      } else {
+        updateData.reserved_by = null
+      }
+
+      const updated = await wishesRepo.updateWish(wish.id, updateData)
+      setWish({
+        ...wish,
+        status: updated.status,
+        reserved_by_id: updated.reserved_by_id,
+      })
+    } catch (e) {
+      console.error('Ошибка при изменении статуса подарка:', e)
+      alert('Не удалось изменить статус подарка')
+    }
+  }
+
+  const reserveButtonLabel = () => {
+    if (!wish || !currentUser) return 'Забронировать'
+    if (wish.status === 'fulfilled') return 'Подарено'
+    if (wish.status === 'reserved') {
+      return wish.reserved_by_id === currentUser.id ? 'Снять бронь' : 'Забронировано'
+    }
+    return 'Забронировать'
+  }
+
+  const isReserveButtonDisabled = () => {
+    if (!wish || !currentUser) return true
+    if (wish.status === 'fulfilled') return true
+    if (wish.status === 'reserved' && wish.reserved_by_id !== currentUser.id) return true
+    return false
   }
 
   if (isLoading) {
@@ -162,61 +254,75 @@ export function WishDetailsPage() {
         </section>
 
         <section className="wishes-list-section">
-          <h3 className="wishes-list-title">Подарок</h3>
+          {wish.wishlist_name && (
+            <div className="wish-details-wishlist-name">
+              {wish.wishlist_name}
+            </div>
+          )}
 
-          <div className="wish-item wish-item-details">
-            <div className="wish-image-container">
-              {wish.image_url ? (
-                <img
-                  src={wish.image_url}
-                  alt={wish.title || 'Подарок'}
-                  className="wish-image"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                    const container = e.currentTarget.parentElement
-                    if (container) {
-                      const placeholder = container.querySelector('.wish-image-placeholder')
-                      if (placeholder) {
-                        placeholder.classList.add('show')
-                      }
-                    }
-                  }}
-                />
-              ) : null}
-              <div className={`wish-image-placeholder ${!wish.image_url ? 'show' : ''}`}>
-                <GiftIcon className="gift-icon" />
+          <div className="wish-details-card">
+            <div className="wish-details-main-row">
+              <div className="wish-details-image-block">
+                <div className="wish-image-container">
+                  {wish.image_url ? (
+                    <img
+                      src={wish.image_url}
+                      alt={wish.title || 'Подарок'}
+                      className="wish-image"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                        const container = e.currentTarget.parentElement
+                        if (container) {
+                          const placeholder = container.querySelector('.wish-image-placeholder')
+                          if (placeholder) {
+                            placeholder.classList.add('show')
+                          }
+                        }
+                      }}
+                    />
+                  ) : null}
+                  <div className={`wish-image-placeholder ${!wish.image_url ? 'show' : ''}`}>
+                    <GiftIcon className="gift-icon" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="wish-details-side-block">
+                <button
+                  className="btn-secondary wish-details-side-btn"
+                  type="button"
+                  onClick={handleCopyToMe}
+                >
+                  Скопировать себе
+                </button>
+                <button
+                  className="btn-secondary wish-details-side-btn"
+                  type="button"
+                  onClick={handleOpenLink}
+                  disabled={!wish.link}
+                >
+                  Ссылка
+                </button>
+                <button
+                  className="btn-reserve wish-details-side-btn"
+                  type="button"
+                  onClick={handleToggleReserve}
+                  disabled={isReserveButtonDisabled()}
+                >
+                  {reserveButtonLabel()}
+                </button>
               </div>
             </div>
 
-            <div className="wish-content">
-              <h4 className="wish-title">{wish.title || 'Без названия'}</h4>
-              {wish.comment && <p className="wish-description">{wish.comment}</p>}
-              {wish.link && (
-                <p className="wish-link">
-                  <a href={wish.link} target="_blank" rel="noopener noreferrer">
-                    {wish.link}
-                  </a>
+            <div className="wish-details-text-block">
+              <div className="wish-details-title-row">
+                <h4 className="wish-title">{wish.title || 'Без названия'}</h4>
+                <span className="wish-price">{formatPrice(wish.price, wish.currency)}</span>
+              </div>
+              {wish.comment && (
+                <p className="wish-details-comment">
+                  {wish.comment}
                 </p>
-              )}
-              <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
-              {wish.wishlist_name && (
-                <p className="wish-meta">
-                  Вишлист: <span className="wishlist-name-text">{wish.wishlist_name}</span>
-                </p>
-              )}
-            </div>
-
-            <div className="wish-actions">
-              {wish.status === 'fulfilled' ? (
-                <div className="wish-status-icon" title="Подарено">
-                  <img src={doneIcon} alt="Исполнено" className="gift-icon-small" />
-                </div>
-              ) : wish.status === 'reserved' ? (
-                <div className="wish-status-icon" title="Забронировано">
-                  <img src={lockIcon} alt="Забронировано" className="gift-icon-small" />
-                </div>
-              ) : (
-                <div className="wish-status-text">Активно</div>
               )}
             </div>
           </div>
