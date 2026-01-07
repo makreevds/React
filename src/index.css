@@ -235,7 +235,7 @@ body.theme-light {
   --tg-accent-theme: #000000;
   --app-button-color: #0088cc;
   --app-button-text-color: #fff;
-  --color-box-shadow: rgba(0, 0, 0, 0.66);
+  --color-box-shadow: #000000;
   --box-shadow: 0px 7px 16px -11px var(--color-box-shadow);
 }
 
@@ -246,7 +246,7 @@ body.theme-dark {
   color: var(--theme-text-color-dark);
   --theme-current-bg: var(--theme-bg-color-dark);
   --theme-current-text: var(--theme-text-color-dark);
-  --theme-current-secondary-bg: rgba(255, 255, 255, 0.1);
+  --theme-current-secondary-bg:#2b2b2b;
   --theme-current-hint: var(--theme-hint-color-dark);
   --theme-current-hint-light: var(--theme-hint-color-light-dark);
   --theme-current-warning: var(--theme-warning-dark);
@@ -258,7 +258,7 @@ body.theme-dark {
   --app-button-color: #0088cc;
   --app-button-text-color: #fff;
   --color-box-shadow: #ffffff;
-  --box-shadow: 0 4px 12px var(--color-box-shadow);
+  --box-shadow: 0px 7px 16px -11px var(--color-box-shadow);
 }
 
 /* Тема в стиле OZON */
