@@ -454,8 +454,16 @@ export function UserProfilePage() {
                             <div className="wishes-list">
                               {wishes.map((wish) => {
                                 if (!wish || !wish.id) return null
+                                const handleOpenDetails = () => {
+                                  navigate(`/user/${viewedUser.telegram_id}/wish/${wish.id}`)
+                                }
                                 return (
-                                  <div key={wish.id} className="wish-item">
+                                  <div
+                                    key={wish.id}
+                                    className="wish-item"
+                                    role="button"
+                                    onClick={handleOpenDetails}
+                                  >
                                     <div className="wish-image-container">
                                       {wish.image_url ? (
                                         <img 
@@ -497,7 +505,10 @@ export function UserProfilePage() {
                                           // И зарезервирован текущим пользователем - показываем кнопку "Снять бронь"
                                           <button
                                             className="btn-reserve btn-reserve-active"
-                                            onClick={() => handleToggleReserve(wish.id, wish.status, wish.reserved_by_id)}
+                                            onClick={(e) => {
+                                              e.stopPropagation()
+                                              handleToggleReserve(wish.id, wish.status, wish.reserved_by_id)
+                                            }}
                                           >
                                             Снять бронь
                                           </button>
@@ -511,7 +522,10 @@ export function UserProfilePage() {
                                         // Если подарок не зарезервирован - показываем кнопку "Забронировать"
                                         <button
                                           className="btn-reserve"
-                                          onClick={() => handleToggleReserve(wish.id, wish.status, wish.reserved_by_id)}
+                                          onClick={(e) => {
+                                            e.stopPropagation()
+                                            handleToggleReserve(wish.id, wish.status, wish.reserved_by_id)
+                                          }}
                                         >
                                           Забронировать
                                         </button>

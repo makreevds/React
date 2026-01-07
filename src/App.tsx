@@ -7,6 +7,7 @@ import { FeedPage } from './pages/tsx/FeedPage'
 import { AddWishlistPage } from './pages/tsx/AddWishlistPage'
 import { AddWishPage } from './pages/tsx/AddWishPage'
 import { UserProfilePage } from './pages/tsx/UserProfilePage'
+import { WishDetailsPage } from './pages/tsx/WishDetailsPage'
 import { BottomNavigation } from './utils/tsx/BottomNavigation'
 import { Head } from './utils/tsx/Head'
 import { ThemeProvider } from './contexts/ThemeContext'
@@ -230,6 +231,10 @@ function AppContent() {
         <Route 
           path="/user/:telegramId" 
           element={<UserProfilePage />} 
+        />
+        <Route 
+          path="/user/:telegramId/wish/:wishId" 
+          element={<WishDetailsPage />} 
         />
         <Route 
           path="/feed" 
