@@ -337,12 +337,11 @@ body.theme-ozon .wishlist-group {
 
 .wishlist-clickable {
   cursor: pointer;
-  /* border: 1px solid transparent; */
 }
 
 .wishlist-clickable:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--box-shadow);
 }
 
 
@@ -353,9 +352,6 @@ body.theme-ozon .wishlist-group {
 .wishlist-name {
   font-size: 20px;
   font-weight: 600;
-  /* margin: 0 0 16px 0;
-  padding-bottom: 12px; */
-  /* border-bottom: 2px solid var(--theme-current-hint-light, var(--theme-hint-color-light)); */
   color: var(--theme-current-text);
   display: flex;
   align-items: center;

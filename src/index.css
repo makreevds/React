@@ -236,6 +236,8 @@ body.theme-light {
   --tg-accent-theme: #000000;
   --app-button-color: #0088cc;
   --app-button-text-color: #fff;
+  --color-box-shadow: #000000;
+  --box-shadow: var(0 4px 12px var(--color-box-shadow);)
 }
 
 /* Темная тема */
@@ -256,6 +258,8 @@ body.theme-dark {
   --tg-accent-theme: #ffffff;
   --app-button-color: #0088cc;
   --app-button-text-color: #fff;
+  --color-box-shadow: #ffffff;
+  --box-shadow: var(0 4px 12px var(--color-box-shadow);)
 }
 
 /* Тема в стиле OZON */
