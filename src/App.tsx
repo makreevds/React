@@ -242,6 +242,10 @@ function AppContent() {
           element={<WishDetailsPage />} 
         />
         <Route 
+          path="/user/:telegramId/wishlist/:wishlistId" 
+          element={<WishlistPage />} 
+        />
+        <Route 
           path="/feed" 
           element={<FeedPage />} 
         />

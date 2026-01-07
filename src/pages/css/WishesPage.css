@@ -504,7 +504,7 @@ body.theme-ozon .wishlist-group {
 
 .wishlist-clickable {
   cursor: pointer;
-  border: 1px solid transparent;
+  /* border: 1px solid transparent; */
 }
 
 .wishlist-clickable:hover {

@@ -7,6 +7,7 @@ import { useApiContext } from '../../contexts/ApiContext'
 import { GiftIcon } from '../../utils/tsx/GiftIcon'
 import doneIcon from '../../assets/done.png'
 import whatIcon from '../../assets/what.png'
+import lockIcon from '../../assets/lock.png'
 
 // Компонент меню для зарезервированного подарка (иконка подарка)
 interface ReservedWishMenuProps {
@@ -200,27 +201,34 @@ interface Wish {
 }
 
 export function WishlistPage() {
-  const { wishlistId } = useParams<{ wishlistId: string }>()
+  const { wishlistId, telegramId } = useParams<{ wishlistId: string; telegramId?: string }>()
   const { user } = useTelegramWebApp()
   const { webApp } = useTelegramWebApp()
   const apiContext = useApiContext()
   const wishlistsRepo = apiContext?.wishlists
   const wishesRepo = apiContext?.wishes
+  const usersRepo = apiContext?.users
   const navigate = useNavigate()
 
   const [wishlist, setWishlist] = useState<Wishlist | null>(null)
   const [wishes, setWishes] = useState<Wish[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isOwnWishlist, setIsOwnWishlist] = useState(true)
 
   const wishlistIdNumber = wishlistId ? Number(wishlistId) : null
+  const telegramIdNumber = telegramId ? Number(telegramId) : null
 
   // Telegram BackButton
   useEffect(() => {
     if (!webApp?.BackButton) return
     const backButton = webApp.BackButton
     const handleBack = () => {
-      navigate('/wishes')
+      if (telegramIdNumber) {
+        navigate(`/user/${telegramIdNumber}`)
+      } else {
+        navigate('/wishes')
+      }
     }
     backButton.show()
     backButton.onClick(handleBack)
@@ -228,15 +236,26 @@ export function WishlistPage() {
       backButton.offClick(handleBack)
       backButton.hide()
     }
-  }, [webApp, navigate])
+  }, [webApp, navigate, telegramIdNumber])
 
   // Загружаем данные вишлиста и подарков
   useEffect(() => {
-    if (!wishlistIdNumber || !user?.id || !wishlistsRepo || !wishesRepo) {
+    if (!wishlistIdNumber || !wishlistsRepo || !wishesRepo) {
       setIsLoading(false)
       setError('Не удалось загрузить вишлист')
       return
     }
+
+    // Определяем, чей вишлист
+    const targetTelegramId = telegramIdNumber || user?.id
+    if (!targetTelegramId) {
+      setIsLoading(false)
+      setError('Не удалось загрузить вишлист')
+      return
+    }
+
+    const isOwn = !telegramIdNumber || (user?.id === telegramIdNumber)
+    setIsOwnWishlist(isOwn)
 
     const loadData = async () => {
       try {
@@ -245,7 +264,7 @@ export function WishlistPage() {
 
         // Загружаем вишлист
         try {
-          const wishlistsResponse = await wishlistsRepo.getWishlistsByTelegramId(user.id)
+          const wishlistsResponse = await wishlistsRepo.getWishlistsByTelegramId(targetTelegramId)
           if (Array.isArray(wishlistsResponse)) {
             const foundWishlist = wishlistsResponse.find((wl: any) => Number(wl.id) === wishlistIdNumber)
             if (foundWishlist) {
@@ -300,7 +319,7 @@ export function WishlistPage() {
     }
 
     loadData()
-  }, [wishlistIdNumber, user?.id, wishlistsRepo, wishesRepo])
+  }, [wishlistIdNumber, telegramIdNumber, user?.id, wishlistsRepo, wishesRepo])
 
   const handleEdit = (wishId: number) => {
     navigate(`/wishes/edit-wish?wishId=${wishId}&wishlistId=${wishlistIdNumber}`)
@@ -385,7 +404,13 @@ export function WishlistPage() {
             <p>{error || 'Вишлист не найден'}</p>
             <button 
               className="btn-retry" 
-              onClick={() => navigate('/wishes')}
+              onClick={() => {
+                if (telegramIdNumber) {
+                  navigate(`/user/${telegramIdNumber}`)
+                } else {
+                  navigate('/wishes')
+                }
+              }}
             >
               Назад
             </button>
@@ -406,26 +431,42 @@ export function WishlistPage() {
               <div className="wishes-empty">
                 <p>В этом вишлисте пока нет желаний</p>
               </div>
-              <button 
-                className="btn-add-wish"
-                onClick={() => navigate(`/wishes/add-wish?wishlistId=${wishlistIdNumber}`)}
-              >
-                + Добавить подарок
-              </button>
-              <button 
-                className="btn-edit-wishlist"
-                onClick={() => navigate(`/wishes/edit-wishlist?wishlistId=${wishlistIdNumber}`)}
-              >
-                Редактировать вишлист
-              </button>
+              {isOwnWishlist && (
+                <>
+                  <button 
+                    className="btn-add-wish"
+                    onClick={() => navigate(`/wishes/add-wish?wishlistId=${wishlistIdNumber}`)}
+                  >
+                    + Добавить подарок
+                  </button>
+                  <button 
+                    className="btn-edit-wishlist"
+                    onClick={() => navigate(`/wishes/edit-wishlist?wishlistId=${wishlistIdNumber}`)}
+                  >
+                    Редактировать вишлист
+                  </button>
+                </>
+              )}
             </>
           ) : (
             <>
               <div className="wishes-list">
                 {wishes.map((wish) => {
                   if (!wish || !wish.id) return null
+                  const handleOpenDetails = () => {
+                    if (telegramIdNumber) {
+                      navigate(`/user/${telegramIdNumber}/wish/${wish.id}`)
+                    } else {
+                      navigate(`/wishes/wish/${wish.id}`)
+                    }
+                  }
                   return (
-                    <div key={wish.id} className="wish-item">
+                    <div 
+                      key={wish.id} 
+                      className="wish-item"
+                      role="button"
+                      onClick={handleOpenDetails}
+                    >
                       <div className="wish-image-container">
                         {wish.image_url ? (
                           <img 
@@ -461,38 +502,50 @@ export function WishlistPage() {
                           <p className="wish-status wish-status-fulfilled">Исполнено</p>
                         )}
                       </div>
-                      <div className="wish-actions">
+                      <div className="wish-actions" onClick={(e) => e.stopPropagation()}>
                         {wish.status === 'fulfilled' ? (
                           <div className="wish-status-icon">
                             <img src={doneIcon} alt="Исполнено" className="gift-icon-small" />
                           </div>
                         ) : wish.status === 'reserved' ? (
-                          <ReservedWishMenu
-                            onMarkAsReceived={() => handleMarkAsReceived(wish.id, wish.reserved_by_id)}
-                          />
+                          isOwnWishlist ? (
+                            <ReservedWishMenu
+                              onMarkAsReceived={() => handleMarkAsReceived(wish.id, wish.reserved_by_id)}
+                            />
+                          ) : (
+                            <div className="wish-status-icon">
+                              <img src={lockIcon} alt="Забронировано" className="gift-icon-small" />
+                            </div>
+                          )
                         ) : (
-                          <WishMenu
-                            onEdit={() => handleEdit(wish.id)}
-                            onDelete={() => handleDelete(wish.id)}
-                          />
+                          isOwnWishlist ? (
+                            <WishMenu
+                              onEdit={() => handleEdit(wish.id)}
+                              onDelete={() => handleDelete(wish.id)}
+                            />
+                          ) : null
                         )}
                       </div>
                     </div>
                   )
                 })}
               </div>
-              <button 
-                className="btn-add-wish"
-                onClick={() => navigate(`/wishes/add-wish?wishlistId=${wishlistIdNumber}`)}
-              >
-                + Добавить подарок
-              </button>
-              <button 
-                className="btn-edit-wishlist"
-                onClick={() => navigate(`/wishes/edit-wishlist?wishlistId=${wishlistIdNumber}`)}
-              >
-                Редактировать вишлист
-              </button>
+              {isOwnWishlist && (
+                <>
+                  <button 
+                    className="btn-add-wish"
+                    onClick={() => navigate(`/wishes/add-wish?wishlistId=${wishlistIdNumber}`)}
+                  >
+                    + Добавить подарок
+                  </button>
+                  <button 
+                    className="btn-edit-wishlist"
+                    onClick={() => navigate(`/wishes/edit-wishlist?wishlistId=${wishlistIdNumber}`)}
+                  >
+                    Редактировать вишлист
+                  </button>
+                </>
+              )}
             </>
           )}
         </section>

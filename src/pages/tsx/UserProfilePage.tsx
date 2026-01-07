@@ -1,12 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import '../css/WishesPage.css'
 import { useApiContext } from '../../contexts/ApiContext'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
-import { GiftIcon } from '../../utils/tsx/GiftIcon'
 import type { User } from '../../utils/api/users'
-import doneIcon from '../../assets/done.png'
-import lockIcon from '../../assets/lock.png'
 
 // Упрощенные типы
 interface Wishlist {
@@ -14,95 +11,19 @@ interface Wishlist {
   name: string
 }
 
-interface Wish {
-  id: number
-  title: string
-  price?: number
-  currency?: string
-  image_url?: string
-  comment?: string
-  status: 'active' | 'reserved' | 'fulfilled'
-  reserved_by_id?: number
-  gifted_by_id?: number
-}
-
-// Компонент-обертка для плавной анимации сворачивания/разворачивания
-interface WishlistContentWrapperProps {
-  children: React.ReactNode
-  isCollapsed: boolean
-  wishlistId: number
-}
-
-function WishlistContentWrapper({ children, isCollapsed }: WishlistContentWrapperProps) {
-  const contentRef = useRef<HTMLDivElement>(null)
-  const wrapperRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (contentRef.current && wrapperRef.current) {
-      if (!isCollapsed) {
-        // Разворачиваем: устанавливаем реальную высоту
-        const height = contentRef.current.scrollHeight
-        wrapperRef.current.style.maxHeight = `${height}px`
-      } else {
-        // Сворачиваем: устанавливаем 0
-        wrapperRef.current.style.maxHeight = '0px'
-      }
-    }
-  }, [isCollapsed])
-
-  // Обновляем высоту при изменении содержимого
-  useEffect(() => {
-    if (contentRef.current && wrapperRef.current && !isCollapsed) {
-      const updateHeight = () => {
-        if (wrapperRef.current && contentRef.current) {
-          const height = contentRef.current.scrollHeight
-          wrapperRef.current.style.maxHeight = `${height}px`
-        }
-      }
-      
-      // Используем ResizeObserver для отслеживания изменений размера
-      const resizeObserver = new ResizeObserver(updateHeight)
-      resizeObserver.observe(contentRef.current)
-      
-      return () => {
-        resizeObserver.disconnect()
-      }
-    }
-  }, [isCollapsed, children])
-
-  return (
-    <div 
-      ref={wrapperRef}
-      className="wishes-list-wrapper"
-      style={{
-        maxHeight: isCollapsed ? '0' : 'auto',
-        transition: 'max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-        overflow: 'hidden',
-      }}
-    >
-      <div ref={contentRef}>
-        {children}
-      </div>
-    </div>
-  )
-}
 
 export function UserProfilePage() {
   const { telegramId } = useParams<{ telegramId: string }>()
-  const { user: currentTelegramUser, webApp } = useTelegramWebApp()
+  const { webApp } = useTelegramWebApp()
   const apiContext = useApiContext()
   const wishlistsRepo = apiContext?.wishlists
-  const wishesRepo = apiContext?.wishes
   const usersRepo = apiContext?.users
   const navigate = useNavigate()
 
   const [viewedUser, setViewedUser] = useState<User | null>(null)
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [wishlists, setWishlists] = useState<Wishlist[]>([])
-  const [wishesByWishlist, setWishesByWishlist] = useState<Record<number, Wish[]>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [collapsedWishlists, setCollapsedWishlists] = useState<Set<number>>(new Set())
 
   // Управление кнопкой "Назад" в Telegram
   useEffect(() => {
@@ -157,27 +78,10 @@ export function UserProfilePage() {
     loadUserData()
   }, [telegramId, usersRepo])
 
-  // Загружаем данные текущего пользователя (кто смотрит профиль)
+
+  // Загружаем вишлисты пользователя
   useEffect(() => {
-    if (!currentTelegramUser?.id || !usersRepo) {
-      return
-    }
-
-    const loadCurrentUser = async () => {
-      try {
-        const userData = await usersRepo.getUserByTelegramId(currentTelegramUser.id)
-        setCurrentUser(userData)
-      } catch (err) {
-        console.error('Ошибка загрузки данных текущего пользователя:', err)
-      }
-    }
-
-    loadCurrentUser()
-  }, [currentTelegramUser?.id, usersRepo])
-
-  // Загружаем вишлисты и желания пользователя
-  useEffect(() => {
-    if (!telegramId || !viewedUser || !wishlistsRepo || !wishesRepo) {
+    if (!telegramId || !viewedUser || !wishlistsRepo) {
       if (viewedUser === null && !isLoading) {
         // Пользователь не найден, не загружаем данные
         return
@@ -208,54 +112,10 @@ export function UserProfilePage() {
           loadedWishlists = []
         }
         setWishlists(loadedWishlists)
-        setCollapsedWishlists(new Set(loadedWishlists.map(wl => wl.id)))
-
-        // Загружаем желания для каждого вишлиста
-        const wishesMap: Record<number, Wish[]> = {}
-        
-        for (const wishlist of loadedWishlists) {
-          try {
-            const wishesResponse = await wishesRepo.getWishesByWishlistId(wishlist.id)
-            
-            if (Array.isArray(wishesResponse)) {
-              const processedWishes: Wish[] = []
-              for (const w of wishesResponse) {
-                try {
-                  const processed: Wish = {
-                    id: Number(w.id) || 0,
-                    title: String(w.title || 'Без названия'),
-                    price: w.price !== null && w.price !== undefined 
-                      ? (typeof w.price === 'string' ? parseFloat(w.price) : Number(w.price))
-                      : undefined,
-                    currency: w.currency ? String(w.currency) : undefined,
-                    image_url: w.image_url ? String(w.image_url) : undefined,
-                    comment: w.comment ? String(w.comment) : undefined,
-                    status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
-                    reserved_by_id: w.reserved_by_id ? Number(w.reserved_by_id) : undefined,
-                    gifted_by_id: w.gifted_by_id ? Number(w.gifted_by_id) : undefined,
-                  }
-                  console.log('Обработано желание:', processed.id, 'image_url:', processed.image_url)
-                  processedWishes.push(processed)
-                } catch (err) {
-                  console.error('Ошибка обработки желания:', err, w)
-                  // Пропускаем некорректные желания
-                }
-              }
-              
-              wishesMap[wishlist.id] = processedWishes
-            } else {
-              wishesMap[wishlist.id] = []
-            }
-          } catch (err: any) {
-            wishesMap[wishlist.id] = []
-          }
-        }
-        setWishesByWishlist(wishesMap)
       } catch (err: any) {
         const errorMessage = err?.message || err?.toString() || 'Неизвестная ошибка'
         setError(errorMessage)
         setWishlists([])
-        setWishesByWishlist({})
       } finally {
         setTimeout(() => {
           setIsLoading(false)
@@ -264,71 +124,8 @@ export function UserProfilePage() {
     }
 
     loadData()
-  }, [telegramId, viewedUser, wishlistsRepo, wishesRepo])
+  }, [telegramId, viewedUser, wishlistsRepo])
 
-  // Обработчик сворачивания/разворачивания вишлиста
-  const toggleWishlist = (wishlistId: number) => {
-    setCollapsedWishlists(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(wishlistId)) {
-        newSet.delete(wishlistId)
-      } else {
-        newSet.add(wishlistId)
-      }
-      return newSet
-    })
-  }
-
-  // Обработчик бронирования/снятия брони подарка
-  const handleToggleReserve = async (wishId: number, currentStatus: string, reservedById?: number) => {
-    if (!wishesRepo || !currentUser) return
-
-    // Проверяем, что снять бронь может только тот, кто зарезервировал
-    if (currentStatus === 'reserved' && reservedById !== currentUser.id) {
-      alert('Вы можете снять бронь только с подарков, которые вы зарезервировали')
-      return
-    }
-
-    try {
-      const newStatus = currentStatus === 'reserved' ? 'active' : 'reserved'
-      const updateData: any = { status: newStatus }
-      
-      if (newStatus === 'reserved') {
-        // При бронировании устанавливаем reserved_by (ID пользователя)
-        updateData.reserved_by = currentUser.id
-      } else {
-        // При снятии брони очищаем reserved_by
-        updateData.reserved_by = null
-      }
-      
-      await wishesRepo.updateWish(wishId, updateData)
-      
-      // Обновляем состояние локально
-      setWishesByWishlist(prev => {
-        const updated = { ...prev }
-        for (const wishlistId in updated) {
-          updated[Number(wishlistId)] = updated[Number(wishlistId)].map(w => 
-            w.id === wishId ? { 
-              ...w, 
-              status: newStatus as 'active' | 'reserved' | 'fulfilled',
-              reserved_by_id: newStatus === 'reserved' ? currentUser.id : undefined
-            } : w
-          )
-        }
-        return updated
-      })
-    } catch (err) {
-      console.error('Ошибка при изменении статуса подарка:', err)
-      alert('Не удалось изменить статус подарка')
-    }
-  }
-
-  const formatPrice = (price?: number | string, currency?: string) => {
-    if (!price) return 'Цена не указана'
-    const numPrice = typeof price === 'string' ? parseFloat(price) : price
-    if (isNaN(numPrice)) return 'Цена не указана'
-    return `${numPrice.toLocaleString('ru-RU')} ${currency || '₽'}`
-  }
 
   if (isLoading && !viewedUser) {
     return (
@@ -429,115 +226,17 @@ export function UserProfilePage() {
               {wishlists.map((wishlist) => {
                 try {
                   if (!wishlist || !wishlist.id) return null
-                  const wishes = wishesByWishlist[wishlist.id] || []
-                  const isCollapsed = collapsedWishlists.has(wishlist.id)
 
                   return (
-                    <div key={wishlist.id} className="wishlist-group">
-                      <h4 
-                        className={`wishlist-name ${isCollapsed ? 'collapsed' : ''}`}
-                        onClick={() => toggleWishlist(wishlist.id)}
-                      >
+                    <div 
+                      key={wishlist.id} 
+                      className="wishlist-group wishlist-clickable"
+                      onClick={() => navigate(`/user/${viewedUser.telegram_id}/wishlist/${wishlist.id}`)}
+                    >
+                      <h4 className="wishlist-name">
                         <span className="wishlist-name-text">{wishlist.name || 'Без названия'}</span>
-                        <span className={`wishlist-toggle-icon ${isCollapsed ? 'collapsed' : ''}`}>▼</span>
+                        <span className="wishlist-arrow-icon">→</span>
                       </h4>
-                      <WishlistContentWrapper 
-                        isCollapsed={isCollapsed}
-                        wishlistId={wishlist.id}
-                      >
-                        {wishes.length === 0 ? (
-                          <div className="wishes-empty">
-                            <p>В этом вишлисте пока нет желаний</p>
-                          </div>
-                        ) : (
-                          <>
-                            <div className="wishes-list">
-                              {wishes.map((wish) => {
-                                if (!wish || !wish.id) return null
-                                const handleOpenDetails = () => {
-                                  navigate(`/user/${viewedUser.telegram_id}/wish/${wish.id}`)
-                                }
-                                return (
-                                  <div
-                                    key={wish.id}
-                                    className="wish-item"
-                                    role="button"
-                                    onClick={handleOpenDetails}
-                                  >
-                                    <div className="wish-image-container">
-                                      {wish.image_url ? (
-                                        <img 
-                                          src={wish.image_url} 
-                                          alt={wish.title || 'Желание'}
-                                          className="wish-image"
-                                          onError={(e) => {
-                                            e.currentTarget.style.display = 'none'
-                                            const container = e.currentTarget.parentElement
-                                            if (container) {
-                                              const placeholder = container.querySelector('.wish-image-placeholder')
-                                              if (placeholder) {
-                                                placeholder.classList.add('show')
-                                              }
-                                            }
-                                          }}
-                                        />
-                                      ) : null}
-                                      <div className={`wish-image-placeholder ${!wish.image_url ? 'show' : ''}`}>
-                                        <GiftIcon className="gift-icon" />
-                                      </div>
-                                    </div>
-                                    <div className="wish-content">
-                                      <h4 className="wish-title">{wish.title || 'Без названия'}</h4>
-                                      {wish.comment && (
-                                        <p className="wish-description">{wish.comment}</p>
-                                      )}
-                                      <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
-                                    </div>
-                                    <div className="wish-actions">
-                                      {wish.status === 'fulfilled' ? (
-                                        // Если подарок исполнен - показываем иконку done.png
-                                        <div className="wish-status-icon">
-                                          <img src={doneIcon} alt="Исполнено" className="gift-icon-small" />
-                                        </div>
-                                      ) : wish.status === 'reserved' ? (
-                                        // Если подарок зарезервирован
-                                        currentUser && wish.reserved_by_id === currentUser.id ? (
-                                          // И зарезервирован текущим пользователем - показываем кнопку "Снять бронь"
-                                          <button
-                                            className="btn-reserve btn-reserve-active"
-                                            onClick={(e) => {
-                                              e.stopPropagation()
-                                              handleToggleReserve(wish.id, wish.status, wish.reserved_by_id)
-                                            }}
-                                          >
-                                            Снять бронь
-                                          </button>
-                                        ) : (
-                                          // Иначе показываем иконку lock.png
-                                          <div className="wish-status-icon">
-                                            <img src={lockIcon} alt="Забронировано" className="gift-icon-small" />
-                                          </div>
-                                        )
-                                      ) : (
-                                        // Если подарок не зарезервирован - показываем кнопку "Забронировать"
-                                        <button
-                                          className="btn-reserve"
-                                          onClick={(e) => {
-                                            e.stopPropagation()
-                                            handleToggleReserve(wish.id, wish.status, wish.reserved_by_id)
-                                          }}
-                                        >
-                                          Забронировать
-                                        </button>
-                                      )}
-                                    </div>
-                                  </div>
-                                )
-                              })}
-                            </div>
-                          </>
-                        )}
-                      </WishlistContentWrapper>
                     </div>
                   )
                 } catch (err) {
