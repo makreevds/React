@@ -335,9 +335,6 @@ body.theme-ozon .wishlist-group {
   margin-bottom: 0;
 }
 
-.wishlist-clickable {
-  cursor: pointer;
-}
 
 .wishlist-clickable:hover {
   transform: translateY(-2px);
