@@ -84,7 +84,6 @@ html, body {
   /* Темная тема */
   --theme-bg-color-dark: #000000;
   --theme-text-color-dark: #ffffff;
-  --theme-secondary-bg-dark: rgba(255, 255, 255, 0.1);
   --theme-hint-color-dark: rgba(255, 255, 255, 0.5);
   --theme-hint-color-light-dark: rgba(255, 255, 255, 0.2);
   --theme-warning-dark: #ffc107;
@@ -225,7 +224,7 @@ body.theme-light {
   color: var(--theme-text-color);
   --theme-current-bg: var(--theme-bg-color);
   --theme-current-text: var(--theme-text-color);
-  --theme-current-secondary-bg: var(--theme-secondary-bg);
+  --theme-current-secondary-bg: rgba(0, 0, 0, 0.05);
   --theme-current-hint: var(--theme-hint-color);
   --theme-current-hint-light: var(--theme-hint-color-light);
   --theme-current-warning: var(--theme-warning);
@@ -247,7 +246,7 @@ body.theme-dark {
   color: var(--theme-text-color-dark);
   --theme-current-bg: var(--theme-bg-color-dark);
   --theme-current-text: var(--theme-text-color-dark);
-  --theme-current-secondary-bg: var(--theme-secondary-bg-dark);
+  --theme-current-secondary-bg: rgba(255, 255, 255, 0.1);
   --theme-current-hint: var(--theme-hint-color-dark);
   --theme-current-hint-light: var(--theme-hint-color-light-dark);
   --theme-current-warning: var(--theme-warning-dark);
@@ -299,7 +298,6 @@ body.theme-ozon {
 
   /* Базовые фоновые/подсказочные (на всякий случай) */
   --theme-secondary-bg: #ffffff;
-  --theme-secondary-bg-dark: #ffffff;
   --theme-hint-color: rgba(0, 26, 52, 0.6);
   --theme-hint-color-light: rgba(0, 26, 52, 0.18);
 }
@@ -314,7 +312,7 @@ body.theme-ozon {
     --theme-current-text: var(--theme-text-color-dark);
     --theme-current-secondary-bg: var(--theme-secondary-bg-dark);
     --theme-current-hint: var(--theme-hint-color-dark);
-    --theme-current-hint-light: var(--theme-hint-color-light-dark);
+    --theme-current-hint-light: #ffffff;
     --tg-accent-theme: #ffffff;
     --app-button-color: #0088cc;
     --app-button-text-color: #fff;
