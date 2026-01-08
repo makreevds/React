@@ -1,4 +1,6 @@
-
+.wishes-page {
+  padding-bottom: 80px; /* Отступ для нижней навигации */
+}
 
 .wishes-main-content {
   display: flex;
@@ -134,15 +136,27 @@
   animation: fadeIn 0.4s ease-in-out 0.1s forwards;
 }
 
+.wishes-container {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid var(--theme-current-hint-light);
+  border-radius: var(--radius-md);
+  background: var(--theme-current-secondary-bg);
+}
+
 .wishes-list-title {
   font-size: 18px;
   font-weight: 600;
-  margin-top: 24px;
-  padding: 20px;
+  margin: 0 0 8px 0;
   color: var(--theme-current-text);
-  border: 1px solid var(--theme-current-hint-light);
-  border-radius: var(--radius-md);
-  background: var(--theme-current-secondary-bg)
+}
+
+.wishes-list-comment {
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+  color: var(--theme-current-hint);
+  line-height: 1.4;
 }
 
 
@@ -746,6 +760,7 @@ html.theme-dark .btn-reserve-active {
   padding: 10px 16px;
   background: var(--theme-current-secondary-bg);
   color: var(--theme-current-text);
+  border: 1px solid var(--theme-current-hint-light);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 500;
@@ -755,9 +770,13 @@ html.theme-dark .btn-reserve-active {
 
 
 .btn-edit-wishlist:hover {
-  transform: scale(0.98);
+  background: var(--theme-current-hint-light);
+  border-color: var(--theme-current-hint);
 }
 
+.btn-edit-wishlist:active {
+  opacity: 0.8;
+}
 
 /* Модальные окна */
 .modal-overlay {
@@ -868,7 +887,7 @@ html.theme-dark .btn-reserve-active {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--theme-current-hint-light);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   font-size: 14px;
   background: var(--theme-current-bg);
   color: var(--theme-current-text);
@@ -938,7 +957,7 @@ html.theme-dark .btn-reserve-active {
 }
 
 
-.btn-cancel:hover {
+.btn-cancel, .btn-submit :hover {
   transform: scale(0.98);
 }
 
@@ -953,10 +972,6 @@ html.theme-dark .btn-reserve-active {
   transition: background .2s, border-color .2s;
   background: var(--app-button-color);
   color: var(--app-button-text-color);
-}
-
-.btn-submit:hover {
-  transform: scale(0.98);
 }
 
 /* Стили для страниц форм (вместо модальных окон) */

@@ -186,6 +186,7 @@ function WishMenu({ onEdit, onDelete }: WishMenuProps) {
 interface Wishlist {
   id: number
   name: string
+  description?: string
 }
 
 interface Wish {
@@ -270,6 +271,7 @@ export function WishlistPage() {
               setWishlist({
                 id: Number(foundWishlist.id) || 0,
                 name: String(foundWishlist.name || ''),
+                description: foundWishlist.description ? String(foundWishlist.description) : undefined,
               })
             } else {
               setError('Вишлист не найден')
@@ -423,8 +425,12 @@ export function WishlistPage() {
     <div className="page-container wishes-page">
       <div className="wishes-main-content">
         <section className="wishes-list-section">
-          <h3 className="wishes-list-title">{wishlist.name || 'Без названия'}</h3>
-          
+          <div className='wishes-container'>
+            <h3 className="wishes-list-title">{wishlist.name || 'Без названия'}</h3>
+            {wishlist.description && (
+              <h4 className="wishes-list-comment">{wishlist.description}</h4>
+            )}
+          </div>
           {wishes.length === 0 ? (
             <>
               <div className="wishes-empty">
