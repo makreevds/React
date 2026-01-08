@@ -208,7 +208,7 @@
   flex-shrink: 0;
   width: 60px;
   height: 60px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   overflow: hidden;
   position: relative;
   background: transparent;
@@ -284,7 +284,7 @@
   font-size: 12px;
   margin: 4px 0 0 0;
   padding: 2px 8px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   display: inline-block;
   font-weight: 500;
 }
@@ -382,7 +382,7 @@ body.theme-ozon .wishlist-group {
   background: var(--tg-theme-button-color, #0088cc);
   color: var(--tg-theme-button-text-color, #ffffff);
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -401,7 +401,7 @@ body.theme-ozon .wishlist-group {
 .wish-details-wishlist-name {
   margin-bottom: 12px;
   padding: 8px 12px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   background: rgba(0, 0, 0, 0.04);
   font-size: 14px;
   font-weight: 500;
@@ -465,7 +465,7 @@ body.theme-ozon .wishlist-group {
 .btn-reserve {
   padding: 8px 16px;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -504,7 +504,7 @@ html.theme-dark .btn-reserve-active {
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   background: var(--theme-current-bg);
   cursor: pointer;
   font-size: 18px;
@@ -537,7 +537,7 @@ html.theme-dark .btn-reserve-active {
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   background: var(--theme-current-bg);
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
@@ -691,7 +691,7 @@ html.theme-dark .btn-reserve-active {
   line-height: 1.5;
   padding: 12px;
   background: var(--theme-current-hint-light);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   overflow-x: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -761,7 +761,6 @@ html.theme-dark .btn-reserve-active {
   padding: 10px 16px;
   background: var(--theme-current-secondary-bg);
   color: var(--theme-current-text);
-  border: 1px solid var(--theme-current-hint-light);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 500;
@@ -769,14 +768,8 @@ html.theme-dark .btn-reserve-active {
   transition: background 0.2s, border-color 0.2s;
 }
 
-
 .btn-edit-wishlist:hover {
-  background: var(--theme-current-hint-light);
-  border-color: var(--theme-current-hint);
-}
-
-.btn-edit-wishlist:active {
-  opacity: 0.8;
+  transform: scale(0.98);
 }
 
 /* Модальные окна */
@@ -846,7 +839,7 @@ html.theme-dark .btn-reserve-active {
   font-size: 24px;
   color: var(--theme-current-hint);
   cursor: pointer;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   transition: background 0.2s, color 0.2s;
 }
 
@@ -888,7 +881,7 @@ html.theme-dark .btn-reserve-active {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--theme-current-hint-light);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: 14px;
   background: var(--theme-current-bg);
   color: var(--theme-current-text);
