@@ -12,14 +12,16 @@ import type { User } from '../../utils/api/users'
 interface WishMenuProps {
   status: 'active' | 'reserved' | 'fulfilled'
   isOwnWishlist: boolean
+  reservedByCurrentUser?: boolean
   onEdit?: () => void
   onDelete?: () => void
   onMarkAsReceived?: () => void
   onReserve?: () => void
+  onUnreserve?: () => void
   onCopyToMe?: () => void
 }
 
-function WishMenu({ status, isOwnWishlist, onEdit, onDelete, onMarkAsReceived, onReserve, onCopyToMe }: WishMenuProps) {
+function WishMenu({ status, isOwnWishlist, reservedByCurrentUser, onEdit, onDelete, onMarkAsReceived, onReserve, onUnreserve, onCopyToMe }: WishMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -39,12 +41,18 @@ function WishMenu({ status, isOwnWishlist, onEdit, onDelete, onMarkAsReceived, o
       }
     }
 
+    const handleScroll = () => {
+      setIsOpen(false)
+    }
+
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside, true)
+      window.addEventListener('scroll', handleScroll, true)
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside, true)
+      window.removeEventListener('scroll', handleScroll, true)
     }
   }, [isOpen])
 
@@ -115,6 +123,19 @@ function WishMenu({ status, isOwnWishlist, onEdit, onDelete, onMarkAsReceived, o
               }}
             >
               Забронировать
+            </button>
+          )}
+          {!isOwnWishlist && status === 'reserved' && reservedByCurrentUser && onUnreserve && (
+            <button
+              className="wish-menu-item"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsOpen(false)
+                onUnreserve()
+              }}
+            >
+              Снять бронь
             </button>
           )}
           {!isOwnWishlist && onCopyToMe && (
@@ -376,6 +397,28 @@ export function WishlistPage() {
     }
   }
 
+  const handleUnreserve = async (wishId: number) => {
+    if (!wishesRepo || !currentUser) return
+
+    try {
+      const updateData: any = {
+        status: 'active',
+        reserved_by: null,
+      }
+
+      await wishesRepo.updateWish(wishId, updateData)
+      
+      setWishes(prev => prev.map(w => 
+        w.id === wishId 
+          ? { ...w, status: 'active' as const, reserved_by_id: undefined }
+          : w
+      ))
+    } catch (err) {
+      console.error('Ошибка при снятии брони подарка:', err)
+      alert('Не удалось снять бронь с подарка')
+    }
+  }
+
   const handleCopyToMe = (wish: Wish) => {
     if (!wish) return
     // Открываем страницу добавления с предзаполненными данными
@@ -540,10 +583,12 @@ export function WishlistPage() {
                         <WishMenu
                           status={wish.status}
                           isOwnWishlist={isOwnWishlist}
+                          reservedByCurrentUser={!isOwnWishlist && wish.status === 'reserved' && currentUser && wish.reserved_by_id === currentUser.id ? true : undefined}
                           onEdit={isOwnWishlist && wish.status === 'active' ? () => handleEdit(wish.id) : undefined}
                           onDelete={isOwnWishlist ? () => handleDelete(wish.id) : undefined}
                           onMarkAsReceived={isOwnWishlist && wish.status === 'reserved' ? () => handleMarkAsReceived(wish.id, wish.reserved_by_id) : undefined}
                           onReserve={!isOwnWishlist && wish.status === 'active' ? () => handleReserve(wish.id) : undefined}
+                          onUnreserve={!isOwnWishlist && wish.status === 'reserved' && currentUser && wish.reserved_by_id === currentUser.id ? () => handleUnreserve(wish.id) : undefined}
                           onCopyToMe={!isOwnWishlist ? () => handleCopyToMe(wish) : undefined}
                         />
                       </div>

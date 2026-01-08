@@ -133,10 +133,9 @@ export function WishDetailsPage() {
 
   const handleCopyToMe = () => {
     if (!wish) return
-    // В перспективе можно добавить создание подарка у себя,
-    // пока просто открываем страницу добавления с подсказкой
+    // Открываем страницу выбора вишлиста для копирования
     navigate(
-      `/wishes/add-wish?title=${encodeURIComponent(wish.title || '')}` +
+      `/wishes/copy-wish?title=${encodeURIComponent(wish.title || '')}` +
         `&comment=${encodeURIComponent(wish.comment || '')}` +
         (wish.link ? `&link=${encodeURIComponent(wish.link)}` : '') +
         (wish.image_url ? `&image_url=${encodeURIComponent(wish.image_url)}` : '') +

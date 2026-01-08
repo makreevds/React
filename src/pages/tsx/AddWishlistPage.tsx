@@ -11,10 +11,20 @@ export function AddWishlistPage() {
   const { user, webApp } = useTelegramWebApp()
   const apiContext = useApiContext()
   const wishlistsRepo = apiContext?.wishlists
+  const wishesRepo = apiContext?.wishes
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const wishlistId = searchParams.get('wishlistId')
   const isEditMode = !!wishlistId
+
+  // Параметры подарка для копирования (если создаем вишлист с подарком)
+  const wishTitle = searchParams.get('title') || ''
+  const wishComment = searchParams.get('comment') || ''
+  const wishLink = searchParams.get('link') || ''
+  const wishImageUrl = searchParams.get('image_url') || ''
+  const wishPrice = searchParams.get('price') || ''
+  const wishCurrency = searchParams.get('currency') || '₽'
+  const hasWishData = !!wishTitle
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -126,12 +136,34 @@ export function AddWishlistPage() {
       if (!user) return
       setIsSubmitting(true)
       try {
-        await wishlistsRepo.createWishlist({
+        const newWishlist = await wishlistsRepo.createWishlist({
           name: name.trim(),
           description: description.trim() || undefined,
           telegram_id: user.id,
         })
-        navigate('/wishes')
+        
+        // Если есть данные подарка - создаем подарок в новом вишлисте
+        if (hasWishData && wishesRepo && newWishlist.id) {
+          try {
+            await wishesRepo.createWish({
+              wishlist: newWishlist.id,
+              title: wishTitle.trim(),
+              comment: wishComment.trim() || undefined,
+              link: wishLink || undefined,
+              image_url: wishImageUrl || undefined,
+              price: wishPrice ? parseFloat(wishPrice) : undefined,
+              currency: wishCurrency || '₽',
+            })
+            // Переходим на страницу нового вишлиста
+            navigate(`/wishes/wishlist/${newWishlist.id}`)
+          } catch (wishErr) {
+            console.error('Ошибка при создании подарка:', wishErr)
+            // Вишлист создан, но подарок не создан - все равно переходим на страницу вишлиста
+            navigate(`/wishes/wishlist/${newWishlist.id}`)
+          }
+        } else {
+          navigate('/wishes')
+        }
       } catch (err) {
         alert('Не удалось создать вишлист')
       } finally {

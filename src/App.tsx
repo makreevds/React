@@ -6,6 +6,7 @@ import { FriendsPage } from './pages/tsx/FriendsPage'
 import { SettingsPage } from './pages/tsx/SettingsPage'
 import { FeedPage } from './pages/tsx/FeedPage'
 import { AddWishlistPage } from './pages/tsx/AddWishlistPage'
+import { CopyWishPage } from './pages/tsx/CopyWishPage'
 import { AddWishPage } from './pages/tsx/AddWishPage'
 import { UserProfilePage } from './pages/tsx/UserProfilePage'
 import { WishDetailsPage } from './pages/tsx/WishDetailsPage'
@@ -224,6 +225,10 @@ function AppContent() {
         <Route 
           path="/wishes/edit-wish" 
           element={<AddWishPage />} 
+        />
+        <Route 
+          path="/wishes/copy-wish" 
+          element={<CopyWishPage />} 
         />
         <Route 
           path="/wishes/wishlist/:wishlistId" 
