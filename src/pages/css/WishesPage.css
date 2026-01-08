@@ -182,7 +182,7 @@
   padding: 16px;
   background: var(--theme-current-bg);
   border-radius: var(--radius-md);
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  transition: transform 0.2s
 }
 
 .wish-item-reserved {
@@ -206,14 +206,9 @@ body.theme-dark .wish-item-fulfilled {
 
 
 .wish-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-color: var(--theme-current-hint);
+  transform: scale(1.02);
 }
 
-
-.wish-item:active {
-  transform: scale(0.98);
-}
 
 .user-profile-page .wishes-list .wish-item:last-child {
   margin-bottom: 10px;
@@ -303,11 +298,6 @@ body.theme-dark .wish-item-fulfilled {
   display: inline-block;
   font-weight: 500;
   width: fit-content;
-}
-
-.wish-status-active {
-  background: var(--theme-current-hint-light);
-  color: var(--theme-current-hint);
 }
 
 .wish-status-reserved {
@@ -414,10 +404,6 @@ body.theme-ozon .wishlist-group {
   opacity: 0.9;
 }
 
-.btn-retry:active {
-  opacity: 0.8;
-}
-
 /* Детальная страница подарка */
 .wish-details-wishlist-name {
   margin-bottom: 12px;
@@ -500,18 +486,10 @@ body.theme-ozon .wishlist-group {
   opacity: 0.9;
 }
 
-.btn-reserve:active:not(:disabled) {
-  opacity: 0.8;
-}
 
 .btn-reserve:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.btn-reserve-active {
-  background: var(--theme-current-warning);
-  color: #ffffff;
 }
 
 html.theme-dark .btn-reserve-active {
@@ -531,11 +509,6 @@ html.theme-dark .btn-reserve-active {
   font-size: 18px;
   transition: background 0.2s, transform 0.1s;
   padding: 0;
-}
-
-
-.wish-action-btn:active {
-  transform: scale(0.95);
 }
 
 .wish-edit-btn:hover {
@@ -570,9 +543,6 @@ html.theme-dark .btn-reserve-active {
   background: var(--theme-current-hint-light);
 }
 
-.wish-menu-btn:active {
-  transform: scale(0.95);
-}
 
 .wish-menu-icon {
   font-size: 20px;
@@ -734,7 +704,7 @@ html.theme-dark .btn-reserve-active {
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
+  transition: transform 0.2s;
 }
 
 
@@ -752,7 +722,7 @@ html.theme-dark .btn-reserve-active {
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: opacity .2s, transform .1s;
+  transition: transform .2s;
 }
 
 .btn-add-wish:hover {
@@ -769,7 +739,7 @@ html.theme-dark .btn-reserve-active {
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: opacity .2s, transform .1s;
+  transition: transform .2s;
 }
 
 
@@ -786,7 +756,7 @@ html.theme-dark .btn-reserve-active {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+  transition: transform .2s;
 }
 
 .btn-edit-wishlist:hover {
@@ -968,7 +938,7 @@ html.theme-dark .btn-reserve-active {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s
+  transition: transform .2s
 }
 
 
