@@ -154,10 +154,11 @@ export function AddWishlistPage() {
               price: wishPrice ? parseFloat(wishPrice) : undefined,
               currency: wishCurrency || '₽',
             })
-            // Переходим на страницу нового вишлиста
+            // Переходим на страницу нового вишлиста после успешного создания подарка
             navigate(`/wishes/wishlist/${newWishlist.id}`)
           } catch (wishErr) {
             console.error('Ошибка при создании подарка:', wishErr)
+            alert('Вишлист создан, но не удалось добавить подарок. Попробуйте добавить его вручную.')
             // Вишлист создан, но подарок не создан - все равно переходим на страницу вишлиста
             navigate(`/wishes/wishlist/${newWishlist.id}`)
           }
