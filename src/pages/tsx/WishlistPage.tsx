@@ -23,9 +23,11 @@ interface WishMenuProps {
 
 function WishMenu({ status, isOwnWishlist, reservedByCurrentUser, onEdit, onDelete, onMarkAsReceived, onReserve, onUnreserve, onCopyToMe }: WishMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isScrolling, setIsScrolling] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const scrollTimeoutRef = useRef<number | null>(null)
 
   const updateDropdownPosition = useCallback(() => {
     if (isOpen && buttonRef.current && dropdownRef.current) {
@@ -65,22 +67,83 @@ function WishMenu({ status, isOwnWishlist, reservedByCurrentUser, onEdit, onDele
   }, [isOpen, updateDropdownPosition])
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      setIsScrolling(false)
+      return
+    }
 
     const handleScroll = () => {
-      updateDropdownPosition()
+      // Делаем меню прозрачным и не кликабельным при скролле
+      setIsScrolling(true)
+      
+      // Очищаем предыдущий таймаут
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+      
+      // После окончания скролла возвращаем меню в нормальное состояние
+      scrollTimeoutRef.current = window.setTimeout(() => {
+        setIsScrolling(false)
+      }, 150)
     }
 
     const handleResize = () => {
       updateDropdownPosition()
     }
 
-    window.addEventListener('scroll', handleScroll, true)
+    window.addEventListener('scroll', handleScroll, { passive: true, capture: true })
     window.addEventListener('resize', handleResize)
 
     return () => {
-      window.removeEventListener('scroll', handleScroll, true)
+      window.removeEventListener('scroll', handleScroll, { capture: true } as EventListenerOptions)
       window.removeEventListener('resize', handleResize)
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+    }
+  }, [isOpen, updateDropdownPosition])
+
+  useEffect(() => {
+    updateDropdownPosition()
+  }, [isOpen, updateDropdownPosition])
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsScrolling(false)
+      return
+    }
+
+    const handleScroll = () => {
+      // Обновляем позицию меню при скролле
+      updateDropdownPosition()
+      
+      // Делаем меню прозрачным и не кликабельным при скролле
+      setIsScrolling(true)
+      
+      // Очищаем предыдущий таймаут
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+      
+      // После окончания скролла возвращаем меню в нормальное состояние
+      scrollTimeoutRef.current = window.setTimeout(() => {
+        setIsScrolling(false)
+      }, 150)
+    }
+
+    const handleResize = () => {
+      updateDropdownPosition()
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true, capture: true })
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, { capture: true } as EventListenerOptions)
+      window.removeEventListener('resize', handleResize)
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
     }
   }, [isOpen, updateDropdownPosition])
 
@@ -98,9 +161,19 @@ function WishMenu({ status, isOwnWishlist, reservedByCurrentUser, onEdit, onDele
       {isOpen && createPortal(
         <div 
           ref={dropdownRef}
-          className="wish-menu-dropdown wish-menu-dropdown-portal"
+          className={`wish-menu-dropdown wish-menu-dropdown-portal ${isScrolling ? 'wish-menu-scrolling' : ''}`}
           onClick={(e) => {
+            if (isScrolling) {
+              e.preventDefault()
+              e.stopPropagation()
+              return
+            }
             e.stopPropagation()
+          }}
+          style={{
+            pointerEvents: isScrolling ? 'none' : 'auto',
+            opacity: isScrolling ? 0 : 1,
+            transition: 'opacity 0.15s ease-out',
           }}
         >
           {status === 'active' && isOwnWishlist && onEdit && (
