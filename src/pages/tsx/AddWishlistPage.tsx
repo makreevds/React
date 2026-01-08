@@ -26,6 +26,22 @@ export function AddWishlistPage() {
   const wishCurrency = searchParams.get('currency') || '₽'
   const hasWishData = !!wishTitle
 
+  // Отладочная информация
+  useEffect(() => {
+    console.log('AddWishlistPage: URL params:', {
+      isEditMode,
+      wishlistId,
+      wishTitle,
+      wishComment,
+      wishLink,
+      wishImageUrl,
+      wishPrice,
+      wishCurrency,
+      hasWishData,
+      allParams: Object.fromEntries(searchParams.entries()),
+    })
+  }, [isEditMode, wishlistId, hasWishData, wishTitle, wishComment, wishLink, wishImageUrl, wishPrice, wishCurrency, searchParams])
+
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -143,9 +159,21 @@ export function AddWishlistPage() {
         })
         
         // Если есть данные подарка - создаем подарок в новом вишлисте
+        console.log('Creating wishlist with wish data:', {
+          hasWishData,
+          wishesRepo: !!wishesRepo,
+          wishlistId: newWishlist.id,
+          wishTitle,
+          wishComment,
+          wishLink,
+          wishImageUrl,
+          wishPrice,
+          wishCurrency,
+        })
+        
         if (hasWishData && wishesRepo && newWishlist.id) {
           try {
-            await wishesRepo.createWish({
+            const createdWish = await wishesRepo.createWish({
               wishlist: newWishlist.id,
               title: wishTitle.trim(),
               comment: wishComment.trim() || undefined,
@@ -154,6 +182,7 @@ export function AddWishlistPage() {
               price: wishPrice ? parseFloat(wishPrice) : undefined,
               currency: wishCurrency || '₽',
             })
+            console.log('Wish created successfully:', createdWish)
             // Переходим на страницу нового вишлиста после успешного создания подарка
             navigate(`/wishes/wishlist/${newWishlist.id}`)
           } catch (wishErr) {
@@ -163,6 +192,7 @@ export function AddWishlistPage() {
             navigate(`/wishes/wishlist/${newWishlist.id}`)
           }
         } else {
+          console.log('No wish data or wishesRepo missing, navigating to /wishes')
           navigate('/wishes')
         }
       } catch (err) {
