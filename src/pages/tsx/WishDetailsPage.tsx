@@ -53,14 +53,32 @@ export function WishDetailsPage() {
     loadCurrentUser()
   }, [currentTelegramUser?.id, usersRepo])
 
+  // Функция для определения пути возврата
+  const getBackPath = (): string | number => {
+    // Если есть wishlist_id в данных подарка - возвращаемся в вишлист
+    if (wish?.wishlist_id) {
+      if (telegramIdNumber) {
+        return `/user/${telegramIdNumber}/wishlist/${wish.wishlist_id}`
+      } else {
+        return `/wishes/wishlist/${wish.wishlist_id}`
+      }
+    }
+    // Если нет wishlist_id, возвращаемся на предыдущую страницу или профиль
+    if (telegramIdNumber) {
+      return `/user/${telegramIdNumber}`
+    }
+    return -1 // navigate(-1) - вернуться назад в истории
+  }
+
   useEffect(() => {
     if (!webApp?.BackButton) return
     const backButton = webApp.BackButton
     const handleBack = () => {
-      if (telegramIdNumber) {
-        navigate(`/user/${telegramIdNumber}`)
+      const backPath = getBackPath()
+      if (typeof backPath === 'number') {
+        navigate(backPath)
       } else {
-        navigate(-1)
+        navigate(backPath)
       }
     }
     backButton.show()
@@ -69,7 +87,7 @@ export function WishDetailsPage() {
       backButton.offClick(handleBack)
       backButton.hide()
     }
-  }, [webApp, navigate, telegramIdNumber])
+  }, [webApp, navigate, wish?.wishlist_id, telegramIdNumber])
 
   useEffect(() => {
     const loadData = async () => {
@@ -217,10 +235,11 @@ export function WishDetailsPage() {
             <button
               className="btn-retry"
               onClick={() => {
-                if (telegramIdNumber) {
-                  navigate(`/user/${telegramIdNumber}`)
+                const backPath = getBackPath()
+                if (typeof backPath === 'number') {
+                  navigate(backPath)
                 } else {
-                  navigate(-1)
+                  navigate(backPath)
                 }
               }}
             >
@@ -338,14 +357,15 @@ export function WishDetailsPage() {
           <button
             className="btn-secondary"
             onClick={() => {
-              if (telegramIdNumber) {
-                navigate(`/user/${telegramIdNumber}`)
+              const backPath = getBackPath()
+              if (typeof backPath === 'number') {
+                navigate(backPath)
               } else {
-                navigate(-1)
+                navigate(backPath)
               }
             }}
           >
-            Назад к профилю
+            Назад
           </button>
         </div>
       </div>
