@@ -182,7 +182,30 @@
   padding: 16px;
   background: var(--theme-current-bg);
   border-radius: var(--radius-md);
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.wish-item-active {
+  background: var(--theme-current-bg);
+}
+
+.wish-item-reserved {
+  background: rgba(255, 193, 7, 0.5); /* Желтый с прозрачностью 0.5 */
+}
+
+.wish-item-fulfilled {
+  background: rgba(40, 167, 69, 0.5); /* Зеленый с прозрачностью 0.5 */
+}
+
+/* Для темной темы используем те же цвета */
+html.theme-dark .wish-item-reserved,
+body.theme-dark .wish-item-reserved {
+  background: rgba(255, 193, 7, 0.5) !important;
+}
+
+html.theme-dark .wish-item-fulfilled,
+body.theme-dark .wish-item-fulfilled {
+  background: rgba(40, 167, 69, 0.5) !important;
 }
 
 
@@ -280,9 +303,15 @@
   font-size: 12px;
   margin: 4px 0 0 0;
   padding: 2px 8px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   display: inline-block;
   font-weight: 500;
+  width: fit-content;
+}
+
+.wish-status-active {
+  background: var(--theme-current-hint-light);
+  color: var(--theme-current-hint);
 }
 
 .wish-status-reserved {

@@ -5,98 +5,18 @@ import '../css/WishesPage.css'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { useApiContext } from '../../contexts/ApiContext'
 import { GiftIcon } from '../../utils/tsx/GiftIcon'
-import doneIcon from '../../assets/done.png'
-import whatIcon from '../../assets/what.png'
-import lockIcon from '../../assets/lock.png'
 
-// Компонент меню для зарезервированного подарка (иконка подарка)
-interface ReservedWishMenuProps {
-  onMarkAsReceived: () => void
-}
-
-function ReservedWishMenu({ onMarkAsReceived }: ReservedWishMenuProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node
-      if (buttonRef.current && buttonRef.current.contains(target)) {
-        return
-      }
-      if (dropdownRef.current && dropdownRef.current.contains(target)) {
-        return
-      }
-      if (menuRef.current && !menuRef.current.contains(target)) {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside, true)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside, true)
-    }
-  }, [isOpen])
-
-  useEffect(() => {
-    if (isOpen && buttonRef.current && dropdownRef.current) {
-      const buttonRect = buttonRef.current.getBoundingClientRect()
-      const dropdown = dropdownRef.current
-      
-      dropdown.style.top = `${buttonRect.bottom + 4}px`
-      dropdown.style.right = `${window.innerWidth - buttonRect.right}px`
-    }
-  }, [isOpen])
-
-  return (
-    <div className="wish-menu-container" ref={menuRef}>
-      <button
-        ref={buttonRef}
-        className="wish-menu-btn wish-menu-btn-reserved"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label="Меню подарка"
-        title="Меню подарка"
-      >
-        <img src={whatIcon} alt="Зарезервировано" className="gift-icon-small" />
-      </button>
-      {isOpen && createPortal(
-        <div 
-          ref={dropdownRef}
-          className="wish-menu-dropdown wish-menu-dropdown-portal"
-          onClick={(e) => {
-            e.stopPropagation()
-          }}
-        >
-          <button
-            className="wish-menu-item"
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              setIsOpen(false)
-              onMarkAsReceived()
-            }}
-          >
-            Подарок получен
-          </button>
-        </div>,
-        document.body
-      )}
-    </div>
-  )
-}
 
 // Компонент меню для желания (три точки)
 interface WishMenuProps {
-  onEdit: () => void
+  status: 'active' | 'reserved' | 'fulfilled'
+  isOwnWishlist: boolean
+  onEdit?: () => void
   onDelete: () => void
+  onMarkAsReceived?: () => void
 }
 
-function WishMenu({ onEdit, onDelete }: WishMenuProps) {
+function WishMenu({ status, isOwnWishlist, onEdit, onDelete, onMarkAsReceived }: WishMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -154,17 +74,32 @@ function WishMenu({ onEdit, onDelete }: WishMenuProps) {
             e.stopPropagation()
           }}
         >
-          <button
-            className="wish-menu-item"
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              setIsOpen(false)
-              onEdit()
-            }}
-          >
-            Редактировать
-          </button>
+          {status === 'active' && isOwnWishlist && onEdit && (
+            <button
+              className="wish-menu-item"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsOpen(false)
+                onEdit()
+              }}
+            >
+              Редактировать
+            </button>
+          )}
+          {status === 'reserved' && isOwnWishlist && onMarkAsReceived && (
+            <button
+              className="wish-menu-item"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsOpen(false)
+                onMarkAsReceived()
+              }}
+            >
+              Подарок получен
+            </button>
+          )}
           <button
             className="wish-menu-item wish-menu-item-danger"
             onClick={(e) => {
@@ -468,7 +403,7 @@ export function WishlistPage() {
                   return (
                     <div 
                       key={wish.id} 
-                      className="wish-item"
+                      className={`wish-item wish-item-${wish.status}`}
                       role="button"
                       onClick={handleOpenDetails}
                     >
@@ -500,36 +435,26 @@ export function WishlistPage() {
                           <p className="wish-description">{wish.comment}</p>
                         )}
                         <p className="wish-price">{formatPrice(wish.price, wish.currency)}</p>
+                        {wish.status === 'active' && (
+                          <span className="wish-status wish-status-active">Активен</span>
+                        )}
                         {wish.status === 'reserved' && (
-                          <p className="wish-status wish-status-reserved">Зарезервировано</p>
+                          <span className="wish-status wish-status-reserved">Забронирован</span>
                         )}
                         {wish.status === 'fulfilled' && (
-                          <p className="wish-status wish-status-fulfilled">Исполнено</p>
+                          <span className="wish-status wish-status-fulfilled">Исполнен</span>
                         )}
                       </div>
                       <div className="wish-actions" onClick={(e) => e.stopPropagation()}>
-                        {wish.status === 'fulfilled' ? (
-                          <div className="wish-status-icon">
-                            <img src={doneIcon} alt="Исполнено" className="gift-icon-small" />
-                          </div>
-                        ) : wish.status === 'reserved' ? (
-                          isOwnWishlist ? (
-                            <ReservedWishMenu
-                              onMarkAsReceived={() => handleMarkAsReceived(wish.id, wish.reserved_by_id)}
-                            />
-                          ) : (
-                            <div className="wish-status-icon">
-                              <img src={lockIcon} alt="Забронировано" className="gift-icon-small" />
-                            </div>
-                          )
-                        ) : (
-                          isOwnWishlist ? (
-                            <WishMenu
-                              onEdit={() => handleEdit(wish.id)}
-                              onDelete={() => handleDelete(wish.id)}
-                            />
-                          ) : null
-                        )}
+                        {isOwnWishlist ? (
+                          <WishMenu
+                            status={wish.status}
+                            isOwnWishlist={isOwnWishlist}
+                            onEdit={wish.status === 'active' ? () => handleEdit(wish.id) : undefined}
+                            onDelete={() => handleDelete(wish.id)}
+                            onMarkAsReceived={wish.status === 'reserved' ? () => handleMarkAsReceived(wish.id, wish.reserved_by_id) : undefined}
+                          />
+                        ) : null}
                       </div>
                     </div>
                   )
