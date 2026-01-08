@@ -23,9 +23,11 @@ interface WishMenuProps {
 
 function WishMenu({ status, isOwnWishlist, reservedByCurrentUser, onEdit, onDelete, onMarkAsReceived, onReserve, onUnreserve, onCopyToMe }: WishMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const closeTimeoutRef = useRef<number | null>(null)
 
   const updateDropdownPosition = useCallback(() => {
     if (isOpen && buttonRef.current && dropdownRef.current) {
@@ -65,23 +67,45 @@ function WishMenu({ status, isOwnWishlist, reservedByCurrentUser, onEdit, onDele
   }, [isOpen, updateDropdownPosition])
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      setIsClosing(false)
+      return
+    }
 
     const handleScroll = () => {
-      // При скролле просто закрываем меню
-      setIsOpen(false)
+      // При начале скролла делаем меню прозрачным и не кликабельным
+      setIsClosing(true)
+      
+      // Очищаем предыдущий таймаут, если он есть
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
+      
+      // После небольшой задержки полностью закрываем меню
+      // Меню останется закрытым до тех пор, пока пользователь снова не нажмет на кнопку
+      closeTimeoutRef.current = window.setTimeout(() => {
+        setIsOpen(false)
+        setIsClosing(false)
+      }, 150) // Задержка для плавной анимации исчезновения
     }
 
     const handleResize = () => {
       updateDropdownPosition()
     }
 
+    // Используем passive: true для лучшей производительности скролла
     window.addEventListener('scroll', handleScroll, { passive: true, capture: true })
+    // Также слушаем скролл на всех элементах документа
+    document.addEventListener('scroll', handleScroll, { passive: true, capture: true })
     window.addEventListener('resize', handleResize)
 
     return () => {
       window.removeEventListener('scroll', handleScroll, { capture: true } as EventListenerOptions)
+      document.removeEventListener('scroll', handleScroll, { capture: true } as EventListenerOptions)
       window.removeEventListener('resize', handleResize)
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
     }
   }, [isOpen, updateDropdownPosition])
 
@@ -101,7 +125,17 @@ function WishMenu({ status, isOwnWishlist, reservedByCurrentUser, onEdit, onDele
           ref={dropdownRef}
           className="wish-menu-dropdown wish-menu-dropdown-portal"
           onClick={(e) => {
+            if (isClosing) {
+              e.preventDefault()
+              e.stopPropagation()
+              return
+            }
             e.stopPropagation()
+          }}
+          style={{
+            pointerEvents: isClosing ? 'none' : 'auto',
+            opacity: isClosing ? 0 : 1,
+            transition: 'opacity 0.15s ease-out',
           }}
         >
           {status === 'active' && isOwnWishlist && onEdit && (
