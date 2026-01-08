@@ -728,7 +728,7 @@ html.theme-dark .btn-reserve-active {
 .btn-delete-wishlist {
   width: 100%;
   padding: 10px 16px;
-  background: var(--app-button-color);
+  background: var(--color-button-delite);
   color: var(--app-button-text-color);
   border: none;
   border-radius: var(--radius-md);
@@ -741,10 +741,6 @@ html.theme-dark .btn-reserve-active {
 
 .btn-delete-wishlist:hover {
   transform: scale(0.98);
-}
-
-.btn-delete-wishlist:active {
-  opacity: 0.8;
 }
 
 .btn-edit-wishlist {
@@ -935,30 +931,27 @@ html.theme-dark .btn-reserve-active {
   border-top: 1px solid var(--theme-current-hint-light);
 }
 
-
-.btn-cancel,
-.btn-submit {
+.btn-cancel {
   flex: 1;
-  padding: 12px 20px;
-  border: none;
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--color-button-cancel);
+  color: var(--theme-current-text);
+  border: 1px solid var(--theme-current-hint-light);
   border-radius: var(--radius-md);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
-}
-
-.btn-cancel {
-  background: var(--theme-current-secondary-bg);
-  color: var(--theme-current-text);
+  transition: background 0.2s, border-color 0.2s
 }
 
 
 .btn-cancel:hover {
-  opacity: 0.8;
+  transform: scale(0.98);
 }
 
 .btn-submit {
+  flex: 1;
   background: var(--app-button-color);
   color: var(--app-button-text-color);
 }
