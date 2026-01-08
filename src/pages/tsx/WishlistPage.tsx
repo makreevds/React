@@ -5,6 +5,7 @@ import '../css/WishesPage.css'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { useApiContext } from '../../contexts/ApiContext'
 import { GiftIcon } from '../../utils/tsx/GiftIcon'
+import type { User } from '../../utils/api/users'
 
 
 // Компонент меню для желания (три точки)
@@ -12,11 +13,13 @@ interface WishMenuProps {
   status: 'active' | 'reserved' | 'fulfilled'
   isOwnWishlist: boolean
   onEdit?: () => void
-  onDelete: () => void
+  onDelete?: () => void
   onMarkAsReceived?: () => void
+  onReserve?: () => void
+  onCopyToMe?: () => void
 }
 
-function WishMenu({ status, isOwnWishlist, onEdit, onDelete, onMarkAsReceived }: WishMenuProps) {
+function WishMenu({ status, isOwnWishlist, onEdit, onDelete, onMarkAsReceived, onReserve, onCopyToMe }: WishMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -100,17 +103,47 @@ function WishMenu({ status, isOwnWishlist, onEdit, onDelete, onMarkAsReceived }:
               Подарок получен
             </button>
           )}
-          <button
-            className="wish-menu-item wish-menu-item-danger"
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              setIsOpen(false)
-              onDelete()
-            }}
-          >
-            Удалить
-          </button>
+          {/* Меню для чужих вишлистов */}
+          {!isOwnWishlist && status === 'active' && onReserve && (
+            <button
+              className="wish-menu-item"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsOpen(false)
+                onReserve()
+              }}
+            >
+              Забронировать
+            </button>
+          )}
+          {!isOwnWishlist && onCopyToMe && (
+            <button
+              className="wish-menu-item"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsOpen(false)
+                onCopyToMe()
+              }}
+            >
+              Скопировать себе
+            </button>
+          )}
+          {/* Удалить только для своих вишлистов */}
+          {isOwnWishlist && onDelete && (
+            <button
+              className="wish-menu-item wish-menu-item-danger"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsOpen(false)
+                onDelete()
+              }}
+            >
+              Удалить
+            </button>
+          )}
         </div>,
         document.body
       )}
@@ -131,6 +164,7 @@ interface Wish {
   currency?: string
   image_url?: string
   comment?: string
+  link?: string
   status: 'active' | 'reserved' | 'fulfilled'
   reserved_by_id?: number
   gifted_by_id?: number
@@ -143,6 +177,7 @@ export function WishlistPage() {
   const apiContext = useApiContext()
   const wishlistsRepo = apiContext?.wishlists
   const wishesRepo = apiContext?.wishes
+  const usersRepo = apiContext?.users
   const navigate = useNavigate()
 
   const [wishlist, setWishlist] = useState<Wishlist | null>(null)
@@ -150,9 +185,26 @@ export function WishlistPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isOwnWishlist, setIsOwnWishlist] = useState(true)
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
 
   const wishlistIdNumber = wishlistId ? Number(wishlistId) : null
   const telegramIdNumber = telegramId ? Number(telegramId) : null
+
+  // Загружаем текущего пользователя (кто смотрит вишлист)
+  useEffect(() => {
+    if (!user?.id || !usersRepo) return
+
+    const loadCurrentUser = async () => {
+      try {
+        const userData = await usersRepo.getUserByTelegramId(user.id)
+        setCurrentUser(userData)
+      } catch (e) {
+        console.error('Ошибка загрузки текущего пользователя для WishlistPage:', e)
+      }
+    }
+
+    loadCurrentUser()
+  }, [user?.id, usersRepo])
 
   // Telegram BackButton
   useEffect(() => {
@@ -235,6 +287,7 @@ export function WishlistPage() {
               currency: w.currency ? String(w.currency) : undefined,
               image_url: w.image_url ? String(w.image_url) : undefined,
               comment: w.comment ? String(w.comment) : undefined,
+              link: w.link ? String(w.link) : undefined,
               status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
               reserved_by_id: w.reserved_by_id ? Number(w.reserved_by_id) : undefined,
               gifted_by_id: w.gifted_by_id ? Number(w.gifted_by_id) : undefined,
@@ -299,6 +352,41 @@ export function WishlistPage() {
       console.error('Ошибка при отметке подарка как полученного:', err)
       alert('Не удалось отметить подарок как полученный')
     }
+  }
+
+  const handleReserve = async (wishId: number) => {
+    if (!wishesRepo || !currentUser) return
+
+    try {
+      const updateData: any = {
+        status: 'reserved',
+        reserved_by: currentUser.id,
+      }
+
+      await wishesRepo.updateWish(wishId, updateData)
+      
+      setWishes(prev => prev.map(w => 
+        w.id === wishId 
+          ? { ...w, status: 'reserved' as const, reserved_by_id: currentUser.id }
+          : w
+      ))
+    } catch (err) {
+      console.error('Ошибка при бронировании подарка:', err)
+      alert('Не удалось забронировать подарок')
+    }
+  }
+
+  const handleCopyToMe = (wish: Wish) => {
+    if (!wish) return
+    // Открываем страницу добавления с предзаполненными данными
+    navigate(
+      `/wishes/add-wish?title=${encodeURIComponent(wish.title || '')}` +
+        `&comment=${encodeURIComponent(wish.comment || '')}` +
+        (wish.link ? `&link=${encodeURIComponent(wish.link)}` : '') +
+        (wish.image_url ? `&image_url=${encodeURIComponent(wish.image_url)}` : '') +
+        (wish.price ? `&price=${encodeURIComponent(String(wish.price))}` : '') +
+        (wish.currency ? `&currency=${encodeURIComponent(wish.currency)}` : ''),
+    )
   }
 
   const formatPrice = (price?: number | string, currency?: string) => {
@@ -449,15 +537,15 @@ export function WishlistPage() {
                         )}
                       </div>
                       <div className="wish-actions" onClick={(e) => e.stopPropagation()}>
-                        {isOwnWishlist ? (
-                          <WishMenu
-                            status={wish.status}
-                            isOwnWishlist={isOwnWishlist}
-                            onEdit={wish.status === 'active' ? () => handleEdit(wish.id) : undefined}
-                            onDelete={() => handleDelete(wish.id)}
-                            onMarkAsReceived={wish.status === 'reserved' ? () => handleMarkAsReceived(wish.id, wish.reserved_by_id) : undefined}
-                          />
-                        ) : null}
+                        <WishMenu
+                          status={wish.status}
+                          isOwnWishlist={isOwnWishlist}
+                          onEdit={isOwnWishlist && wish.status === 'active' ? () => handleEdit(wish.id) : undefined}
+                          onDelete={isOwnWishlist ? () => handleDelete(wish.id) : undefined}
+                          onMarkAsReceived={isOwnWishlist && wish.status === 'reserved' ? () => handleMarkAsReceived(wish.id, wish.reserved_by_id) : undefined}
+                          onReserve={!isOwnWishlist && wish.status === 'active' ? () => handleReserve(wish.id) : undefined}
+                          onCopyToMe={!isOwnWishlist ? () => handleCopyToMe(wish) : undefined}
+                        />
                       </div>
                     </div>
                   )
