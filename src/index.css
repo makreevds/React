@@ -328,7 +328,7 @@ body.theme-ozon {
   padding-top: calc(env(safe-area-inset-top, 0px) + var(--head-height));
   padding-left: var(--padding-page);
   padding-right: var(--padding-page);
-  padding-bottom: 64px + var(safe-area-inset-bottom) + var(safe-area-inset-bottom);
+  padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + env(safe-area-inset-bottom, 0px));
 }
 .page-container h1{
   padding-left: var(--spacing-lg);
