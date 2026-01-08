@@ -1,7 +1,3 @@
-.wishes-page {
-  padding-bottom: 80px; /* Отступ для нижней навигации */
-}
-
 .wishes-main-content {
   display: flex;
   flex-direction: column;
