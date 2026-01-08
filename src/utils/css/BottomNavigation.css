@@ -16,7 +16,6 @@
   -webkit-backdrop-filter: blur(var(--blur-nav-head));
 
   border-radius: 40px;
-  overflow: hidden; /* Скрываем border навбара внутри индикатора */
 
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 
@@ -28,33 +27,6 @@
   /* Плавное изменение цвета при смене темы */
   transition: background 0.2s ease, border-color 0.2s ease;
 }
-
-/* Анимированный индикатор (кружок) */
-.nav-indicator {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 70px;
-  height: 70px;
-  background: var(--tg-theme-button-color, #0088cc);
-  border-radius: 40px;
-  transition: left 0.3s cubic-bezier(0.59, 0.16, 0.75, 0.16), background 0.2s ease;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 1;
-  border: solid 2px var(--app-button-color);
-}
-
-/* Псевдоэлемент для перекрытия border навбара */
-.nav-indicator::before {
-  content: '';
-  position: absolute;
-  inset: -3px; /* Немного больше индикатора, чтобы перекрыть border навбара */
-  border-radius: 40px;
-  background: rgba(255, 255, 255, var(--opacity-nav-head)); /* Цвет фона навбара для светлой темы */
-  z-index: -1; /* Под border индикатора, но над border навбара */
-}
-
 
 /* псевдоэлемент для чистого бордера */
 .bottom-navigation::before {
@@ -80,7 +52,6 @@
   gap: 4px;
   transition: color 0.2s ease;
   position: relative;
-  z-index: 1;
 }
 
 .nav-item.active {
@@ -132,11 +103,6 @@ body.theme-dark .bottom-navigation::before {
   transition: border-color 0.2s ease;
 }
 
-html.theme-dark .nav-indicator::before,
-body.theme-dark .nav-indicator::before {
-  background: rgba(20, 20, 20, var(--opacity-nav-head)) !important;
-}
-
 html.theme-light .bottom-navigation,
 body.theme-light .bottom-navigation {
   background: rgba(255, 255, 255, var(--opacity-nav-head)) !important;
@@ -149,11 +115,6 @@ body.theme-light .bottom-navigation::before {
   transition: border-color 0.2s ease;
 }
 
-html.theme-light .nav-indicator::before,
-body.theme-light .nav-indicator::before {
-  background: rgba(255, 255, 255, var(--opacity-nav-head)) !important;
-}
-
 html.theme-ozon .bottom-navigation,
 body.theme-ozon .bottom-navigation {
   background: rgba(255, 255, 255, var(--opacity-nav-head)) !important;
@@ -164,11 +125,6 @@ html.theme-ozon .bottom-navigation::before,
 body.theme-ozon .bottom-navigation::before {
   border-color: var(--tg-accent-theme) !important;
   transition: border-color 0.2s ease;
-}
-
-html.theme-ozon .nav-indicator::before,
-body.theme-ozon .nav-indicator::before {
-  background: rgba(255, 255, 255, var(--opacity-nav-head)) !important;
 }
 
 /* Скрываем навбар, когда открыта клавиатура (фокус на инпуте/текстареа/селекте) */
