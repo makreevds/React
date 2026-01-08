@@ -15,7 +15,7 @@
   backdrop-filter: var(--blur-nav-head);
   -webkit-backdrop-filter: blur(var(--blur-nav-head));
 
-  z-index: 1000;
+  z-index: 10001;
 
   border-radius: 0 0 0 0;
 
