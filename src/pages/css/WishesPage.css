@@ -748,7 +748,6 @@ html.theme-dark .btn-reserve-active {
   padding: 10px 16px;
   background: var(--theme-current-secondary-bg);
   color: var(--theme-current-text);
-  border: 1px solid var(--theme-current-hint-light);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 500;
@@ -758,13 +757,9 @@ html.theme-dark .btn-reserve-active {
 
 
 .btn-edit-wishlist:hover {
-  background: var(--theme-current-hint-light);
-  border-color: var(--theme-current-hint);
+  transform: scale(0.98);
 }
 
-.btn-edit-wishlist:active {
-  opacity: 0.8;
-}
 
 /* Модальные окна */
 .modal-overlay {
@@ -875,7 +870,7 @@ html.theme-dark .btn-reserve-active {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--theme-current-hint-light);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: 14px;
   background: var(--theme-current-bg);
   color: var(--theme-current-text);
