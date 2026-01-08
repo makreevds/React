@@ -323,7 +323,7 @@ body.theme-ozon .wishlist-group {
 }
 
 .wishlist-clickable:hover {
-  transform: translateY(-2px);
+  transform: scale(1.02);
   box-shadow: var(--box-shadow);
 }
 
@@ -727,12 +727,8 @@ html.theme-dark .btn-reserve-active {
   transition: opacity 0.2s, transform 0.1s;
 }
 
-.btn-add-wishlist:hover {
-  opacity: 0.9;
-}
 
-.btn-add-wishlist:active {
-  opacity: 0.8;
+.btn-add-wishlist:hover {
   transform: scale(0.98);
 }
 
@@ -748,7 +744,6 @@ html.theme-dark .btn-reserve-active {
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
 }
-
 
 .btn-add-wish:hover {
   background: var(--theme-current-hint-light);
