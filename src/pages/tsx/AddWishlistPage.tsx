@@ -26,21 +26,6 @@ export function AddWishlistPage() {
   const wishCurrency = searchParams.get('currency') || '₽'
   const hasWishData = !!wishTitle
 
-  // Отладочная информация
-  useEffect(() => {
-    console.log('AddWishlistPage: URL params:', {
-      isEditMode,
-      wishlistId,
-      wishTitle,
-      wishComment,
-      wishLink,
-      wishImageUrl,
-      wishPrice,
-      wishCurrency,
-      hasWishData,
-      allParams: Object.fromEntries(searchParams.entries()),
-    })
-  }, [isEditMode, wishlistId, hasWishData, wishTitle, wishComment, wishLink, wishImageUrl, wishPrice, wishCurrency, searchParams])
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -164,7 +149,7 @@ export function AddWishlistPage() {
         // Если есть данные подарка - создаем подарок в новом вишлисте
         if (hasWishData && wishesRepo && wishlistId) {
           try {
-            const createdWish = await wishesRepo.createWish({
+            await wishesRepo.createWish({
               wishlist: wishlistId,
               title: wishTitle.trim(),
               comment: wishComment.trim() || undefined,
