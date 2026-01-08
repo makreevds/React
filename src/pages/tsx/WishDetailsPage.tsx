@@ -164,7 +164,8 @@ export function WishDetailsPage() {
       setWish({
         ...wish,
         status: updated.status,
-        reserved_by_id: updated.reserved_by_id || undefined,
+        // Явно устанавливаем reserved_by_id в зависимости от нового статуса
+        reserved_by_id: newStatus === 'reserved' ? currentUser.id : undefined,
       })
     } catch (e) {
       console.error('Ошибка при изменении статуса подарка:', e)
