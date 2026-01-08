@@ -173,7 +173,6 @@ export function AddWishlistPage() {
               price: wishPrice ? parseFloat(wishPrice) : undefined,
               currency: wishCurrency || '₽',
             })
-            console.log('Wish created successfully:', createdWish)
             // Переходим на страницу нового вишлиста после успешного создания подарка
             navigate(`/wishes/wishlist/${wishlistId}`)
           } catch (wishErr) {
@@ -183,7 +182,6 @@ export function AddWishlistPage() {
             navigate(`/wishes/wishlist/${wishlistId}`)
           }
         } else {
-          console.log('No wish data or wishesRepo missing, navigating to /wishes')
           navigate('/wishes')
         }
       } catch (err) {
