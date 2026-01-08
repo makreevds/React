@@ -393,19 +393,10 @@ export function WishlistPage() {
               <div className="wishes-list">
                 {wishes.map((wish) => {
                   if (!wish || !wish.id) return null
-                  const handleOpenDetails = () => {
-                    if (telegramIdNumber) {
-                      navigate(`/user/${telegramIdNumber}/wish/${wish.id}`)
-                    } else {
-                      navigate(`/wishes/wish/${wish.id}`)
-                    }
-                  }
                   return (
                     <div 
                       key={wish.id} 
                       className={`wish-item wish-item-${wish.status}`}
-                      role="button"
-                      onClick={handleOpenDetails}
                     >
                       <div className="wish-image-container">
                         {wish.image_url ? (
@@ -445,7 +436,7 @@ export function WishlistPage() {
                           <span className="wish-status wish-status-fulfilled">Исполнен</span>
                         )}
                       </div>
-                      <div className="wish-actions" onClick={(e) => e.stopPropagation()}>
+                      <div className="wish-actions">
                         {isOwnWishlist ? (
                           <WishMenu
                             status={wish.status}
