@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate, useParams } from 'react-router-dom'
 import '../css/WishesPage.css'
@@ -27,6 +27,16 @@ function WishMenu({ status, isOwnWishlist, reservedByCurrentUser, onEdit, onDele
   const buttonRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
+  const updateDropdownPosition = useCallback(() => {
+    if (isOpen && buttonRef.current && dropdownRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect()
+      const dropdown = dropdownRef.current
+      
+      dropdown.style.top = `${buttonRect.bottom + 4}px`
+      dropdown.style.right = `${window.innerWidth - buttonRect.right}px`
+    }
+  }, [isOpen])
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node
@@ -41,30 +51,38 @@ function WishMenu({ status, isOwnWishlist, reservedByCurrentUser, onEdit, onDele
       }
     }
 
-    const handleScroll = () => {
-      setIsOpen(false)
-    }
-
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside, true)
-      window.addEventListener('scroll', handleScroll, true)
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside, true)
-      window.removeEventListener('scroll', handleScroll, true)
     }
   }, [isOpen])
 
   useEffect(() => {
-    if (isOpen && buttonRef.current && dropdownRef.current) {
-      const buttonRect = buttonRef.current.getBoundingClientRect()
-      const dropdown = dropdownRef.current
-      
-      dropdown.style.top = `${buttonRect.bottom + 4}px`
-      dropdown.style.right = `${window.innerWidth - buttonRect.right}px`
+    updateDropdownPosition()
+  }, [isOpen, updateDropdownPosition])
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleScroll = () => {
+      updateDropdownPosition()
     }
-  }, [isOpen])
+
+    const handleResize = () => {
+      updateDropdownPosition()
+    }
+
+    window.addEventListener('scroll', handleScroll, true)
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true)
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [isOpen, updateDropdownPosition])
 
   return (
     <div className="wish-menu-container" ref={menuRef}>
