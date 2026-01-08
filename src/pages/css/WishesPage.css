@@ -300,7 +300,6 @@
   background: var(--theme-current-secondary-bg);
   border-radius: var(--radius-md);
   transition: box-shadow 0.2s;
-  animation: fadeIn 0.3s ease-in-out forwards;
 }
 
 html.theme-ozon .wishlist-group,
@@ -316,19 +315,9 @@ body.theme-ozon .wishlist-group {
   margin-bottom: 0;
 }
 
-
-.wishlist-clickable {
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
 .wishlist-clickable:hover {
   transform: scale(1.02);
   box-shadow: var(--box-shadow);
-}
-
-.wishlist-clickable:active {
-  transform: translateY(0);
 }
 
 .wishlist-name {
@@ -344,10 +333,6 @@ body.theme-ozon .wishlist-group {
   transition: color 0.2s;
 }
 
-.wishlist-name:hover {
-  color: var(--tg-theme-button-color, #0088cc);
-}
-
 .wishlist-arrow-icon {
   font-size: 18px;
   color: var(--theme-current-hint);
@@ -355,7 +340,6 @@ body.theme-ozon .wishlist-group {
 }
 
 .wishlist-clickable:hover .wishlist-arrow-icon {
-  color: var(--tg-theme-button-color, #0088cc);
   transform: translateX(4px);
 }
 
