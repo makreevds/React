@@ -157,6 +157,7 @@
   margin: 0;
   color: var(--theme-current-hint);
   line-height: 1.4;
+  font-style: italic
 }
 
 
