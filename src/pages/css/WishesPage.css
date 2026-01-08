@@ -155,15 +155,6 @@
 }
 
 
-
-.btn-add-wish:hover {
-  opacity: 0.9;
-}
-
-.btn-add-wish:active {
-  opacity: 0.8;
-}
-
 .wishes-list-wrapper {
   overflow: hidden;
 }
@@ -720,42 +711,37 @@ html.theme-dark .btn-reserve-active {
 .btn-add-wish {
   width: 100%;
   padding: 10px 16px;
-  background: var(--theme-current-secondary-bg);
-  color: var(--theme-current-text);
-  border: 1px solid var(--theme-current-hint-light);
+  background: var(--app-button-color);
+  color: var(--app-button-text-color);
+  border: none;
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+  transition: opacity .2s, transform .1s;
 }
 
 .btn-add-wish:hover {
-  background: var(--theme-current-hint-light);
-  border-color: var(--theme-current-hint);
+  transform: scale(0.98);
 }
 
 .btn-delete-wishlist {
   width: 100%;
   padding: 10px 16px;
-  margin-top: 8px;
-  margin-bottom: 10px;
-  background: transparent;
-  color: #ff3b30;
-  border: 1px solid #ff3b30;
+  background: var(--app-button-color);
+  color: var(--app-button-text-color);
+  border: none;
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition: opacity .2s, transform .1s;
 }
 
 
 .btn-delete-wishlist:hover {
-  background: rgba(255, 59, 48, 0.1);
-  border-color: #ff3b30;
+  transform: scale(0.98);
 }
-
 
 .btn-delete-wishlist:active {
   opacity: 0.8;
