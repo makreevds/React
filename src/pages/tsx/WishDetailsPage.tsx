@@ -164,7 +164,7 @@ export function WishDetailsPage() {
       setWish({
         ...wish,
         status: updated.status,
-        reserved_by_id: updated.reserved_by_id,
+        reserved_by_id: updated.reserved_by_id || undefined,
       })
     } catch (e) {
       console.error('Ошибка при изменении статуса подарка:', e)
@@ -176,7 +176,12 @@ export function WishDetailsPage() {
     if (!wish || !currentUser) return 'Забронировать'
     if (wish.status === 'fulfilled') return 'Подарено'
     if (wish.status === 'reserved') {
-      return wish.reserved_by_id === currentUser.id ? 'Снять бронь' : 'Забронировано'
+      // Если забронировано мной - показываем "Снять бронь"
+      if (wish.reserved_by_id && wish.reserved_by_id === currentUser.id) {
+        return 'Снять бронь'
+      }
+      // Если забронировано не мной - показываем "Забронировано"
+      return 'Забронировано'
     }
     return 'Забронировать'
   }
@@ -184,7 +189,9 @@ export function WishDetailsPage() {
   const isReserveButtonDisabled = () => {
     if (!wish || !currentUser) return true
     if (wish.status === 'fulfilled') return true
-    if (wish.status === 'reserved' && wish.reserved_by_id !== currentUser.id) return true
+    // Если забронировано не мной - кнопка отключена
+    if (wish.status === 'reserved' && wish.reserved_by_id && wish.reserved_by_id !== currentUser.id) return true
+    // Если забронировано мной - кнопка активна (можно снять бронь)
     return false
   }
 
