@@ -33,7 +33,7 @@ export function UserProfilePage() {
 
     const backButton = webApp.BackButton
     const handleBackClick = () => {
-      navigate('/friends')
+      navigate(-1)
     }
 
     // Показываем кнопку "Назад"

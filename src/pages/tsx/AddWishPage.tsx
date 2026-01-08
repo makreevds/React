@@ -37,7 +37,7 @@ export function AddWishPage() {
 
     const backButton = webApp.BackButton
     const handleBackClick = () => {
-      navigate('/wishes')
+      navigate(-1)
     }
 
     // Показываем кнопку "Назад"

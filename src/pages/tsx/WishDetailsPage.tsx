@@ -53,33 +53,11 @@ export function WishDetailsPage() {
     loadCurrentUser()
   }, [currentTelegramUser?.id, usersRepo])
 
-  // Функция для определения пути возврата
-  const getBackPath = (): string | number => {
-    // Если есть wishlist_id в данных подарка - возвращаемся в вишлист
-    if (wish?.wishlist_id) {
-      if (telegramIdNumber) {
-        return `/user/${telegramIdNumber}/wishlist/${wish.wishlist_id}`
-      } else {
-        return `/wishes/wishlist/${wish.wishlist_id}`
-      }
-    }
-    // Если нет wishlist_id, возвращаемся на предыдущую страницу или профиль
-    if (telegramIdNumber) {
-      return `/user/${telegramIdNumber}`
-    }
-    return -1 // navigate(-1) - вернуться назад в истории
-  }
-
   useEffect(() => {
     if (!webApp?.BackButton) return
     const backButton = webApp.BackButton
     const handleBack = () => {
-      const backPath = getBackPath()
-      if (typeof backPath === 'number') {
-        navigate(backPath)
-      } else {
-        navigate(backPath)
-      }
+      navigate(-1)
     }
     backButton.show()
     backButton.onClick(handleBack)
@@ -87,7 +65,7 @@ export function WishDetailsPage() {
       backButton.offClick(handleBack)
       backButton.hide()
     }
-  }, [webApp, navigate, wish?.wishlist_id, telegramIdNumber])
+  }, [webApp, navigate])
 
   useEffect(() => {
     const loadData = async () => {
@@ -233,14 +211,7 @@ export function WishDetailsPage() {
             <p>{error || 'Подарок не найден'}</p>
             <button
               className="btn-retry"
-              onClick={() => {
-                const backPath = getBackPath()
-                if (typeof backPath === 'number') {
-                  navigate(backPath)
-                } else {
-                  navigate(backPath)
-                }
-              }}
+              onClick={() => navigate(-1)}
             >
               Назад
             </button>
@@ -355,14 +326,7 @@ export function WishDetailsPage() {
         <div className="details-back-row">
           <button
             className="btn-secondary"
-            onClick={() => {
-              const backPath = getBackPath()
-              if (typeof backPath === 'number') {
-                navigate(backPath)
-              } else {
-                navigate(backPath)
-              }
-            }}
+            onClick={() => navigate(-1)}
           >
             Назад
           </button>

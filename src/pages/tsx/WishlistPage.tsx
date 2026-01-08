@@ -250,11 +250,7 @@ export function WishlistPage() {
     if (!webApp?.BackButton) return
     const backButton = webApp.BackButton
     const handleBack = () => {
-      if (telegramIdNumber) {
-        navigate(`/user/${telegramIdNumber}`)
-      } else {
-        navigate('/wishes')
-      }
+      navigate(-1)
     }
     backButton.show()
     backButton.onClick(handleBack)
