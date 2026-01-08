@@ -421,9 +421,9 @@ export function WishlistPage() {
 
   const handleCopyToMe = (wish: Wish) => {
     if (!wish) return
-    // Открываем страницу добавления с предзаполненными данными
+    // Открываем страницу выбора вишлиста для копирования
     navigate(
-      `/wishes/add-wish?title=${encodeURIComponent(wish.title || '')}` +
+      `/wishes/copy-wish?title=${encodeURIComponent(wish.title || '')}` +
         `&comment=${encodeURIComponent(wish.comment || '')}` +
         (wish.link ? `&link=${encodeURIComponent(wish.link)}` : '') +
         (wish.image_url ? `&image_url=${encodeURIComponent(wish.image_url)}` : '') +
