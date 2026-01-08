@@ -158,28 +158,10 @@ export function AddWishlistPage() {
           telegram_id: user.id,
         })
         
-        console.log('New wishlist created (full object):', JSON.stringify(newWishlist, null, 2))
-        console.log('New wishlist ID:', newWishlist.id)
-        console.log('New wishlist type:', typeof newWishlist)
-        console.log('New wishlist keys:', Object.keys(newWishlist))
-        console.log('New wishlist as any:', newWishlist as any)
+        // Получаем ID созданного вишлиста
+        const wishlistId = newWishlist.id
         
-        // Получаем ID вишлиста - может быть в разных форматах
-        const wishlistId = newWishlist?.id || (newWishlist as any)?.pk || (newWishlist as any)?.id || Number(newWishlist) || null
-        
-        console.log('Extracted wishlistId:', wishlistId)
-        console.log('Creating wishlist with wish data:', {
-          hasWishData,
-          wishesRepo: !!wishesRepo,
-          wishlistId,
-          wishTitle,
-          wishComment,
-          wishLink,
-          wishImageUrl,
-          wishPrice,
-          wishCurrency,
-        })
-        
+        // Если есть данные подарка - создаем подарок в новом вишлисте
         if (hasWishData && wishesRepo && wishlistId) {
           try {
             const createdWish = await wishesRepo.createWish({

@@ -48,10 +48,12 @@ class WishlistCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wishlist
         fields = [
+            'id',
             'name',
             'description',
             'order',
         ]
+        read_only_fields = ['id']
     
     def create(self, validated_data: dict) -> Wishlist:
         """Создает вишлист с автоматической установкой пользователя."""
