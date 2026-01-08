@@ -106,7 +106,7 @@
 .gifts-stat-value {
   font-size: 14px;
   font-weight: 700;
-  color: var(--tg-theme-button-color, #0088cc);
+  color: var(--theme-current-text);
   line-height: 1;
 }
 
@@ -144,7 +144,7 @@
   color: var(--theme-current-text);
   border: 1px solid var(--theme-current-hint-light);
   border-radius: var(--radius-md);
-  background: var(--theme-secondary-bg-dark)
+  background: var(--theme-current-secondary-bg)
 }
 
 
