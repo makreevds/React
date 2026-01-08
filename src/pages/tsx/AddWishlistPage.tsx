@@ -158,6 +158,10 @@ export function AddWishlistPage() {
           telegram_id: user.id,
         })
         
+        console.log('New wishlist created:', newWishlist)
+        console.log('New wishlist ID:', newWishlist.id)
+        console.log('New wishlist keys:', Object.keys(newWishlist))
+        
         // Если есть данные подарка - создаем подарок в новом вишлисте
         console.log('Creating wishlist with wish data:', {
           hasWishData,
@@ -171,10 +175,13 @@ export function AddWishlistPage() {
           wishCurrency,
         })
         
-        if (hasWishData && wishesRepo && newWishlist.id) {
+        // Получаем ID вишлиста - может быть в разных форматах
+        const wishlistId = newWishlist.id || (newWishlist as any).pk || Number(newWishlist)
+        
+        if (hasWishData && wishesRepo && wishlistId) {
           try {
             const createdWish = await wishesRepo.createWish({
-              wishlist: newWishlist.id,
+              wishlist: wishlistId,
               title: wishTitle.trim(),
               comment: wishComment.trim() || undefined,
               link: wishLink || undefined,
@@ -184,12 +191,12 @@ export function AddWishlistPage() {
             })
             console.log('Wish created successfully:', createdWish)
             // Переходим на страницу нового вишлиста после успешного создания подарка
-            navigate(`/wishes/wishlist/${newWishlist.id}`)
+            navigate(`/wishes/wishlist/${wishlistId}`)
           } catch (wishErr) {
             console.error('Ошибка при создании подарка:', wishErr)
             alert('Вишлист создан, но не удалось добавить подарок. Попробуйте добавить его вручную.')
             // Вишлист создан, но подарок не создан - все равно переходим на страницу вишлиста
-            navigate(`/wishes/wishlist/${newWishlist.id}`)
+            navigate(`/wishes/wishlist/${wishlistId}`)
           }
         } else {
           console.log('No wish data or wishesRepo missing, navigating to /wishes')
