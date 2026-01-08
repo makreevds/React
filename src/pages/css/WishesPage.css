@@ -294,7 +294,7 @@ body.theme-dark .wish-item-fulfilled {
   font-size: 12px;
   margin: 4px 0 0 0;
   padding: 2px 8px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   display: inline-block;
   font-weight: 500;
   width: fit-content;
@@ -532,15 +532,15 @@ html.theme-dark .btn-reserve-active {
   justify-content: center;
   border: none;
   border-radius: var(--radius-md);
-  background: var(--theme-current-bg);
+  background: var(--theme-current-hint-light);
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition: transform 0.2s;
   padding: 0;
 }
 
 
 .wish-menu-btn:hover {
-  background: var(--theme-current-hint-light);
+  transform: scale(1.02);
 }
 
 
