@@ -937,7 +937,6 @@ html.theme-dark .btn-reserve-active {
   padding: 10px 16px;
   background: var(--color-button-cancel);
   color: var(--theme-current-text);
-  border: 1px solid var(--theme-current-hint-light);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 500;
@@ -952,21 +951,18 @@ html.theme-dark .btn-reserve-active {
 
 .btn-submit {
   flex: 1;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
   background: var(--app-button-color);
   color: var(--app-button-text-color);
 }
 
-.btn-submit:hover:not(:disabled) {
-  opacity: 0.9;
-}
-
-.btn-submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-cancel:active,
-.btn-submit:active:not(:disabled) {
+.btn-submit:hover {
   transform: scale(0.98);
 }
 
