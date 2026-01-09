@@ -102,7 +102,7 @@ html, body {
   /* === SIZES === */
   --head-height: 48px;
   --width-button-and-navbar: 320px;
-  --width-navbar: 340px
+  --width-navbar: 340px;
 
   /* === FONT SIZES === */
   --font-size-md: 14px;
