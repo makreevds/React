@@ -70,32 +70,39 @@ export function ReservedWishesPage() {
 
         const reservedWishes = await wishesRepo.getReservedWishesByUserId(currentUser.id)
         
+        // Фильтруем только забронированные подарки, которые забронированы именно этим пользователем
+        const filteredWishes = reservedWishes.filter((w: any) => {
+          const status = w.status === 'reserved'
+          const reservedById = w.reserved_by_id ? Number(w.reserved_by_id) : undefined
+          const reservedByMe = reservedById === currentUser.id
+          const hasValidData = w.wishlist && w.user
+          return status && reservedByMe && hasValidData
+        })
+        
         // Обрабатываем подарки
-        const processedWishes: WishWithOwner[] = reservedWishes
-          .filter((w: any) => w.wishlist && w.user) // Фильтруем только валидные подарки
-          .map((w: any) => ({
-            id: Number(w.id) || 0,
-            title: String(w.title || 'Без названия'),
-            price: w.price !== null && w.price !== undefined 
-              ? (typeof w.price === 'string' ? parseFloat(w.price) : Number(w.price))
-              : undefined,
-            currency: w.currency ? String(w.currency) : undefined,
-            image_url: w.image_url ? String(w.image_url) : undefined,
-            comment: w.comment ? String(w.comment) : undefined,
-            link: w.link ? String(w.link) : undefined,
-            status: (w.status === 'reserved' || w.status === 'fulfilled') ? w.status : 'active',
-            reserved_by_id: w.reserved_by_id ? Number(w.reserved_by_id) : undefined,
-            gifted_by_id: w.gifted_by_id ? Number(w.gifted_by_id) : undefined,
-            wishlist_id: w.wishlist_id ? Number(w.wishlist_id) : (w.wishlist ? Number(w.wishlist) : 0),
-            user_id: w.user_id ? Number(w.user_id) : (w.user ? Number(w.user) : 0),
-            wishlist: Number(w.wishlist) || 0,
-            user: Number(w.user) || 0,
-            is_fulfilled: w.is_fulfilled || false,
-            created_at: w.created_at || '',
-            updated_at: w.updated_at || '',
-            order: w.order || 0,
-            owner_telegram_id: undefined, // Пока что не загружаем, используем fallback навигацию
-          }))
+        const processedWishes: WishWithOwner[] = filteredWishes.map((w: any) => ({
+          id: Number(w.id) || 0,
+          title: String(w.title || 'Без названия'),
+          price: w.price !== null && w.price !== undefined 
+            ? (typeof w.price === 'string' ? parseFloat(w.price) : Number(w.price))
+            : undefined,
+          currency: w.currency ? String(w.currency) : undefined,
+          image_url: w.image_url ? String(w.image_url) : undefined,
+          comment: w.comment ? String(w.comment) : undefined,
+          link: w.link ? String(w.link) : undefined,
+          status: 'reserved' as const, // Всегда 'reserved' для этой страницы
+          reserved_by_id: w.reserved_by_id ? Number(w.reserved_by_id) : undefined,
+          gifted_by_id: w.gifted_by_id ? Number(w.gifted_by_id) : undefined,
+          wishlist_id: w.wishlist_id ? Number(w.wishlist_id) : (w.wishlist ? Number(w.wishlist) : 0),
+          user_id: w.user_id ? Number(w.user_id) : (w.user ? Number(w.user) : 0),
+          wishlist: Number(w.wishlist) || 0,
+          user: Number(w.user) || 0,
+          is_fulfilled: false, // Забронированные подарки не могут быть исполнены
+          created_at: w.created_at || '',
+          updated_at: w.updated_at || '',
+          order: w.order || 0,
+          owner_telegram_id: undefined, // Пока что не загружаем, используем fallback навигацию
+        }))
         
         setWishes(processedWishes)
       } catch (err: any) {

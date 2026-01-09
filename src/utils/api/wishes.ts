@@ -188,7 +188,7 @@ export class WishesRepository {
    * Получает список забронированных подарков пользователя по user_id
    */
   async getReservedWishesByUserId(userId: number): Promise<Wish[]> {
-    const response = await this.apiClient.get<any>(`/api/wishes/?reserved_by=${userId}`)
+    const response = await this.apiClient.get<any>(`/api/wishes/?reserved_by_id=${userId}&status=reserved`)
     // Django REST Framework возвращает объект с пагинацией, нужно извлечь results
     if (response && typeof response === 'object' && 'results' in response && Array.isArray(response.results)) {
       return response.results as Wish[]
