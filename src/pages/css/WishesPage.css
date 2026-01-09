@@ -384,7 +384,6 @@ body.theme-ozon .wishlist-group {
 
 .wishlist-clickable:hover {
   transform: scale(1.02);
-  box-shadow: var(--box-shadow);
 }
 
 .wishlist-name {
