@@ -48,6 +48,11 @@ transform: scale(0.98);
   display: block;
   border: none;
   box-sizing: border-box;
+  transition: transform .2s;
+}
+
+.invite-main-btn:hover{
+  transform: scale(0.98);
 }
 
 .invite-section {
