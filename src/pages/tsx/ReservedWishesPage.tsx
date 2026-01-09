@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import '../css/WishesPage.css'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
@@ -6,6 +7,159 @@ import { useApiContext } from '../../contexts/ApiContext'
 import { GiftIcon } from '../../utils/tsx/GiftIcon'
 import type { Wish } from '../../utils/api/wishes'
 import type { User } from '../../utils/api/users'
+
+// Компонент меню для желания (три точки)
+interface WishMenuProps {
+  status: 'active' | 'reserved' | 'fulfilled'
+  isOwnWishlist: boolean
+  reservedByCurrentUser?: boolean
+  onUnreserve?: () => void
+  onCopyToMe?: () => void
+}
+
+function WishMenu({ status, isOwnWishlist, reservedByCurrentUser, onUnreserve, onCopyToMe }: WishMenuProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const closeTimeoutRef = useRef<number | null>(null)
+
+  const updateDropdownPosition = useCallback(() => {
+    if (isOpen && buttonRef.current && dropdownRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect()
+      const dropdown = dropdownRef.current
+      
+      dropdown.style.top = `${buttonRect.bottom + 4}px`
+      dropdown.style.right = `${window.innerWidth - buttonRect.right}px`
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node
+      if (buttonRef.current && buttonRef.current.contains(target)) {
+        return
+      }
+      if (dropdownRef.current && dropdownRef.current.contains(target)) {
+        return
+      }
+      if (menuRef.current && !menuRef.current.contains(target)) {
+        setIsOpen(false)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside, true)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside, true)
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    updateDropdownPosition()
+  }, [isOpen, updateDropdownPosition])
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsClosing(false)
+      return
+    }
+
+    const handleScroll = () => {
+      setIsClosing(true)
+      
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
+      
+      closeTimeoutRef.current = window.setTimeout(() => {
+        setIsOpen(false)
+        setIsClosing(false)
+      }, 150)
+    }
+
+    const handleResize = () => {
+      updateDropdownPosition()
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true, capture: true })
+    document.addEventListener('scroll', handleScroll, { passive: true, capture: true })
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, { capture: true } as EventListenerOptions)
+      document.removeEventListener('scroll', handleScroll, { capture: true } as EventListenerOptions)
+      window.removeEventListener('resize', handleResize)
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
+    }
+  }, [isOpen, updateDropdownPosition])
+
+  return (
+    <div className="wish-menu-container" ref={menuRef}>
+      <button
+        ref={buttonRef}
+        className="wish-menu-btn"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Меню"
+        title="Меню"
+      >
+        <span className="wish-menu-icon">⋯</span>
+      </button>
+      {isOpen && createPortal(
+        <div 
+          ref={dropdownRef}
+          className="wish-menu-dropdown wish-menu-dropdown-portal"
+          onClick={(e) => {
+            if (isClosing) {
+              e.preventDefault()
+              e.stopPropagation()
+              return
+            }
+            e.stopPropagation()
+          }}
+          style={{
+            pointerEvents: isClosing ? 'none' : 'auto',
+            opacity: isClosing ? 0 : 1,
+            transition: 'opacity 0.15s ease-out',
+          }}
+        >
+          {!isOwnWishlist && status === 'reserved' && reservedByCurrentUser && onUnreserve && (
+            <button
+              className="wish-menu-item"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsOpen(false)
+                onUnreserve()
+              }}
+            >
+              Снять бронь
+            </button>
+          )}
+          {!isOwnWishlist && onCopyToMe && (
+            <button
+              className="wish-menu-item"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsOpen(false)
+                onCopyToMe()
+              }}
+            >
+              Скопировать себе
+            </button>
+          )}
+        </div>,
+        document.body
+      )}
+    </div>
+  )
+}
 
 export function ReservedWishesPage() {
   const { user } = useTelegramWebApp()
@@ -116,6 +270,38 @@ export function ReservedWishesPage() {
     loadReservedWishes()
   }, [currentUser?.id, wishesRepo, usersRepo, wishlistsRepo])
 
+  const handleUnreserve = async (wishId: number) => {
+    if (!wishesRepo || !currentUser) return
+
+    try {
+      const updateData: any = {
+        status: 'active',
+        reserved_by: null,
+      }
+
+      await wishesRepo.updateWish(wishId, updateData)
+      
+      // Удаляем подарок из списка, так как он больше не забронирован
+      setWishes(prev => prev.filter(w => w.id !== wishId))
+    } catch (err) {
+      console.error('Ошибка при снятии брони подарка:', err)
+      alert('Не удалось снять бронь с подарка')
+    }
+  }
+
+  const handleCopyToMe = (wish: WishWithOwner) => {
+    if (!wish) return
+    // Открываем страницу выбора вишлиста для копирования
+    navigate(
+      `/wishes/copy-wish?title=${encodeURIComponent(wish.title || '')}` +
+        `&comment=${encodeURIComponent(wish.comment || '')}` +
+        (wish.link ? `&link=${encodeURIComponent(wish.link)}` : '') +
+        (wish.image_url ? `&image_url=${encodeURIComponent(wish.image_url)}` : '') +
+        (wish.price ? `&price=${encodeURIComponent(String(wish.price))}` : '') +
+        (wish.currency ? `&currency=${encodeURIComponent(wish.currency)}` : ''),
+    )
+  }
+
   const formatPrice = (price?: number | string, currency?: string) => {
     if (!price) return 'Цена не указана'
     const numPrice = typeof price === 'string' ? parseFloat(price) : price
@@ -171,7 +357,7 @@ export function ReservedWishesPage() {
         <section className="wishes-list-section">
           <div className='wishes-container'>
             <h3 className="wishes-list-title">Забронированные подарки</h3>
-            <p className="wishes-list-comment">Подарки, которые вы забронировали у друзей</p>
+            <p className="wishes-list-comment">Подарки, которые вы забронировали</p>
           </div>
           {wishes.length === 0 ? (
             <div className="wishes-empty">
@@ -199,7 +385,7 @@ export function ReservedWishesPage() {
                 return (
                   <div 
                     key={wish.id} 
-                    className="wish-item wish-item-reserved-by-me"
+                    className="wish-item wish-item-reserved-by-me wish-item-clickable"
                     role="button"
                     onClick={handleOpenWish}
                   >
@@ -239,6 +425,15 @@ export function ReservedWishesPage() {
                       {wish.status === 'fulfilled' && (
                         <span className="wish-status wish-status-fulfilled">Подарено</span>
                       )}
+                    </div>
+                    <div className="wish-actions" onClick={(e) => e.stopPropagation()}>
+                      <WishMenu
+                        status={wish.status}
+                        isOwnWishlist={false}
+                        reservedByCurrentUser={currentUser && wish.reserved_by_id === currentUser.id ? true : undefined}
+                        onUnreserve={() => handleUnreserve(wish.id)}
+                        onCopyToMe={() => handleCopyToMe(wish)}
+                      />
                     </div>
                   </div>
                 )
