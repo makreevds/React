@@ -183,5 +183,23 @@ export class WishesRepository {
   async moveWish(wishId: number, wishlistId: number): Promise<Wish> {
     return this.apiClient.post<Wish>(`/api/wishes/${wishId}/move/`, { wishlist_id: wishlistId })
   }
+
+  /**
+   * Получает список забронированных подарков пользователя по user_id
+   */
+  async getReservedWishesByUserId(userId: number): Promise<Wish[]> {
+    const response = await this.apiClient.get<any>(`/api/wishes/?reserved_by=${userId}`)
+    // Django REST Framework возвращает объект с пагинацией, нужно извлечь results
+    if (response && typeof response === 'object' && 'results' in response && Array.isArray(response.results)) {
+      return response.results as Wish[]
+    }
+    // Если это уже массив, возвращаем как есть
+    if (Array.isArray(response)) {
+      return response as Wish[]
+    }
+    // Если это объект без results, возвращаем пустой массив
+    console.warn('[WishesRepository] Неожиданный формат ответа API:', response)
+    return []
+  }
 }
 

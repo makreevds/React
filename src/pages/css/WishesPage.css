@@ -99,6 +99,17 @@
   gap: 8px;
 }
 
+.gifts-stat-item-clickable {
+  cursor: pointer;
+  transition: transform 0.2s;
+  padding: 4px;
+  border-radius: var(--radius-md);
+}
+
+.gifts-stat-item-clickable:hover {
+  transform: scale(0.98);
+}
+
 .gifts-stat-value {
   font-size: 14px;
   font-weight: 700;

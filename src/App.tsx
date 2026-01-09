@@ -10,6 +10,7 @@ import { CopyWishPage } from './pages/tsx/CopyWishPage'
 import { AddWishPage } from './pages/tsx/AddWishPage'
 import { UserProfilePage } from './pages/tsx/UserProfilePage'
 import { WishDetailsPage } from './pages/tsx/WishDetailsPage'
+import { ReservedWishesPage } from './pages/tsx/ReservedWishesPage'
 import { BottomNavigation } from './utils/tsx/BottomNavigation'
 import { Head } from './utils/tsx/Head'
 import { ThemeProvider } from './contexts/ThemeContext'
@@ -229,6 +230,10 @@ function AppContent() {
         <Route 
           path="/wishes/copy-wish" 
           element={<CopyWishPage />} 
+        />
+        <Route 
+          path="/wishes/reserved" 
+          element={<ReservedWishesPage />} 
         />
         <Route 
           path="/wishes/wishlist/:wishlistId" 

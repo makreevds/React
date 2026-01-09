@@ -20,29 +20,41 @@ export function WishesPage() {
   const [wishlists, setWishlists] = useState<Wishlist[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [userData, setUserData] = useState<{ gifts_given: number; gifts_received: number } | null>(null)
+  const [userData, setUserData] = useState<{ gifts_given: number; gifts_received: number; reserved_count: number } | null>(null)
 
-  // Загружаем данные пользователя
+  // Загружаем данные пользователя и количество забронированных подарков
   useEffect(() => {
-    if (!user?.id || !apiContext?.users) {
+    if (!user?.id || !apiContext?.users || !apiContext?.wishes) {
       return
     }
 
     const loadUserData = async () => {
       try {
         const userDataResponse = await apiContext.users.getUserByTelegramId(user.id)
+        
+        // Загружаем забронированные подарки текущего пользователя
+        let reservedCount = 0
+        try {
+          const reservedWishes = await apiContext.wishes.getReservedWishesByUserId(userDataResponse.id)
+          reservedCount = reservedWishes.length
+        } catch (err) {
+          // Игнорируем ошибки загрузки забронированных подарков
+          console.error('Ошибка загрузки забронированных подарков:', err)
+        }
+        
         setUserData({
           gifts_given: userDataResponse.gifts_given || 0,
           gifts_received: userDataResponse.gifts_received || 0,
+          reserved_count: reservedCount,
         })
       } catch (err) {
         // Игнорируем ошибки загрузки данных пользователя
-        setUserData({ gifts_given: 0, gifts_received: 0 })
+        setUserData({ gifts_given: 0, gifts_received: 0, reserved_count: 0 })
       }
     }
 
     loadUserData()
-  }, [user?.id, apiContext?.users])
+  }, [user?.id, apiContext?.users, apiContext?.wishes])
 
 
   // Загружаем вишлисты при монтировании компонента
@@ -177,6 +189,16 @@ export function WishesPage() {
               <div className="gifts-stat-item">
                 <div className="gifts-stat-value">{userData.gifts_received}</div>
                 <div className="gifts-stat-label">Получено</div>
+              </div>
+              <div className="gifts-stat-divider"></div>
+              <div 
+                className="gifts-stat-item gifts-stat-item-clickable"
+                onClick={() => navigate('/wishes/reserved')}
+                role="button"
+                tabIndex={0}
+              >
+                <div className="gifts-stat-value">{userData.reserved_count}</div>
+                <div className="gifts-stat-label">Забронировано</div>
               </div>
             </div>
           )}
