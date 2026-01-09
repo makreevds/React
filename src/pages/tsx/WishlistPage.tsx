@@ -582,7 +582,6 @@ export function WishlistPage() {
             <button 
               className="btn-add-wish"
               onClick={() => navigate(`/wishes/add-wish?wishlistId=${wishlistIdNumber}`)}
-              style={{ marginTop: '10px', marginBottom: '10px' }}
             >
               + Добавить подарок
             </button>
@@ -665,11 +664,11 @@ export function WishlistPage() {
                         )}
                         {wish.status === 'reserved' && (
                           <span className={`wish-status wish-status-reserved ${isReservedByMe ? 'wish-status-reserved-by-me' : ''}`}>
-                            {isReservedByMe ? 'Забронировано Вами' : 'Забронирован'}
+                            {isReservedByMe ? 'Забронировано Вами' : (isOwnWishlist ? 'Забронирован' : 'Забронировано')}
                           </span>
                         )}
                         {wish.status === 'fulfilled' && (
-                          <span className="wish-status wish-status-fulfilled">Исполнен</span>
+                          <span className="wish-status wish-status-fulfilled">{isOwnWishlist ? 'Исполнен' : 'Подарено'}</span>
                         )}
                       </div>
                       <div className="wish-actions" onClick={(e) => e.stopPropagation()}>

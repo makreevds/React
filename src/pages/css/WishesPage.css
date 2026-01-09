@@ -775,8 +775,9 @@ html.theme-dark .btn-reserve-active {
   font-weight: 500;
   cursor: pointer;
   transition: transform .2s;
-  margin: 0 auto;
+  margin: 10px auto;
   display: block;
+  margin-bottom: 0px;
 }
 
 .btn-add-wish:hover {
