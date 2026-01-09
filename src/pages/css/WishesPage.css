@@ -1004,7 +1004,7 @@ html.theme-dark .btn-reserve-active {
 }
 
 
-.btn-cancel, .btn-submit :hover {
+.btn-cancel:hover, .btn-submit:hover {
   transform: scale(0.98);
 }
 

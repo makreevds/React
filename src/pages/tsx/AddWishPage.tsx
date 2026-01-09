@@ -152,8 +152,12 @@ export function AddWishPage() {
           currency: currency || '₽',
         })
       }
-      // Возвращаемся на страницу желаний после успешного сохранения
-      navigate('/wishes')
+      // Возвращаемся на страницу вишлиста после успешного сохранения
+      if (wishlistId) {
+        navigate(`/wishes/wishlist/${wishlistId}`)
+      } else {
+        navigate(-1) // Если wishlistId нет, просто возвращаемся назад
+      }
     } catch (err: any) {
       const errorMessage = err?.message || (isEditMode ? 'Не удалось обновить подарок' : 'Не удалось добавить подарок')
       setError(errorMessage)
@@ -164,7 +168,11 @@ export function AddWishPage() {
   }
 
   const handleCancel = () => {
-    navigate('/wishes')
+    if (wishlistId) {
+      navigate(`/wishes/wishlist/${wishlistId}`)
+    } else {
+      navigate(-1) // Если wishlistId нет, просто возвращаемся назад
+    }
   }
 
   if (isLoading) {
