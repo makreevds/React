@@ -11,6 +11,8 @@ import { AddWishPage } from './pages/tsx/AddWishPage'
 import { UserProfilePage } from './pages/tsx/UserProfilePage'
 import { WishDetailsPage } from './pages/tsx/WishDetailsPage'
 import { ReservedWishesPage } from './pages/tsx/ReservedWishesPage'
+import { GiftedWishesPage } from './pages/tsx/GiftedWishesPage'
+import { ReceivedWishesPage } from './pages/tsx/ReceivedWishesPage'
 import { BottomNavigation } from './utils/tsx/BottomNavigation'
 import { Head } from './utils/tsx/Head'
 import { ThemeProvider } from './contexts/ThemeContext'
@@ -234,6 +236,14 @@ function AppContent() {
         <Route 
           path="/wishes/reserved" 
           element={<ReservedWishesPage />} 
+        />
+        <Route 
+          path="/wishes/gifted" 
+          element={<GiftedWishesPage />} 
+        />
+        <Route 
+          path="/wishes/received" 
+          element={<ReceivedWishesPage />} 
         />
         <Route 
           path="/wishes/wishlist/:wishlistId" 

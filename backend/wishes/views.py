@@ -168,6 +168,17 @@ class WishViewSet(viewsets.ModelViewSet):
                 logger.warning(f'[WishViewSet] Некорректный reserved_by_id: {reserved_by_id}')
                 pass
         
+        # Фильтрация по gifted_by_id если передан
+        gifted_by_id = self.request.query_params.get('gifted_by_id', None)
+        if gifted_by_id:
+            try:
+                gifted_by_id_int = int(gifted_by_id)
+                queryset = queryset.filter(gifted_by_id=gifted_by_id_int)
+                logger.info(f'[WishViewSet] Фильтруем по gifted_by_id={gifted_by_id_int}, осталось: {queryset.count()}')
+            except ValueError:
+                logger.warning(f'[WishViewSet] Некорректный gifted_by_id: {gifted_by_id}')
+                pass
+        
         # Фильтрация по status
         status_filter = self.request.query_params.get('status', None)
         if status_filter:

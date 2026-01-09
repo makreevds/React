@@ -181,12 +181,22 @@ export function WishesPage() {
           {/* Блок статистики подарков */}
           {userData && (
             <div className="gifts-stats-section">
-              <div className="gifts-stat-item">
+              <div 
+                className="gifts-stat-item gifts-stat-item-clickable"
+                onClick={() => navigate('/wishes/gifted')}
+                role="button"
+                tabIndex={0}
+              >
                 <div className="gifts-stat-value">{userData.gifts_given}</div>
                 <div className="gifts-stat-label">Подарено</div>
               </div>
               <div className="gifts-stat-divider"></div>
-              <div className="gifts-stat-item">
+              <div 
+                className="gifts-stat-item gifts-stat-item-clickable"
+                onClick={() => navigate('/wishes/received')}
+                role="button"
+                tabIndex={0}
+              >
                 <div className="gifts-stat-value">{userData.gifts_received}</div>
                 <div className="gifts-stat-label">Получено</div>
               </div>
