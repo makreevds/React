@@ -996,6 +996,8 @@ html.theme-dark .btn-reserve-active {
   font-weight: 500;
   cursor: pointer;
   transition: transform .2s;
+  border: none;
+  box-sizing: border-box;
 }
 
 
@@ -1013,8 +1015,8 @@ html.theme-dark .btn-reserve-active {
   transition: background .2s, border-color .2s;
   background: var(--app-button-color);
   color: var(--app-button-text-color);
-  margin: 0 auto;
-  display: block;
+  border: none;
+  box-sizing: border-box;
 }
 
 /* Стили для страниц форм (вместо модальных окон) */
