@@ -97,6 +97,11 @@ class WishSerializer(serializers.ModelSerializer):
         read_only=True
     )
     
+    user_telegram_id = serializers.IntegerField(
+        source='user.telegram_id',
+        read_only=True
+    )
+    
     reserved_by_id = serializers.IntegerField(
         source='reserved_by.id',
         read_only=True,
@@ -145,6 +150,7 @@ class WishSerializer(serializers.ModelSerializer):
             'wishlist_name',
             'user',
             'user_id',
+            'user_telegram_id',
             'title',
             'comment',
             'link',

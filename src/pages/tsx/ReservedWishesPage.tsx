@@ -101,7 +101,7 @@ export function ReservedWishesPage() {
           created_at: w.created_at || '',
           updated_at: w.updated_at || '',
           order: w.order || 0,
-          owner_telegram_id: undefined, // Пока что не загружаем, используем fallback навигацию
+          owner_telegram_id: w.user_telegram_id ? Number(w.user_telegram_id) : undefined,
         }))
         
         setWishes(processedWishes)
@@ -182,13 +182,17 @@ export function ReservedWishesPage() {
               {wishes.map((wish) => {
                 if (!wish || !wish.id) return null
                 
-                const handleOpenWishlist = () => {
-                  // Переходим на страницу вишлиста владельца подарка
-                  if (wish.wishlist_id) {
-                    // Пока что используем навигацию напрямую по wishlist_id
-                    // Это сработает для вишлистов текущего пользователя
-                    // Для чужих вишлистов можно будет доработать позже, добавив user_telegram_id в API
-                    navigate(`/wishes/wishlist/${wish.wishlist_id}`)
+                const handleOpenWish = () => {
+                  // Переходим на страницу подарка владельца
+                  if (wish.owner_telegram_id && wish.id) {
+                    // Переходим на страницу подарка друга
+                    navigate(`/user/${wish.owner_telegram_id}/wish/${wish.id}`)
+                  } else if (wish.id) {
+                    // Fallback: если нет telegram_id владельца, пытаемся перейти напрямую на вишлист
+                    // Это может не сработать для чужих вишлистов, но попробуем
+                    if (wish.wishlist_id) {
+                      navigate(`/wishes/wishlist/${wish.wishlist_id}`)
+                    }
                   }
                 }
 
@@ -197,7 +201,7 @@ export function ReservedWishesPage() {
                     key={wish.id} 
                     className="wish-item wish-item-reserved-by-me"
                     role="button"
-                    onClick={handleOpenWishlist}
+                    onClick={handleOpenWish}
                   >
                     <div className="wish-image-container">
                       {wish.image_url ? (

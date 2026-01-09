@@ -13,6 +13,7 @@ export interface Wish {
   wishlist_name?: string
   user: number
   user_id: number
+  user_telegram_id?: number
   title: string
   comment?: string
   link?: string
