@@ -664,7 +664,9 @@ export function WishlistPage() {
                           <span className="wish-status wish-status-active">Активен</span>
                         )}
                         {wish.status === 'reserved' && (
-                          <span className="wish-status wish-status-reserved">Забронирован</span>
+                          <span className={`wish-status wish-status-reserved ${isReservedByMe ? 'wish-status-reserved-by-me' : ''}`}>
+                            {isReservedByMe ? 'Забронировано Вами' : 'Забронирован'}
+                          </span>
                         )}
                         {wish.status === 'fulfilled' && (
                           <span className="wish-status wish-status-fulfilled">Исполнен</span>

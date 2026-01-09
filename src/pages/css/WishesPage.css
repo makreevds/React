@@ -352,6 +352,11 @@ body.theme-dark .wish-item-fulfilled {
   color: var(--theme-current-warning);
 }
 
+.wish-status-reserved-by-me {
+  background: rgba(0, 123, 255, 0.5) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
 .wish-status-fulfilled {
   background: var(--theme-current-success-light);
   color: var(--theme-current-success);
@@ -760,7 +765,7 @@ html.theme-dark .btn-reserve-active {
 }
 
 .btn-add-wish {
-  width: 100%;
+  width: 300px;
   padding: 10px 16px;
   background: var(--app-button-color);
   color: var(--app-button-text-color);
@@ -770,6 +775,8 @@ html.theme-dark .btn-reserve-active {
   font-weight: 500;
   cursor: pointer;
   transition: transform .2s;
+  margin: 0 auto;
+  display: block;
 }
 
 .btn-add-wish:hover {
@@ -795,15 +802,17 @@ html.theme-dark .btn-reserve-active {
 }
 
 .btn-edit-wishlist {
-  width: 100%;
+  width: 300px;
   padding: 10px 16px;
-  background: var(--theme-current-secondary-bg);
+  background: var(--theme-current-hint);
   color: var(--theme-current-text);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: transform .2s;
+  margin: 0 auto;
+  display: block;
 }
 
 .btn-edit-wishlist:hover {
