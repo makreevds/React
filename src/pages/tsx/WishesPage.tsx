@@ -22,7 +22,7 @@ export function WishesPage() {
   const [error, setError] = useState<string | null>(null)
   const [userData, setUserData] = useState<{ gifts_given: number; gifts_received: number; reserved_count: number } | null>(null)
 
-  // Загружаем данные пользователя и количество забронированных подарков
+  // Загружаем данные пользователя и количество подарков
   useEffect(() => {
     if (!user?.id || !apiContext?.users || !apiContext?.wishes) {
       return
@@ -42,9 +42,37 @@ export function WishesPage() {
           console.error('Ошибка загрузки забронированных подарков:', err)
         }
         
+        // Загружаем подаренные подарки текущего пользователя
+        let giftedCount = 0
+        try {
+          const giftedWishes = await apiContext.wishes.getGiftedWishesByUserId(userDataResponse.id)
+          // Дополнительная проверка: фильтруем только те, где gifted_by_id точно установлен и равен текущему пользователю
+          giftedCount = giftedWishes.filter((w: any) => {
+            const giftedById = w.gifted_by_id ? Number(w.gifted_by_id) : undefined
+            return giftedById === userDataResponse.id && w.status === 'fulfilled'
+          }).length
+        } catch (err) {
+          // Игнорируем ошибки загрузки подаренных подарков
+          console.error('Ошибка загрузки подаренных подарков:', err)
+        }
+        
+        // Загружаем полученные подарки текущего пользователя
+        let receivedCount = 0
+        try {
+          const receivedWishes = await apiContext.wishes.getReceivedWishesByUserId(userDataResponse.id)
+          // Дополнительная проверка: фильтруем только те, где user_id точно установлен и равен текущему пользователю
+          receivedCount = receivedWishes.filter((w: any) => {
+            const userId = w.user_id ? Number(w.user_id) : undefined
+            return userId === userDataResponse.id && w.status === 'fulfilled'
+          }).length
+        } catch (err) {
+          // Игнорируем ошибки загрузки полученных подарков
+          console.error('Ошибка загрузки полученных подарков:', err)
+        }
+        
         setUserData({
-          gifts_given: userDataResponse.gifts_given || 0,
-          gifts_received: userDataResponse.gifts_received || 0,
+          gifts_given: giftedCount,
+          gifts_received: receivedCount,
           reserved_count: reservedCount,
         })
       } catch (err) {
