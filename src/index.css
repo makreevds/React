@@ -101,6 +101,7 @@ html, body {
 
   /* === SIZES === */
   --head-height: 48px;
+  --width-button-and-navbar: 320px;
 
   /* === FONT SIZES === */
   --font-size-md: 14px;
