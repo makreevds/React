@@ -15,7 +15,7 @@ interface WishMenuProps {
   onCopyToMe?: () => void
 }
 
-function WishMenu({ status, isOwnWishlist, onCopyToMe }: WishMenuProps) {
+function WishMenu({ isOwnWishlist, onCopyToMe }: WishMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
