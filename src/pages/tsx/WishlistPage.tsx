@@ -373,7 +373,9 @@ export function WishlistPage() {
         const errorMessage = err?.message || err?.toString() || 'Неизвестная ошибка'
         setError(errorMessage)
       } finally {
-        setIsLoading(false)
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 100)
       }
     }
 

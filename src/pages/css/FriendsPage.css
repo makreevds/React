@@ -83,6 +83,17 @@ transform: scale(0.98);
   cursor: not-allowed;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Переключатель между подписками и подписчиками */
 .friends-segmented-control {
   display: flex;
@@ -92,6 +103,8 @@ transform: scale(0.98);
   gap: 3px;
   margin-bottom: 20px;
   margin-top: 24px;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out forwards;
 }
 
 
@@ -125,4 +138,9 @@ transform: scale(0.98);
 
 .friends-segment:active {
   transform: scale(0.95);
+}
+
+.friends-list {
+  opacity: 0;
+  animation: fadeIn 0.4s ease-in-out 0.1s forwards;
 }

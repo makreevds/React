@@ -73,7 +73,9 @@ export function AddWishPage() {
           setError(err?.message || 'Не удалось загрузить данные желания')
         })
         .finally(() => {
-          setIsLoading(false)
+          setTimeout(() => {
+            setIsLoading(false)
+          }, 100)
         })
     }
   }, [isEditMode, wishId, wishesRepo, wishlistId])

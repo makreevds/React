@@ -72,7 +72,9 @@ export function CopyWishPage() {
         setError('Не удалось загрузить вишлисты')
         setWishlists([])
       } finally {
-        setIsLoading(false)
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 100)
       }
     }
 

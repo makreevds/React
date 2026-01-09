@@ -247,7 +247,9 @@ export function GiftedWishesPage() {
         const errorMessage = err?.message || err?.toString() || 'Не удалось загрузить подаренные подарки'
         setError(errorMessage)
       } finally {
-        setIsLoading(false)
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 100)
       }
     }
 

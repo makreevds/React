@@ -55,7 +55,9 @@ export function AddWishlistPage() {
         alert('Не удалось загрузить вишлист')
         navigate('/wishes')
       } finally {
-        setIsLoading(false)
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 100)
       }
     }
 

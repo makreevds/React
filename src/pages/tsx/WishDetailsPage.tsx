@@ -95,7 +95,9 @@ export function WishDetailsPage() {
         const message = e?.message || 'Не удалось загрузить подарок'
         setError(message)
       } finally {
-        setIsLoading(false)
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 100)
       }
     }
 

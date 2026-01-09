@@ -263,7 +263,9 @@ export function ReservedWishesPage() {
         const errorMessage = err?.message || err?.toString() || 'Не удалось загрузить забронированные подарки'
         setError(errorMessage)
       } finally {
-        setIsLoading(false)
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 100)
       }
     }
 

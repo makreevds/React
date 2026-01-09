@@ -47,7 +47,9 @@ export function FriendsPage() {
         console.error('Ошибка при загрузке данных:', error)
         handleError(error, 'FriendsPage.loadData')
       } finally {
-        setLoading(false)
+        setTimeout(() => {
+          setLoading(false)
+        }, 100)
       }
     }
 
