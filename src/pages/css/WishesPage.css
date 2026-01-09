@@ -805,6 +805,7 @@ html.theme-dark .btn-reserve-active {
 
 .btn-edit-wishlist {
   width: var(--width-button-and-navbar);
+  max-width: calc(100% - 40px);
   padding: 10px 16px;
   background: var(--theme-current-hint);
   color: var(--theme-current-text);
@@ -815,6 +816,8 @@ html.theme-dark .btn-reserve-active {
   transition: transform .2s;
   margin: 0 auto;
   display: block;
+  border: none;
+  box-sizing: border-box;
 }
 
 .btn-edit-wishlist:hover {
