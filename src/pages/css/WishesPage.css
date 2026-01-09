@@ -747,7 +747,7 @@ html.theme-dark .btn-reserve-active {
 
 /* Кнопки добавления */
 .btn-add-wishlist {
-  width: 100%;
+  width: 320px;
   padding: 10px 16px;
   background: var(--app-button-color);
   color: var(--app-button-text-color);
@@ -757,6 +757,8 @@ html.theme-dark .btn-reserve-active {
   font-weight: 500;
   cursor: pointer;
   transition: transform 0.2s;
+  margin: 0 auto;
+  display: block;
 }
 
 
@@ -765,7 +767,7 @@ html.theme-dark .btn-reserve-active {
 }
 
 .btn-add-wish {
-  width: 300px;
+  width: 320px;
   padding: 10px 16px;
   background: var(--app-button-color);
   color: var(--app-button-text-color);
@@ -803,7 +805,7 @@ html.theme-dark .btn-reserve-active {
 }
 
 .btn-edit-wishlist {
-  width: 300px;
+  width: 320px;
   padding: 10px 16px;
   background: var(--theme-current-hint);
   color: var(--theme-current-text);
