@@ -488,6 +488,11 @@ export function WishlistPage() {
     return `${numPrice.toLocaleString('ru-RU')} ${currency || '₽'}`
   }
 
+  // Вычисляем статистику по вишлисту
+  const totalWishes = wishes.length
+  const reservedCount = wishes.filter(w => w.status === 'reserved').length
+  const fulfilledCount = wishes.filter(w => w.status === 'fulfilled').length
+
   if (!user) {
     return (
       <div className="page-container wishes-page">
@@ -545,27 +550,55 @@ export function WishlistPage() {
             {wishlist.description && (
               <h4 className="wishes-list-comment">{wishlist.description}</h4>
             )}
+            {isOwnWishlist && (
+              <>
+                <div className="wishlist-stats">
+                  <div className="wishlist-stat-item">
+                    <span className="wishlist-stat-value">{totalWishes}</span>
+                    <span className="wishlist-stat-label">Всего</span>
+                  </div>
+                  <div className="wishlist-stat-divider"></div>
+                  <div className="wishlist-stat-item">
+                    <span className="wishlist-stat-value">{reservedCount}</span>
+                    <span className="wishlist-stat-label">Забронировано</span>
+                  </div>
+                  <div className="wishlist-stat-divider"></div>
+                  <div className="wishlist-stat-item">
+                    <span className="wishlist-stat-value">{fulfilledCount}</span>
+                    <span className="wishlist-stat-label">Подарено</span>
+                  </div>
+                </div>
+                <button 
+                  className="btn-edit-wishlist"
+                  onClick={() => navigate(`/wishes/edit-wishlist?wishlistId=${wishlistIdNumber}`)}
+                  style={{ marginTop: '16px' }}
+                >
+                  Редактировать вишлист
+                </button>
+              </>
+            )}
           </div>
+          {isOwnWishlist && wishes.length > 0 && (
+            <button 
+              className="btn-add-wish"
+              onClick={() => navigate(`/wishes/add-wish?wishlistId=${wishlistIdNumber}`)}
+              style={{ marginTop: '10px', marginBottom: '10px' }}
+            >
+              + Добавить подарок
+            </button>
+          )}
           {wishes.length === 0 ? (
             <>
               <div className="wishes-empty">
                 <p>В этом вишлисте пока нет желаний</p>
               </div>
               {isOwnWishlist && (
-                <>
-                  <button 
-                    className="btn-add-wish"
-                    onClick={() => navigate(`/wishes/add-wish?wishlistId=${wishlistIdNumber}`)}
-                  >
-                    + Добавить подарок
-                  </button>
-                  <button 
-                    className="btn-edit-wishlist"
-                    onClick={() => navigate(`/wishes/edit-wishlist?wishlistId=${wishlistIdNumber}`)}
-                  >
-                    Редактировать вишлист
-                  </button>
-                </>
+                <button 
+                  className="btn-add-wish"
+                  onClick={() => navigate(`/wishes/add-wish?wishlistId=${wishlistIdNumber}`)}
+                >
+                  + Добавить подарок
+                </button>
               )}
             </>
           ) : (
@@ -583,10 +616,19 @@ export function WishlistPage() {
                       }
                     }
                   }
+                  // Определяем, забронирован ли подарок текущим пользователем (для чужих вишлистов)
+                  const isReservedByMe = !isOwnWishlist && wish.status === 'reserved' && currentUser && wish.reserved_by_id === currentUser.id
+                  
+                  // Формируем классы для подарка
+                  let wishItemClasses = `wish-item wish-item-${wish.status}`
+                  if (isReservedByMe) {
+                    wishItemClasses += ' wish-item-reserved-by-me'
+                  }
+                  
                   return (
                     <div 
                       key={wish.id} 
-                      className={`wish-item wish-item-${wish.status}`}
+                      className={wishItemClasses}
                       role={!isOwnWishlist ? "button" : undefined}
                       onClick={!isOwnWishlist ? handleOpenDetails : undefined}
                     >
@@ -645,22 +687,6 @@ export function WishlistPage() {
                   )
                 })}
               </div>
-              {isOwnWishlist && (
-                <>
-                  <button 
-                    className="btn-add-wish"
-                    onClick={() => navigate(`/wishes/add-wish?wishlistId=${wishlistIdNumber}`)}
-                  >
-                    + Добавить подарок
-                  </button>
-                  <button 
-                    className="btn-edit-wishlist"
-                    onClick={() => navigate(`/wishes/edit-wishlist?wishlistId=${wishlistIdNumber}`)}
-                  >
-                    Редактировать вишлист
-                  </button>
-                </>
-              )}
             </>
           )}
         </section>
