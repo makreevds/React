@@ -550,32 +550,30 @@ export function WishlistPage() {
             {wishlist.description && (
               <h4 className="wishes-list-comment">{wishlist.description}</h4>
             )}
+            <div className="wishlist-stats">
+              <div className="wishlist-stat-item">
+                <span className="wishlist-stat-value">{totalWishes}</span>
+                <span className="wishlist-stat-label">Всего</span>
+              </div>
+              <div className="wishlist-stat-divider"></div>
+              <div className="wishlist-stat-item">
+                <span className="wishlist-stat-value">{reservedCount}</span>
+                <span className="wishlist-stat-label">Забронировано</span>
+              </div>
+              <div className="wishlist-stat-divider"></div>
+              <div className="wishlist-stat-item">
+                <span className="wishlist-stat-value">{fulfilledCount}</span>
+                <span className="wishlist-stat-label">Подарено</span>
+              </div>
+            </div>
             {isOwnWishlist && (
-              <>
-                <div className="wishlist-stats">
-                  <div className="wishlist-stat-item">
-                    <span className="wishlist-stat-value">{totalWishes}</span>
-                    <span className="wishlist-stat-label">Всего</span>
-                  </div>
-                  <div className="wishlist-stat-divider"></div>
-                  <div className="wishlist-stat-item">
-                    <span className="wishlist-stat-value">{reservedCount}</span>
-                    <span className="wishlist-stat-label">Забронировано</span>
-                  </div>
-                  <div className="wishlist-stat-divider"></div>
-                  <div className="wishlist-stat-item">
-                    <span className="wishlist-stat-value">{fulfilledCount}</span>
-                    <span className="wishlist-stat-label">Подарено</span>
-                  </div>
-                </div>
-                <button 
-                  className="btn-edit-wishlist"
-                  onClick={() => navigate(`/wishes/edit-wishlist?wishlistId=${wishlistIdNumber}`)}
-                  style={{ marginTop: '16px' }}
-                >
-                  Редактировать вишлист
-                </button>
-              </>
+              <button 
+                className="btn-edit-wishlist"
+                onClick={() => navigate(`/wishes/edit-wishlist?wishlistId=${wishlistIdNumber}`)}
+                style={{ marginTop: '16px' }}
+              >
+                Редактировать вишлист
+              </button>
             )}
           </div>
           {isOwnWishlist && wishes.length > 0 && (
