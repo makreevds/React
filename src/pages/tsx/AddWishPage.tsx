@@ -26,7 +26,7 @@ export function AddWishPage() {
   const [price, setPrice] = useState('')
   const [currency, setCurrency] = useState('₽')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   // Управление кнопкой "Назад" в Telegram
@@ -79,6 +79,15 @@ export function AddWishPage() {
         })
     }
   }, [isEditMode, wishId, wishesRepo, wishlistId])
+
+  // В режиме создания добавляем небольшую задержку для анимации
+  useEffect(() => {
+    if (!isEditMode) {
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 100)
+    }
+  }, [isEditMode])
 
   useEffect(() => {
     if (!wishlistId || isNaN(wishlistId)) {

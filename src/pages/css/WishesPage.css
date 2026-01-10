@@ -1092,7 +1092,7 @@ html.theme-dark .btn-reserve-active {
   background: var(--theme-current-secondary-bg);
   border-radius: var(--radius-md);
   opacity: 0;
-  animation: fadeIn 0.3s ease-in-out forwards;
+  animation: fadeIn 0.3s ease-in-out 0.1s forwards;
 }
 
 
