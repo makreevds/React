@@ -475,7 +475,6 @@ body.theme-ozon .wishlist-group {
   color: var(--theme-current-hint);
   margin: 0 0 8px 0;
   font-weight: 400;
-  padding-top: 10px;
 }
 
 /* Дата события вишлиста внутри контейнера вишлиста */
@@ -1035,14 +1034,19 @@ html.theme-dark .btn-reserve-active {
   -moz-appearance: textfield;
   line-height: 1.5;
   font-family: inherit;
+  height: 42px; /* Явная высота как у обычных input полей (10px padding-top + 10px padding-bottom + 22px line-height) */
+  min-height: 42px;
 }
 
 /* Иконка календаря в WebKit браузерах */
 .form-group input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 0.7;
   cursor: pointer;
-  padding: 2px;
+  padding: 4px;
   margin-left: 4px;
+  width: 20px;
+  height: 20px;
+  align-self: center;
 }
 
 .form-group input[type="date"]::-webkit-inner-spin-button,
@@ -1062,8 +1066,19 @@ html.theme-dark .btn-reserve-active {
 /* Стили для внутренних элементов поля даты в WebKit */
 .form-group input[type="date"]::-webkit-datetime-edit-fields-wrapper {
   padding: 0;
-  display: flex;
+  display: inline-flex;
   gap: 2px;
+  align-items: center;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.form-group input[type="date"]::-webkit-datetime-edit {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0;
+  vertical-align: middle;
 }
 
 .form-group input[type="date"]::-webkit-datetime-edit-text,
@@ -1073,9 +1088,27 @@ html.theme-dark .btn-reserve-active {
   padding: 0;
   color: var(--theme-current-text);
   min-width: auto;
+  height: auto;
+  line-height: 1.5;
+  vertical-align: middle;
 }
 
 .form-group input[type="date"]:invalid::-webkit-datetime-edit {
+  color: var(--theme-current-hint);
+}
+
+.form-group input[type="date"]:invalid::-webkit-datetime-edit-text,
+.form-group input[type="date"]:invalid::-webkit-datetime-edit-month-field,
+.form-group input[type="date"]:invalid::-webkit-datetime-edit-day-field,
+.form-group input[type="date"]:invalid::-webkit-datetime-edit-year-field {
+  color: var(--theme-current-hint);
+}
+
+/* Для пустого поля даты - показываем подсказку цветом */
+.form-group input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-text,
+.form-group input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-month-field,
+.form-group input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-day-field,
+.form-group input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-year-field {
   color: var(--theme-current-hint);
 }
 
