@@ -147,6 +147,8 @@
   border: 1px solid var(--theme-current-hint-light);
   border-radius: var(--radius-md);
   background: var(--theme-current-secondary-bg);
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out 0.1s forwards;
 }
 
 .wishes-list-title {
@@ -208,6 +210,8 @@
   text-align: center;
   padding: 10px 20px;
   color: var(--theme-current-hint);
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out 0.2s forwards;
 }
 
 
@@ -229,7 +233,49 @@
   padding: 16px;
   background: var(--theme-current-bg);
   border-radius: var(--radius-md);
-  transition: transform 0.2s
+  transition: transform 0.2s;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+.wish-item:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.wish-item:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.wish-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.wish-item:nth-child(4) {
+  animation-delay: 0.35s;
+}
+
+.wish-item:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+.wish-item:nth-child(6) {
+  animation-delay: 0.45s;
+}
+
+.wish-item:nth-child(7) {
+  animation-delay: 0.5s;
+}
+
+.wish-item:nth-child(8) {
+  animation-delay: 0.55s;
+}
+
+.wish-item:nth-child(9) {
+  animation-delay: 0.6s;
+}
+
+.wish-item:nth-child(n+10) {
+  animation-delay: 0.65s;
 }
 
 .wish-item-reserved {
@@ -792,6 +838,8 @@ html.theme-dark .btn-reserve-active {
   margin: 10px auto;
   display: block;
   margin-bottom: 0px;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out 0.3s forwards;
 }
 
 .btn-add-wish:hover {
@@ -831,6 +879,8 @@ html.theme-dark .btn-reserve-active {
   display: block;
   border: none;
   box-sizing: border-box;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out 0.15s forwards;
 }
 
 .btn-edit-wishlist:hover {
