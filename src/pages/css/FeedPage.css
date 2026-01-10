@@ -49,6 +49,39 @@
   animation: fadeIn 0.3s ease-in-out forwards;
 }
 
+.feed-item-wish-reserved {
+  box-shadow: inset 0px 0px 20px 5px rgba(255, 193, 7, 0.5); /* Желтый с прозрачностью 0.5 */
+}
+
+.feed-item-wish-reserved-by-me {
+  box-shadow: inset 0px 0px 20px 5px rgba(0, 123, 255, 0.5) !important; /* Синий с прозрачностью 0.5 - приоритет над желтым */
+}
+
+.feed-item-wish-fulfilled {
+  box-shadow: inset 0px 0px 20px 5px rgba(40, 167, 69, 0.5); /* Зеленый с прозрачностью 0.5 */
+}
+
+/* Для темной темы используем те же цвета */
+html.theme-dark .feed-item-wish-reserved,
+body.theme-dark .feed-item-wish-reserved {
+  box-shadow: inset 0px 0px 20px 5px rgba(255, 193, 7, 0.5) !important;
+}
+
+html.theme-dark .feed-item-wish-reserved-by-me,
+body.theme-dark .feed-item-wish-reserved-by-me {
+  box-shadow: inset 0px 0px 20px 5px rgba(0, 123, 255, 0.5) !important;
+}
+
+html.theme-dark .feed-item-wish-fulfilled,
+body.theme-dark .feed-item-wish-fulfilled {
+  box-shadow: inset 0px 0px 20px 5px rgba(40, 167, 69, 0.5) !important;
+}
+
+.feed-item-wish-status-reserved-by-me {
+  background: rgba(0, 123, 255, 0.5) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
 .feed-item:nth-child(1) {
   animation-delay: 0.1s;
 }
@@ -143,14 +176,32 @@
 .feed-item-wish {
   display: flex;
   gap: 12px;
+  align-items: center;
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-top: 8px;
+  background: var(--theme-current-bg);
+}
+
+.feed-item-wish-content-wrapper {
+  display: flex;
+  gap: 12px;
   cursor: pointer;
   transition: transform 0.2s;
   user-select: none;
   align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
-.feed-item-wish:hover {
+.feed-item-wish-content-wrapper:hover {
   transform: scale(0.98);
+}
+
+.feed-item-wish-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
 

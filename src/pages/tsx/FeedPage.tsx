@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import '../css/FeedPage.css'
+import '../css/WishesPage.css'
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp'
 import { useApiContext } from '../../contexts/ApiContext'
 import type { User } from '../../utils/api/users'
@@ -13,6 +15,175 @@ interface FeedItem {
   wishlistName?: string
 }
 
+// Компонент меню для желания (три точки)
+interface WishMenuProps {
+  status: 'active' | 'reserved' | 'fulfilled'
+  reservedByCurrentUser?: boolean
+  onReserve?: () => void
+  onUnreserve?: () => void
+  onCopyToMe?: () => void
+}
+
+function WishMenu({ status, reservedByCurrentUser, onReserve, onUnreserve, onCopyToMe }: WishMenuProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const closeTimeoutRef = useRef<number | null>(null)
+
+  const updateDropdownPosition = useCallback(() => {
+    if (isOpen && buttonRef.current && dropdownRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect()
+      const dropdown = dropdownRef.current
+      
+      dropdown.style.top = `${buttonRect.bottom + 4}px`
+      dropdown.style.right = `${window.innerWidth - buttonRect.right}px`
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node
+      if (buttonRef.current && buttonRef.current.contains(target)) {
+        return
+      }
+      if (dropdownRef.current && dropdownRef.current.contains(target)) {
+        return
+      }
+      if (menuRef.current && !menuRef.current.contains(target)) {
+        setIsOpen(false)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside, true)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside, true)
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    updateDropdownPosition()
+  }, [isOpen, updateDropdownPosition])
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsClosing(false)
+      return
+    }
+
+    const handleScroll = () => {
+      setIsClosing(true)
+      
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
+      
+      closeTimeoutRef.current = window.setTimeout(() => {
+        setIsOpen(false)
+        setIsClosing(false)
+      }, 150)
+    }
+
+    const handleResize = () => {
+      updateDropdownPosition()
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true, capture: true })
+    document.addEventListener('scroll', handleScroll, { passive: true, capture: true })
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, { capture: true } as EventListenerOptions)
+      document.removeEventListener('scroll', handleScroll, { capture: true } as EventListenerOptions)
+      window.removeEventListener('resize', handleResize)
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
+    }
+  }, [isOpen, updateDropdownPosition])
+
+  return (
+    <div className="wish-menu-container" ref={menuRef}>
+      <button
+        ref={buttonRef}
+        className="wish-menu-btn"
+        onClick={(e) => {
+          e.stopPropagation()
+          setIsOpen(!isOpen)
+        }}
+        aria-label="Меню"
+        title="Меню"
+      >
+        <span className="wish-menu-icon">⋯</span>
+      </button>
+      {isOpen && createPortal(
+        <div 
+          ref={dropdownRef}
+          className="wish-menu-dropdown wish-menu-dropdown-portal"
+          onClick={(e) => {
+            if (isClosing) {
+              e.preventDefault()
+              e.stopPropagation()
+              return
+            }
+            e.stopPropagation()
+          }}
+          style={{
+            pointerEvents: isClosing ? 'none' : 'auto',
+            opacity: isClosing ? 0 : 1,
+            transition: 'opacity 0.15s ease-out',
+          }}
+        >
+          {status === 'active' && onReserve && (
+            <button
+              className="wish-menu-item"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsOpen(false)
+                onReserve()
+              }}
+            >
+              Забронировать
+            </button>
+          )}
+          {status === 'reserved' && reservedByCurrentUser && onUnreserve && (
+            <button
+              className="wish-menu-item"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsOpen(false)
+                onUnreserve()
+              }}
+            >
+              Снять бронь
+            </button>
+          )}
+          {onCopyToMe && (
+            <button
+              className="wish-menu-item"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsOpen(false)
+                onCopyToMe()
+              }}
+            >
+              Скопировать себе
+            </button>
+          )}
+        </div>,
+        document.body
+      )}
+    </div>
+  )
+}
+
 export function FeedPage() {
   const { user: currentUser } = useTelegramWebApp()
   const apiContext = useApiContext()
@@ -23,6 +194,7 @@ export function FeedPage() {
   const [feedItems, setFeedItems] = useState<FeedItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [currentDbUser, setCurrentDbUser] = useState<User | null>(null)
 
   // Загружаем подарки из подписок
   useEffect(() => {
@@ -38,6 +210,7 @@ export function FeedPage() {
 
         // Получаем пользователя из БД по telegram_id
         const dbUser = await usersRepo.getUserByTelegramId(currentUser.id)
+        setCurrentDbUser(dbUser)
         
         // Получаем список подписок
         const subscriptions = await usersRepo.getSubscriptions(dbUser.id)
@@ -120,6 +293,63 @@ export function FeedPage() {
     navigate(`/user/${user.telegram_id}/wish/${wish.id}`)
   }
 
+  const handleReserve = async (wishId: number) => {
+    if (!wishesRepo || !currentDbUser) return
+
+    try {
+      const updateData: any = {
+        status: 'reserved',
+        reserved_by: currentDbUser.id,
+      }
+
+      await wishesRepo.updateWish(wishId, updateData)
+      
+      setFeedItems(prev => prev.map(item => 
+        item.wish.id === wishId 
+          ? { ...item, wish: { ...item.wish, status: 'reserved' as const, reserved_by_id: currentDbUser.id } }
+          : item
+      ))
+    } catch (err) {
+      console.error('Ошибка при бронировании подарка:', err)
+      alert('Не удалось забронировать подарок')
+    }
+  }
+
+  const handleUnreserve = async (wishId: number) => {
+    if (!wishesRepo || !currentDbUser) return
+
+    try {
+      const updateData: any = {
+        status: 'active',
+        reserved_by: null,
+      }
+
+      await wishesRepo.updateWish(wishId, updateData)
+      
+      setFeedItems(prev => prev.map(item => 
+        item.wish.id === wishId 
+          ? { ...item, wish: { ...item.wish, status: 'active' as const, reserved_by_id: undefined } }
+          : item
+      ))
+    } catch (err) {
+      console.error('Ошибка при снятии брони подарка:', err)
+      alert('Не удалось снять бронь с подарка')
+    }
+  }
+
+  const handleCopyToMe = (wish: Wish) => {
+    if (!wish) return
+    // Открываем страницу выбора вишлиста для копирования
+    navigate(
+      `/wishes/copy-wish?title=${encodeURIComponent(wish.title || '')}` +
+        `&comment=${encodeURIComponent(wish.comment || '')}` +
+        (wish.link ? `&link=${encodeURIComponent(wish.link)}` : '') +
+        (wish.image_url ? `&image_url=${encodeURIComponent(wish.image_url)}` : '') +
+        (wish.price ? `&price=${encodeURIComponent(String(wish.price))}` : '') +
+        (wish.currency ? `&currency=${encodeURIComponent(wish.currency)}` : ''),
+    )
+  }
+
   if (!currentUser) {
     return (
       <div className="page-container feed-page">
@@ -176,75 +406,100 @@ export function FeedPage() {
     <div className="page-container feed-page">
       <div className="feed-main-content">
         <div className="feed-list">
-          {feedItems.map((item) => (
-            <div key={`${item.wish.id}-${item.user.id}`} className="feed-item">
-              <div className="feed-item-header">
-                <div 
-                  className="feed-item-user"
-                  onClick={() => handleUserClick(item.user)}
-                >
-                  <span className="feed-item-user-name">{getUserFullName(item.user)}</span>
-                </div>
-                {item.wishlistName && (
+          {feedItems.map((item) => {
+            // Определяем, забронирован ли подарок текущим пользователем
+            const isReservedByMe = item.wish.status === 'reserved' && currentDbUser && item.wish.reserved_by_id === currentDbUser.id
+            
+            // Формируем классы для подарка в зависимости от статуса
+            let wishClasses = 'feed-item-wish'
+            if (item.wish.status === 'reserved') {
+              wishClasses += isReservedByMe ? ' feed-item-wish-reserved-by-me' : ' feed-item-wish-reserved'
+            } else if (item.wish.status === 'fulfilled') {
+              wishClasses += ' feed-item-wish-fulfilled'
+            }
+            
+            return (
+              <div key={`${item.wish.id}-${item.user.id}`} className="feed-item">
+                <div className="feed-item-header">
                   <div 
-                    className="feed-item-wishlist"
-                    onClick={() => handleWishlistClick(item.wish, item.user)}
+                    className="feed-item-user"
+                    onClick={() => handleUserClick(item.user)}
                   >
-                    <span className="feed-item-wishlist-icon">📋</span>
-                    <span className="feed-item-wishlist-name">{item.wishlistName}</span>
+                    <span className="feed-item-user-name">{getUserFullName(item.user)}</span>
                   </div>
-                )}
-              </div>
-              
-              <div 
-                className="feed-item-wish"
-                onClick={() => handleWishClick(item.wish, item.user)}
-              >
-                <div className="feed-item-wish-image-container">
-                  {item.wish.image_url ? (
-                    <img 
-                      src={item.wish.image_url} 
-                      alt={item.wish.title || 'Подарок'}
-                      className="feed-item-wish-image"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none'
-                        const container = e.currentTarget.parentElement
-                        if (container) {
-                          const placeholder = container.querySelector('.feed-item-wish-image-placeholder')
-                          if (placeholder) {
-                            placeholder.classList.add('show')
-                          }
-                        }
-                      }}
-                    />
-                  ) : null}
-                  <div className={`feed-item-wish-image-placeholder ${!item.wish.image_url ? 'show' : ''}`}>
-                    <GiftIcon className="gift-icon" />
-                  </div>
+                  {item.wishlistName && (
+                    <div 
+                      className="feed-item-wishlist"
+                      onClick={() => handleWishlistClick(item.wish, item.user)}
+                    >
+                      <span className="feed-item-wishlist-icon">📋</span>
+                      <span className="feed-item-wishlist-name">{item.wishlistName}</span>
+                    </div>
+                  )}
                 </div>
                 
-                <div className="feed-item-wish-content">
-                  <h4 className="feed-item-wish-title">{item.wish.title || 'Без названия'}</h4>
-                  {item.wish.comment && (
-                    <p className="feed-item-wish-comment">{item.wish.comment}</p>
-                  )}
-                  {item.wish.price && (
-                    <p className="feed-item-wish-price">{formatPrice(item.wish.price, item.wish.currency)}</p>
-                  )}
-                  {item.wish.status === 'reserved' && (
-                    <span className="feed-item-wish-status feed-item-wish-status-reserved">
-                      Забронировано
-                    </span>
-                  )}
-                  {item.wish.status === 'fulfilled' && (
-                    <span className="feed-item-wish-status feed-item-wish-status-fulfilled">
-                      Подарено
-                    </span>
-                  )}
+                <div className={wishClasses}>
+                  <div 
+                    className="feed-item-wish-content-wrapper"
+                    onClick={() => handleWishClick(item.wish, item.user)}
+                  >
+                    <div className="feed-item-wish-image-container">
+                      {item.wish.image_url ? (
+                        <img 
+                          src={item.wish.image_url} 
+                          alt={item.wish.title || 'Подарок'}
+                          className="feed-item-wish-image"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none'
+                            const container = e.currentTarget.parentElement
+                            if (container) {
+                              const placeholder = container.querySelector('.feed-item-wish-image-placeholder')
+                              if (placeholder) {
+                                placeholder.classList.add('show')
+                              }
+                            }
+                          }}
+                        />
+                      ) : null}
+                      <div className={`feed-item-wish-image-placeholder ${!item.wish.image_url ? 'show' : ''}`}>
+                        <GiftIcon className="gift-icon" />
+                      </div>
+                    </div>
+                    
+                    <div className="feed-item-wish-content">
+                      <h4 className="feed-item-wish-title">{item.wish.title || 'Без названия'}</h4>
+                      {item.wish.comment && (
+                        <p className="feed-item-wish-comment">{item.wish.comment}</p>
+                      )}
+                      {item.wish.price && (
+                        <p className="feed-item-wish-price">{formatPrice(item.wish.price, item.wish.currency)}</p>
+                      )}
+                      {item.wish.status === 'reserved' && (
+                        <span className={`feed-item-wish-status feed-item-wish-status-reserved ${isReservedByMe ? 'feed-item-wish-status-reserved-by-me' : ''}`}>
+                          {isReservedByMe ? 'Забронировано Вами' : 'Забронировано'}
+                        </span>
+                      )}
+                      {item.wish.status === 'fulfilled' && (
+                        <span className="feed-item-wish-status feed-item-wish-status-fulfilled">
+                          Подарено
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="feed-item-wish-actions" onClick={(e) => e.stopPropagation()}>
+                    <WishMenu
+                      status={item.wish.status}
+                      reservedByCurrentUser={isReservedByMe ? true : undefined}
+                      onReserve={item.wish.status === 'active' ? () => handleReserve(item.wish.id) : undefined}
+                      onUnreserve={item.wish.status === 'reserved' && isReservedByMe ? () => handleUnreserve(item.wish.id) : undefined}
+                      onCopyToMe={() => handleCopyToMe(item.wish)}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>
