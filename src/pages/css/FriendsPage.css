@@ -65,7 +65,7 @@ transform: scale(0.98);
   align-items: center;
   box-sizing: border-box;
   opacity: 0;
-  animation: fadeIn 0.4s ease-in-out 0.2s forwards;
+  animation: fadeIn 0.3s ease-in-out 0.2s forwards;
 }
 
 .friends-loading,
@@ -144,5 +144,5 @@ transform: scale(0.98);
 
 .friends-list {
   opacity: 0;
-  animation: fadeIn 0.4s ease-in-out 0.1s forwards;
+  animation: fadeIn 0.3s ease-in-out 0.1s forwards;
 }
