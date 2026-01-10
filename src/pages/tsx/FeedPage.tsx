@@ -279,13 +279,75 @@ export function FeedPage() {
     return parts.join(' ')
   }
 
+  // Форматируем дату на русском языке
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const yesterday = new Date(today)
+    yesterday.setDate(yesterday.getDate() - 1)
+    const dateToCheck = new Date(date)
+    dateToCheck.setHours(0, 0, 0, 0)
+
+    if (dateToCheck.getTime() === today.getTime()) {
+      return 'Сегодня'
+    } else if (dateToCheck.getTime() === yesterday.getTime()) {
+      return 'Вчера'
+    } else {
+      const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 
+                      'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+      const day = date.getDate()
+      const month = months[date.getMonth()]
+      const year = date.getFullYear()
+      const currentYear = today.getFullYear()
+      
+      if (year === currentYear) {
+        return `${day} ${month}`
+      } else {
+        return `${day} ${month} ${year}`
+      }
+    }
+  }
+
+  // Группируем подарки по датам, пользователям и вишлистам
+  const groupedFeedItems = feedItems.reduce((acc, item) => {
+    // Получаем дату без времени для группировки
+    const date = new Date(item.wish.created_at)
+    date.setHours(0, 0, 0, 0)
+    const dateKey = date.toISOString().split('T')[0] // Формат YYYY-MM-DD
+    
+    const userId = item.user.id
+    const wishlistId = item.wish.wishlist_id || 0
+    const wishlistName = item.wishlistName || 'Без названия'
+
+    if (!acc[dateKey]) {
+      acc[dateKey] = {}
+    }
+    if (!acc[dateKey][userId]) {
+      acc[dateKey][userId] = {
+        user: item.user,
+        wishlists: {}
+      }
+    }
+    if (!acc[dateKey][userId].wishlists[wishlistId]) {
+      acc[dateKey][userId].wishlists[wishlistId] = {
+        id: wishlistId,
+        name: wishlistName,
+        wishes: []
+      }
+    }
+    acc[dateKey][userId].wishlists[wishlistId].wishes.push(item.wish)
+    
+    return acc
+  }, {} as Record<string, Record<number, { user: User; wishlists: Record<number, { id: number; name: string; wishes: Wish[] }> }>>)
+
   const handleUserClick = (user: User) => {
     navigate(`/user/${user.telegram_id}`)
   }
 
-  const handleWishlistClick = (wish: Wish, user: User) => {
-    if (wish.wishlist_id) {
-      navigate(`/user/${user.telegram_id}/wishlist/${wish.wishlist_id}`)
+  const handleWishlistClick = (wishlistId: number, user: User) => {
+    if (wishlistId) {
+      navigate(`/user/${user.telegram_id}/wishlist/${wishlistId}`)
     }
   }
 
@@ -402,101 +464,128 @@ export function FeedPage() {
     )
   }
 
+  // Получаем ключи дат в отсортированном порядке (новые сначала)
+  const dateKeys = Object.keys(groupedFeedItems).sort((a, b) => {
+    return new Date(b).getTime() - new Date(a).getTime()
+  })
+
   return (
     <div className="page-container feed-page">
       <div className="feed-main-content">
         <div className="feed-list">
-          {feedItems.map((item) => {
-            // Определяем, забронирован ли подарок текущим пользователем
-            const isReservedByMe = item.wish.status === 'reserved' && currentDbUser && item.wish.reserved_by_id === currentDbUser.id
-            
-            // Формируем классы для подарка в зависимости от статуса
-            let wishClasses = 'feed-item-wish'
-            if (item.wish.status === 'reserved') {
-              wishClasses += isReservedByMe ? ' feed-item-wish-reserved-by-me' : ' feed-item-wish-reserved'
-            } else if (item.wish.status === 'fulfilled') {
-              wishClasses += ' feed-item-wish-fulfilled'
-            }
-            
+          {dateKeys.map((dateKey) => {
+            const dateGroup = groupedFeedItems[dateKey]
+            // Получаем первый подарок из первой группы для форматирования даты
+            const firstUserGroup = Object.values(dateGroup)[0]
+            const firstWishlist = firstUserGroup ? Object.values(firstUserGroup.wishlists)[0] : null
+            const firstWish = firstWishlist && firstWishlist.wishes.length > 0 ? firstWishlist.wishes[0] : null
+            const formattedDate = firstWish ? formatDate(firstWish.created_at) : dateKey
+
             return (
-              <div key={`${item.wish.id}-${item.user.id}`} className="feed-item">
-                <div className="feed-item-header">
-                  <div 
-                    className="feed-item-user"
-                    onClick={() => handleUserClick(item.user)}
-                  >
-                    <span className="feed-item-user-name">{getUserFullName(item.user)}</span>
-                  </div>
-                  {item.wishlistName && (
-                    <div 
-                      className="feed-item-wishlist"
-                      onClick={() => handleWishlistClick(item.wish, item.user)}
-                    >
-                      <span className="feed-item-wishlist-icon">📋</span>
-                      <span className="feed-item-wishlist-name">{item.wishlistName}</span>
-                    </div>
-                  )}
+              <div key={dateKey} className="feed-date-group">
+                <div className="feed-date-header">
+                  <h3 className="feed-date-title">{formattedDate}</h3>
                 </div>
                 
-                <div className={wishClasses}>
-                  <div 
-                    className="feed-item-wish-content-wrapper"
-                    onClick={() => handleWishClick(item.wish, item.user)}
-                  >
-                    <div className="feed-item-wish-image-container">
-                      {item.wish.image_url ? (
-                        <img 
-                          src={item.wish.image_url} 
-                          alt={item.wish.title || 'Подарок'}
-                          className="feed-item-wish-image"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none'
-                            const container = e.currentTarget.parentElement
-                            if (container) {
-                              const placeholder = container.querySelector('.feed-item-wish-image-placeholder')
-                              if (placeholder) {
-                                placeholder.classList.add('show')
-                              }
-                            }
-                          }}
-                        />
-                      ) : null}
-                      <div className={`feed-item-wish-image-placeholder ${!item.wish.image_url ? 'show' : ''}`}>
-                        <GiftIcon className="gift-icon" />
-                      </div>
+                {Object.values(dateGroup).map((userGroup) => (
+                  <div key={userGroup.user.id} className="feed-user-group">
+                    <div 
+                      className="feed-user-header"
+                      onClick={() => handleUserClick(userGroup.user)}
+                    >
+                      <span className="feed-user-name">{getUserFullName(userGroup.user)}</span>
                     </div>
                     
-                    <div className="feed-item-wish-content">
-                      <h4 className="feed-item-wish-title">{item.wish.title || 'Без названия'}</h4>
-                      {item.wish.comment && (
-                        <p className="feed-item-wish-comment">{item.wish.comment}</p>
-                      )}
-                      {item.wish.price && (
-                        <p className="feed-item-wish-price">{formatPrice(item.wish.price, item.wish.currency)}</p>
-                      )}
-                      {item.wish.status === 'reserved' && (
-                        <span className={`feed-item-wish-status feed-item-wish-status-reserved ${isReservedByMe ? 'feed-item-wish-status-reserved-by-me' : ''}`}>
-                          {isReservedByMe ? 'Забронировано Вами' : 'Забронировано'}
-                        </span>
-                      )}
-                      {item.wish.status === 'fulfilled' && (
-                        <span className="feed-item-wish-status feed-item-wish-status-fulfilled">
-                          Подарено
-                        </span>
-                      )}
-                    </div>
+                    {Object.values(userGroup.wishlists).map((wishlistGroup) => (
+                      <div key={wishlistGroup.id} className="feed-wishlist-group">
+                        <div 
+                          className="feed-wishlist-header"
+                          onClick={() => handleWishlistClick(wishlistGroup.id, userGroup.user)}
+                        >
+                          <span className="feed-wishlist-icon">📋</span>
+                          <span className="feed-wishlist-name">{wishlistGroup.name}</span>
+                        </div>
+                        
+                        <div className="feed-wishes-list">
+                          {wishlistGroup.wishes.map((wish) => {
+                            // Определяем, забронирован ли подарок текущим пользователем
+                            const isReservedByMe = wish.status === 'reserved' && currentDbUser && wish.reserved_by_id === currentDbUser.id
+                            
+                            // Формируем классы для подарка в зависимости от статуса
+                            let wishClasses = 'feed-item-wish'
+                            if (wish.status === 'reserved') {
+                              wishClasses += isReservedByMe ? ' feed-item-wish-reserved-by-me' : ' feed-item-wish-reserved'
+                            } else if (wish.status === 'fulfilled') {
+                              wishClasses += ' feed-item-wish-fulfilled'
+                            }
+                            
+                            return (
+                              <div key={wish.id} className={wishClasses}>
+                                <div 
+                                  className="feed-item-wish-content-wrapper"
+                                  onClick={() => handleWishClick(wish, userGroup.user)}
+                                >
+                                  <div className="feed-item-wish-image-container">
+                                    {wish.image_url ? (
+                                      <img 
+                                        src={wish.image_url} 
+                                        alt={wish.title || 'Подарок'}
+                                        className="feed-item-wish-image"
+                                        onError={(e) => {
+                                          e.currentTarget.style.display = 'none'
+                                          const container = e.currentTarget.parentElement
+                                          if (container) {
+                                            const placeholder = container.querySelector('.feed-item-wish-image-placeholder')
+                                            if (placeholder) {
+                                              placeholder.classList.add('show')
+                                            }
+                                          }
+                                        }}
+                                      />
+                                    ) : null}
+                                    <div className={`feed-item-wish-image-placeholder ${!wish.image_url ? 'show' : ''}`}>
+                                      <GiftIcon className="gift-icon" />
+                                    </div>
+                                  </div>
+                                  
+                                  <div className="feed-item-wish-content">
+                                    <h4 className="feed-item-wish-title">{wish.title || 'Без названия'}</h4>
+                                    {wish.comment && (
+                                      <p className="feed-item-wish-comment">{wish.comment}</p>
+                                    )}
+                                    {wish.price && (
+                                      <p className="feed-item-wish-price">{formatPrice(wish.price, wish.currency)}</p>
+                                    )}
+                                    {wish.status === 'reserved' && (
+                                      <span className={`feed-item-wish-status feed-item-wish-status-reserved ${isReservedByMe ? 'feed-item-wish-status-reserved-by-me' : ''}`}>
+                                        {isReservedByMe ? 'Забронировано Вами' : 'Забронировано'}
+                                      </span>
+                                    )}
+                                    {wish.status === 'fulfilled' && (
+                                      <span className="feed-item-wish-status feed-item-wish-status-fulfilled">
+                                        Подарено
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                                
+                                <div className="feed-item-wish-actions" onClick={(e) => e.stopPropagation()}>
+                                  <WishMenu
+                                    status={wish.status}
+                                    reservedByCurrentUser={isReservedByMe ? true : undefined}
+                                    onReserve={wish.status === 'active' ? () => handleReserve(wish.id) : undefined}
+                                    onUnreserve={wish.status === 'reserved' && isReservedByMe ? () => handleUnreserve(wish.id) : undefined}
+                                    onCopyToMe={() => handleCopyToMe(wish)}
+                                  />
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  
-                  <div className="feed-item-wish-actions" onClick={(e) => e.stopPropagation()}>
-                    <WishMenu
-                      status={item.wish.status}
-                      reservedByCurrentUser={isReservedByMe ? true : undefined}
-                      onReserve={item.wish.status === 'active' ? () => handleReserve(item.wish.id) : undefined}
-                      onUnreserve={item.wish.status === 'reserved' && isReservedByMe ? () => handleUnreserve(item.wish.id) : undefined}
-                      onCopyToMe={() => handleCopyToMe(item.wish)}
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
             )
           })}
