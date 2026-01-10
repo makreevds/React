@@ -575,7 +575,7 @@ body.theme-ozon .wishlist-group {
   display: flex;
   gap: 8px;
   flex-shrink: 0;
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 .btn-reserve {
