@@ -575,6 +575,7 @@ body.theme-ozon .wishlist-group {
   display: flex;
   gap: 8px;
   flex-shrink: 0;
+  margin-right: 20px;
 }
 
 .btn-reserve {
@@ -640,7 +641,7 @@ html.theme-dark .btn-reserve-active {
   justify-content: center;
   border: none;
   border-radius: var(--radius-md);
-  background: var(--theme-current-hint-light);
+  background: var(--theme-current-secondary-bg);
   cursor: pointer;
   transition: transform 0.2s;
   padding: 0;
