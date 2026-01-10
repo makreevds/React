@@ -229,6 +229,7 @@ interface Wishlist {
   id: number
   name: string
   description?: string
+  event_date?: string
 }
 
 interface Wish {
@@ -329,6 +330,7 @@ export function WishlistPage() {
                 id: Number(foundWishlist.id) || 0,
                 name: String(foundWishlist.name || ''),
                 description: foundWishlist.description ? String(foundWishlist.description) : undefined,
+                event_date: foundWishlist.event_date ? String(foundWishlist.event_date) : undefined,
               })
             } else {
               setError('Вишлист не найден')
@@ -543,12 +545,37 @@ export function WishlistPage() {
     )
   }
 
+  // Форматируем дату события вишлиста
+  const formatEventDate = (dateString?: string): string | null => {
+    if (!dateString) return null
+    try {
+      const date = new Date(dateString)
+      const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 
+                      'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+      const day = date.getDate()
+      const month = months[date.getMonth()]
+      const year = date.getFullYear()
+      const currentYear = new Date().getFullYear()
+      
+      if (year === currentYear) {
+        return `${day} ${month}`
+      } else {
+        return `${day} ${month} ${year}`
+      }
+    } catch (err) {
+      return null
+    }
+  }
+
   return (
     <div className="page-container wishes-page">
       <div className="wishes-main-content">
         <section className="wishes-list-section">
           <div className='wishes-container'>
             <h3 className="wishes-list-title">{wishlist.name || 'Без названия'}</h3>
+            {wishlist.event_date && (
+              <p className="wishlist-event-date">{formatEventDate(wishlist.event_date)}</p>
+            )}
             {wishlist.description && (
               <h4 className="wishes-list-comment">{wishlist.description}</h4>
             )}

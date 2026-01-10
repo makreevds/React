@@ -473,8 +473,13 @@ body.theme-ozon .wishlist-group {
 .wishlist-event-date {
   font-size: 14px;
   color: var(--theme-current-hint);
-  margin-top: 6px;
+  margin: 0 0 8px 0;
   font-weight: 400;
+}
+
+/* Дата события вишлиста внутри контейнера вишлиста */
+.wishes-container .wishlist-event-date {
+  margin: 0 0 8px 0;
 }
 
 .wishlist-toggle-icon {
