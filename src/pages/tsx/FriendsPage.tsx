@@ -187,7 +187,7 @@ export function FriendsPage() {
         <div className="friends-loading">Загрузка...</div>
       ) : (
         <>
-          {/* Переключатель между подписками, подписчиками и всеми пользователями */}
+          {/* Переключатель между подписками и подписчиками */}
           <div className="friends-segmented-control">
             <button
               className={`friends-segment ${viewMode === 'subscriptions' ? 'active' : ''}`}
@@ -209,8 +209,12 @@ export function FriendsPage() {
             >
               Подписчики
             </button>
+          </div>
+
+          {/* Кнопка "Все пользователи" под переключателем */}
+          <div className="friends-all-users-section">
             <button
-              className={`friends-segment ${viewMode === 'all' ? 'active' : ''}`}
+              className={`friends-all-users-btn ${viewMode === 'all' ? 'active' : ''}`}
               onClick={async () => {
                 setViewMode('all')
                 setSearchQuery('')

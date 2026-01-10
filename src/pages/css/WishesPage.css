@@ -859,16 +859,19 @@ html.theme-dark .btn-reserve-active {
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease-out;
   margin: 0 auto;
   display: block;
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out 0.1s forwards;
 }
 
-
-.btn-add-wishlist:hover {
+.btn-add-wishlist:hover:not(:disabled) {
   transform: scale(0.98);
+}
+
+.btn-add-wishlist:active:not(:disabled) {
+  transform: scale(0.96);
 }
 
 .btn-add-wish {
@@ -881,7 +884,7 @@ html.theme-dark .btn-reserve-active {
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: transform .2s;
+  transition: transform 0.2s ease-out;
   margin: 10px auto;
   display: block;
   margin-bottom: 0px;
@@ -889,8 +892,12 @@ html.theme-dark .btn-reserve-active {
   animation: fadeIn 0.3s ease-in-out 0.3s forwards;
 }
 
-.btn-add-wish:hover {
+.btn-add-wish:hover:not(:disabled) {
   transform: scale(0.98);
+}
+
+.btn-add-wish:active:not(:disabled) {
+  transform: scale(0.96);
 }
 
 .btn-delete-wishlist {
@@ -921,7 +928,7 @@ html.theme-dark .btn-reserve-active {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: transform .2s;
+  transition: transform 0.2s ease-out, background 0.2s ease-out;
   margin: 0 auto;
   display: block;
   border: none;
@@ -930,8 +937,13 @@ html.theme-dark .btn-reserve-active {
   animation: fadeIn 0.3s ease-in-out 0.15s forwards;
 }
 
-.btn-edit-wishlist:hover {
+.btn-edit-wishlist:hover:not(:disabled) {
   transform: scale(0.98);
+  background: var(--theme-current-hint-light);
+}
+
+.btn-edit-wishlist:active:not(:disabled) {
+  transform: scale(0.96);
 }
 
 /* Модальные окна */

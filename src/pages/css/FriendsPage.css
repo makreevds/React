@@ -111,10 +111,54 @@
   border-radius: 10px;
   padding: 3px;
   gap: 3px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   margin-top: 24px;
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+/* Секция для кнопки "Все пользователи" */
+.friends-all-users-section {
+  margin-bottom: 20px;
+  padding: 0 var(--spacing-lg);
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out 0.05s forwards;
+}
+
+.friends-all-users-btn {
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  background: var(--theme-current-hint-light);
+  color: var(--theme-current-hint);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.friends-all-users-btn:hover {
+  background: var(--theme-current-hint-light);
+  color: var(--theme-current-text);
+  transform: scale(0.98);
+}
+
+.friends-all-users-btn.active {
+  background: var(--app-button-color);
+  color: var(--app-button-text-color);
+}
+
+.friends-all-users-btn.active:hover {
+  background: var(--app-button-color);
+  color: var(--app-button-text-color);
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+.friends-all-users-btn:active {
+  transform: scale(0.96);
 }
 
 
