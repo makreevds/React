@@ -154,3 +154,63 @@
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out 0.1s forwards;
 }
+
+/* Секция поиска */
+.friends-search-section {
+  margin-bottom: 20px;
+  padding: 0 var(--spacing-lg);
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out 0.15s forwards;
+}
+
+.friends-search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--theme-current-hint-light);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  background: var(--theme-current-bg);
+  color: var(--theme-current-text);
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.friends-search-input:focus {
+  outline: none;
+  border-color: var(--app-button-color);
+}
+
+.friends-search-input::placeholder {
+  color: var(--theme-current-hint);
+}
+
+/* Кнопка подписки/отписки для всех пользователей */
+.subscribe-toggle-btn {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+
+.subscribe-toggle-btn.subscribe {
+  background: var(--app-button-color);
+  color: var(--app-button-text-color);
+}
+
+.subscribe-toggle-btn.unsubscribe {
+  background: var(--theme-current-hint-light);
+  color: var(--theme-current-text);
+}
+
+.subscribe-toggle-btn:hover:not(:disabled) {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.subscribe-toggle-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

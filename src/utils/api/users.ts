@@ -93,5 +93,23 @@ export class UsersRepository {
   async getSubscribers(userId: number): Promise<User[]> {
     return this.apiClient.get<User[]>(`/api/users/${userId}/subscribers/`)
   }
+
+  /**
+   * Получает список всех пользователей
+   */
+  async getAllUsers(): Promise<User[]> {
+    const response = await this.apiClient.get<any>('/api/users/')
+    // Django REST Framework может возвращать объект с пагинацией, нужно извлечь results
+    if (response && typeof response === 'object' && 'results' in response && Array.isArray(response.results)) {
+      return response.results as User[]
+    }
+    // Если это уже массив, возвращаем как есть
+    if (Array.isArray(response)) {
+      return response as User[]
+    }
+    // Если это объект без results, возвращаем пустой массив
+    console.warn('[UsersRepository] Неожиданный формат ответа API:', response)
+    return []
+  }
 }
 
