@@ -140,7 +140,6 @@
   flex-direction: column;
   gap: 10px;
   opacity: 0;
-  animation: fadeIn 0.4s ease-in-out 0.1s forwards;
 }
 
 .wishes-container {
@@ -378,6 +377,7 @@ body.theme-dark .wish-item-fulfilled {
   background: var(--theme-current-secondary-bg);
   border-radius: var(--radius-md);
   transition: box-shadow 0.2s;
+  animation: fadeIn 0.3s ease-in-out 0.2s forwards;
 }
 
 html.theme-ozon .wishlist-group,
@@ -653,7 +653,7 @@ html.theme-dark .btn-reserve-active {
   z-index: 9999;
   min-width: 160px;
   overflow: hidden;
-  animation: fadeIn 0.2s ease-out;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .wish-menu-dropdown-portal {
@@ -769,6 +769,7 @@ html.theme-dark .btn-reserve-active {
   transition: transform 0.2s;
   margin: 0 auto;
   display: block;
+  animation: fadeIn 0.3s ease-in-out 0.1s forwards;
 }
 
 
