@@ -138,69 +138,73 @@ export function FriendsPage() {
 
   return (
     <div className="page-container">
-      {/* Переключатель между подписками и подписчиками */}
-      <div className="friends-segmented-control">
-        <button
-          className={`friends-segment ${viewMode === 'subscriptions' ? 'active' : ''}`}
-          onClick={() => setViewMode('subscriptions')}
-          aria-label="Подписки"
-        >
-          Подписки
-        </button>
-        <button
-          className={`friends-segment ${viewMode === 'subscribers' ? 'active' : ''}`}
-          onClick={() => setViewMode('subscribers')}
-          aria-label="Подписчики"
-        >
-          Подписчики
-        </button>
-      </div>
-
-      {/* Список подписок или подписчиков */}
       {loading ? (
         <div className="friends-loading">Загрузка...</div>
-      ) : isEmpty ? (
-        <div className="friends-empty">
-          <p>{emptyMessage}</p>
-        </div>
       ) : (
-        <div className="friends-list">
-          {currentList.map(user => (
-            <div 
-              key={user.id} 
-              className="friend-row"
-              onClick={() => navigate(`/user/${user.telegram_id}`)}
-              style={{ cursor: 'pointer' }}
+        <>
+          {/* Переключатель между подписками и подписчиками */}
+          <div className="friends-segmented-control">
+            <button
+              className={`friends-segment ${viewMode === 'subscriptions' ? 'active' : ''}`}
+              onClick={() => setViewMode('subscriptions')}
+              aria-label="Подписки"
             >
-              <div className="friend-info">
-                <div className="friend-name">{getUserDisplayName(user)}</div>
-                {user.username && (
-                  <div className="friend-username">{getUserUsername(user)}</div>
-                )}
-              </div>
-              {viewMode === 'subscriptions' && (
-                <button 
-                  className="unsubscribe-btn"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleUnsubscribe(user.id)
-                  }}
-                  disabled={unsubscribing === user.id}
-                >
-                  {unsubscribing === user.id ? 'Отписка...' : 'Отписаться'}
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+              Подписки
+            </button>
+            <button
+              className={`friends-segment ${viewMode === 'subscribers' ? 'active' : ''}`}
+              onClick={() => setViewMode('subscribers')}
+              aria-label="Подписчики"
+            >
+              Подписчики
+            </button>
+          </div>
 
-      {/* Секция приглашения */}
-      <div className="invite-section">
-        <button className="invite-main-btn" onClick={handleInvite}>
-          Пригласить друзей
-        </button>
-      </div>
+          {/* Список подписок или подписчиков */}
+          {isEmpty ? (
+            <div className="friends-empty">
+              <p>{emptyMessage}</p>
+            </div>
+          ) : (
+            <div className="friends-list">
+              {currentList.map(user => (
+                <div 
+                  key={user.id} 
+                  className="friend-row"
+                  onClick={() => navigate(`/user/${user.telegram_id}`)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="friend-info">
+                    <div className="friend-name">{getUserDisplayName(user)}</div>
+                    {user.username && (
+                      <div className="friend-username">{getUserUsername(user)}</div>
+                    )}
+                  </div>
+                  {viewMode === 'subscriptions' && (
+                    <button 
+                      className="unsubscribe-btn"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleUnsubscribe(user.id)
+                      }}
+                      disabled={unsubscribing === user.id}
+                    >
+                      {unsubscribing === user.id ? 'Отписка...' : 'Отписаться'}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Секция приглашения */}
+          <div className="invite-section">
+            <button className="invite-main-btn" onClick={handleInvite}>
+              Пригласить друзей
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
