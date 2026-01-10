@@ -51,8 +51,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--tg-theme-button-color, #0088cc);
-  color: var(--tg-theme-button-text-color, #ffffff);
+  background: var(--app-button-color);
+  color: var(--app-button-text-color);
   font-size: 24px;
   font-weight: 600;
 }
@@ -103,8 +103,8 @@
   font-weight: 500;
   border: none;
   border-radius: var(--radius-md);
-  background: var(--tg-theme-button-color, #0088cc);
-  color: var(--tg-theme-button-text-color, #ffffff);
+  background: var(--app-button-color);
+  color: var(--app-button-text-color);
   cursor: pointer;
   transition: opacity 0.2s, transform 0.2s;
   box-sizing: border-box;
@@ -544,8 +544,8 @@ body.theme-ozon .wishlist-group {
 .btn-retry {
   margin-top: 12px;
   padding: 8px 16px;
-  background: var(--tg-theme-button-color, #0088cc);
-  color: var(--tg-theme-button-text-color, #ffffff);
+  background: var(--app-button-color);
+  color: var(--app-button-text-color);
   border: none;
   border-radius: var(--radius-md);
   font-size: 14px;
@@ -633,8 +633,8 @@ body.theme-ozon .wishlist-group {
   cursor: pointer;
   transition: background 0.2s, color 0.2s, opacity 0.2s;
   white-space: nowrap;
-  background: var(--tg-theme-button-color, #0088cc);
-  color: var(--tg-theme-button-text-color, #ffffff);
+  background: var(--app-button-color);
+  color: var(--app-button-text-color);
 }
 
 .btn-reserve:hover:not(:disabled) {
@@ -1058,7 +1058,7 @@ html.theme-dark .btn-reserve-active {
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: var(--tg-theme-button-color, #0088cc);
+  border-color: var(--app-button-color);
 }
 
 /* Стили для input[type="date"] чтобы выглядело как обычное поле */
