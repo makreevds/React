@@ -15,7 +15,7 @@ interface Wishlist {
 
 export function UserProfilePage() {
   const { telegramId } = useParams<{ telegramId: string }>()
-  const { webApp } = useTelegramWebApp()
+  const { webApp, user: currentUser } = useTelegramWebApp()
   const apiContext = useApiContext()
   const wishlistsRepo = apiContext?.wishlists
   const usersRepo = apiContext?.users
@@ -25,6 +25,9 @@ export function UserProfilePage() {
   const [wishlists, setWishlists] = useState<Wishlist[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isSubscribed, setIsSubscribed] = useState(false)
+  const [isSubscriptionLoading, setIsSubscriptionLoading] = useState(false)
+  const [currentDbUser, setCurrentDbUser] = useState<User | null>(null)
 
   // Управление кнопкой "Назад" в Telegram
   useEffect(() => {
@@ -73,6 +76,22 @@ export function UserProfilePage() {
         console.log('Загружены данные пользователя:', userData)
         setViewedUser(userData)
 
+        // Проверяем подписку текущего пользователя на просматриваемого
+        if (currentUser?.id) {
+          try {
+            const dbCurrentUser = await usersRepo.getUserByTelegramId(currentUser.id)
+            setCurrentDbUser(dbCurrentUser)
+            
+            // Получаем список подписок текущего пользователя
+            const subscriptions = await usersRepo.getSubscriptions(dbCurrentUser.id)
+            const isSubscribedToUser = subscriptions.some(sub => sub.id === userData.id)
+            setIsSubscribed(isSubscribedToUser)
+          } catch (err) {
+            console.error('Ошибка при проверке подписки:', err)
+            // Не критично, просто не показываем статус подписки
+          }
+        }
+
         // Затем загружаем вишлисты пользователя
         let loadedWishlists: Wishlist[] = []
         try {
@@ -102,7 +121,7 @@ export function UserProfilePage() {
     }
 
     loadAllData()
-  }, [telegramId, usersRepo, wishlistsRepo])
+  }, [telegramId, usersRepo, wishlistsRepo, currentUser?.id])
 
 
   if (isLoading) {
@@ -160,6 +179,29 @@ export function UserProfilePage() {
     }
   }
 
+  // Обработчик подписки/отписки
+  const handleSubscribeToggle = async () => {
+    if (!currentDbUser || !viewedUser || !usersRepo) return
+
+    setIsSubscriptionLoading(true)
+    try {
+      if (isSubscribed) {
+        // Отписываемся
+        await usersRepo.unsubscribe(currentDbUser.id, viewedUser.id)
+        setIsSubscribed(false)
+      } else {
+        // Подписываемся
+        await usersRepo.subscribe(currentDbUser.id, viewedUser.id)
+        setIsSubscribed(true)
+      }
+    } catch (err) {
+      console.error('Ошибка при изменении подписки:', err)
+      alert('Не удалось изменить подписку. Попробуйте позже.')
+    } finally {
+      setIsSubscriptionLoading(false)
+    }
+  }
+
   return (
     <div className="page-container wishes-page user-profile-page">
       <div className="wishes-main-content">
@@ -200,6 +242,23 @@ export function UserProfilePage() {
               <div className="gifts-stat-label">Получено</div>
             </div>
           </div>
+
+          {/* Кнопка подписки/отписки - показываем только если это не текущий пользователь */}
+          {currentDbUser && viewedUser && currentDbUser.id !== viewedUser.id && (
+            <div className="user-subscribe-section">
+              <button
+                className="btn-subscribe-toggle"
+                onClick={handleSubscribeToggle}
+                disabled={isSubscriptionLoading}
+              >
+                {isSubscriptionLoading 
+                  ? 'Загрузка...' 
+                  : isSubscribed 
+                    ? 'Отписаться' 
+                    : 'Подписаться'}
+              </button>
+            </div>
+          )}
         </section>
 
         <section className="wishes-list-section">
