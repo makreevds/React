@@ -64,6 +64,8 @@ transform: scale(0.98);
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+  opacity: 0;
+  animation: fadeIn 0.4s ease-in-out 0.2s forwards;
 }
 
 .friends-loading,
