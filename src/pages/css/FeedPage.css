@@ -13,6 +13,7 @@
   min-height: 100vh;
   background: var(--theme-current-bg);
   color: var(--theme-current-text);
+  margin-top: 24px;
 }
 
 .feed-main-content {
@@ -101,16 +102,12 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: transform 0.2s;
   user-select: none;
 }
 
 .feed-item-user:hover {
-  opacity: 0.8;
-}
-
-.feed-item-user:active {
-  opacity: 0.6;
+  transform: scale(0.98);
 }
 
 .feed-item-user-name {
@@ -124,19 +121,16 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: transform .2s;
   user-select: none;
   font-size: 14px;
   color: var(--theme-current-hint);
 }
 
 .feed-item-wishlist:hover {
-  opacity: 0.8;
+  transform: scale(0.98);
 }
 
-.feed-item-wishlist:active {
-  opacity: 0.6;
-}
 
 .feed-item-wishlist-icon {
   font-size: 16px;
