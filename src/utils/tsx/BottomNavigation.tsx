@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import '../css/BottomNavigation.css'
 
 const IconWishes = () => (
@@ -32,6 +32,12 @@ const IconSettings = () => (
 )
 
 export function BottomNavigation() {
+  const location = useLocation()
+  
+  // Проверяем, активна ли вкладка "Друзья"
+  // Она должна подсвечиваться на /friends и на всех страницах других пользователей (/user/...)
+  const isFriendsActive = location.pathname === '/friends' || location.pathname.startsWith('/user/')
+
   return (
     <nav className="bottom-navigation">
       <NavLink 
@@ -44,7 +50,7 @@ export function BottomNavigation() {
 
       <NavLink 
         to="/friends" 
-        className="nav-item"
+        className={({ isActive }) => `nav-item ${(isActive || isFriendsActive) ? 'active' : ''}`}
       >
         <span className="nav-icon"><IconFriends /></span>
         <span className="nav-label">Друзья</span>

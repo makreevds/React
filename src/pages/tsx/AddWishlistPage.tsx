@@ -128,7 +128,8 @@ export function AddWishlistPage() {
           name: name.trim(),
           description: description.trim() || undefined,
         })
-        navigate('/wishes')
+        // Возвращаемся на страницу конкретного вишлиста
+        navigate(`/wishes/wishlist/${wishlistIdNum}`)
       } catch (err) {
         alert('Не удалось обновить вишлист')
       } finally {
@@ -196,6 +197,14 @@ export function AddWishlistPage() {
   }
 
   const handleCancel = () => {
+    // Если редактируем вишлист - возвращаемся на страницу вишлиста, иначе на список вишлистов
+    if (isEditMode && wishlistId) {
+      const wishlistIdNum = parseInt(wishlistId, 10)
+      if (!isNaN(wishlistIdNum)) {
+        navigate(`/wishes/wishlist/${wishlistIdNum}`)
+        return
+      }
+    }
     navigate('/wishes')
   }
 
