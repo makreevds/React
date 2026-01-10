@@ -79,7 +79,6 @@
   margin-bottom: 20px;
   background: var(--theme-current-secondary-bg);
   border-radius: var(--radius-md);
-  padding: 16px;
 }
 
 .feed-user-group:last-child {
@@ -95,6 +94,7 @@
   margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--theme-current-hint-light);
+  padding: 12px;
 }
 
 .feed-user-header:hover {
