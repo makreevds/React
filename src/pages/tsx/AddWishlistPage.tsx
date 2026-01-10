@@ -271,7 +271,7 @@ export function AddWishlistPage() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="wishlist-event-date">Дата события</label>
+              <label htmlFor="wishlist-event-date">Дата события (необязательно)</label>
               <div className="form-example">Пример: 15 января 2024</div>
               <input
                 id="wishlist-event-date"
@@ -280,7 +280,6 @@ export function AddWishlistPage() {
                 onChange={(e) => setEventDate(e.target.value)}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder="(Необязательно)"
               />
             </div>
             <div className="page-form-actions">
