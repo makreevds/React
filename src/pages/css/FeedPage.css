@@ -128,7 +128,6 @@
   user-select: none;
   font-size: 14px;
   color: var(--theme-current-hint);
-  align-items: center;
 }
 
 .feed-item-wishlist:hover {
@@ -153,6 +152,7 @@
   cursor: pointer;
   transition: transform 0.2s;
   user-select: none;
+  align-items: center;
 }
 
 .feed-item-wish:hover {
