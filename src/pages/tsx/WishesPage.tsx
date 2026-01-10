@@ -22,108 +22,93 @@ export function WishesPage() {
   const [error, setError] = useState<string | null>(null)
   const [userData, setUserData] = useState<{ gifts_given: number; gifts_received: number; reserved_count: number } | null>(null)
 
-  // Загружаем данные пользователя и количество подарков
+  // Загружаем все данные одновременно (вишлисты и статистику подарков)
   useEffect(() => {
-    if (!user?.id || !apiContext?.users || !apiContext?.wishes) {
-      return
-    }
-
-    const loadUserData = async () => {
-      try {
-        const userDataResponse = await apiContext.users.getUserByTelegramId(user.id)
-        
-        // Загружаем забронированные подарки текущего пользователя
-        let reservedCount = 0
-        try {
-          const reservedWishes = await apiContext.wishes.getReservedWishesByUserId(userDataResponse.id)
-          reservedCount = reservedWishes.length
-        } catch (err) {
-          // Игнорируем ошибки загрузки забронированных подарков
-          console.error('Ошибка загрузки забронированных подарков:', err)
-        }
-        
-        // Загружаем подаренные подарки текущего пользователя
-        let giftedCount = 0
-        try {
-          const giftedWishes = await apiContext.wishes.getGiftedWishesByUserId(userDataResponse.id)
-          // Дополнительная проверка: фильтруем только те, где gifted_by_id точно установлен и равен текущему пользователю
-          giftedCount = giftedWishes.filter((w: any) => {
-            const giftedById = w.gifted_by_id ? Number(w.gifted_by_id) : undefined
-            return giftedById === userDataResponse.id && w.status === 'fulfilled'
-          }).length
-        } catch (err) {
-          // Игнорируем ошибки загрузки подаренных подарков
-          console.error('Ошибка загрузки подаренных подарков:', err)
-        }
-        
-        // Загружаем полученные подарки текущего пользователя
-        let receivedCount = 0
-        try {
-          const receivedWishes = await apiContext.wishes.getReceivedWishesByUserId(userDataResponse.id)
-          // Дополнительная проверка: фильтруем только те, где user_id точно установлен и равен текущему пользователю
-          receivedCount = receivedWishes.filter((w: any) => {
-            const userId = w.user_id ? Number(w.user_id) : undefined
-            return userId === userDataResponse.id && w.status === 'fulfilled'
-          }).length
-        } catch (err) {
-          // Игнорируем ошибки загрузки полученных подарков
-          console.error('Ошибка загрузки полученных подарков:', err)
-        }
-        
-        setUserData({
-          gifts_given: giftedCount,
-          gifts_received: receivedCount,
-          reserved_count: reservedCount,
-        })
-      } catch (err) {
-        // Игнорируем ошибки загрузки данных пользователя
-        setUserData({ gifts_given: 0, gifts_received: 0, reserved_count: 0 })
-      }
-    }
-
-    loadUserData()
-  }, [user?.id, apiContext?.users, apiContext?.wishes])
-
-
-  // Загружаем вишлисты при монтировании компонента
-  useEffect(() => {
-    if (!user?.id || !wishlistsRepo) {
+    if (!user?.id || !wishlistsRepo || !apiContext?.users || !apiContext?.wishes) {
       setIsLoading(false)
       return
     }
 
-    const loadData = async () => {
+    const loadAllData = async () => {
       try {
         setIsLoading(true)
         setError(null)
 
-        // Загружаем вишлисты пользователя
-        let loadedWishlists: Wishlist[] = []
-        try {
-          const response = await wishlistsRepo.getWishlistsByTelegramId(user.id)
-          // Проверяем, что ответ - массив
-          if (Array.isArray(response)) {
-            loadedWishlists = response.map((wl: any) => ({
-              id: Number(wl.id) || 0,
-              name: String(wl.name || ''),
-            }))
-          }
-        } catch (err: any) {
-          // Если вишлистов нет (404), это нормально
-          if (err?.code === 'NOT_FOUND' || err?.status === 404 || 
-              (err?.message && (err.message.includes('404') || err.message.includes('NOT_FOUND')))) {
-            loadedWishlists = []
-          } else {
-            // Для других ошибок тоже устанавливаем пустой массив
-            loadedWishlists = []
-          }
+        // Загружаем вишлисты и статистику параллельно
+        const [wishlistsResult, userDataResult] = await Promise.allSettled([
+          // Загружаем вишлисты пользователя
+          (async () => {
+            try {
+              const response = await wishlistsRepo.getWishlistsByTelegramId(user.id)
+              if (Array.isArray(response)) {
+                return response.map((wl: any) => ({
+                  id: Number(wl.id) || 0,
+                  name: String(wl.name || ''),
+                }))
+              }
+              return []
+            } catch (err: any) {
+              // Если вишлистов нет (404), это нормально
+              return []
+            }
+          })(),
+          // Загружаем статистику подарков
+          (async () => {
+            try {
+              const userDataResponse = await apiContext.users.getUserByTelegramId(user.id)
+              
+              // Загружаем все данные о подарках параллельно
+              const [reservedWishes, giftedWishes, receivedWishes] = await Promise.allSettled([
+                apiContext.wishes.getReservedWishesByUserId(userDataResponse.id).catch(() => []),
+                apiContext.wishes.getGiftedWishesByUserId(userDataResponse.id).catch(() => []),
+                apiContext.wishes.getReceivedWishesByUserId(userDataResponse.id).catch(() => []),
+              ])
+              
+              const reservedCount = reservedWishes.status === 'fulfilled' ? reservedWishes.value.length : 0
+              
+              const giftedCount = giftedWishes.status === 'fulfilled'
+                ? giftedWishes.value.filter((w: any) => {
+                    const giftedById = w.gifted_by_id ? Number(w.gifted_by_id) : undefined
+                    return giftedById === userDataResponse.id && w.status === 'fulfilled'
+                  }).length
+                : 0
+              
+              const receivedCount = receivedWishes.status === 'fulfilled'
+                ? receivedWishes.value.filter((w: any) => {
+                    const userId = w.user_id ? Number(w.user_id) : undefined
+                    return userId === userDataResponse.id && w.status === 'fulfilled'
+                  }).length
+                : 0
+              
+              return {
+                gifts_given: giftedCount,
+                gifts_received: receivedCount,
+                reserved_count: reservedCount,
+              }
+            } catch (err) {
+              console.error('Ошибка загрузки статистики подарков:', err)
+              return { gifts_given: 0, gifts_received: 0, reserved_count: 0 }
+            }
+          })(),
+        ])
+
+        // Устанавливаем результаты загрузки
+        if (wishlistsResult.status === 'fulfilled') {
+          setWishlists(wishlistsResult.value)
+        } else {
+          setWishlists([])
         }
-        setWishlists(loadedWishlists)
+
+        if (userDataResult.status === 'fulfilled') {
+          setUserData(userDataResult.value)
+        } else {
+          setUserData({ gifts_given: 0, gifts_received: 0, reserved_count: 0 })
+        }
       } catch (err: any) {
         const errorMessage = err?.message || err?.toString() || 'Неизвестная ошибка'
         setError(errorMessage)
-        // Устанавливаем пустые данные, чтобы компонент не упал
         setWishlists([])
+        setUserData({ gifts_given: 0, gifts_received: 0, reserved_count: 0 })
       } finally {
         // Небольшая задержка для плавного появления контента
         setTimeout(() => {
@@ -132,46 +117,18 @@ export function WishesPage() {
       }
     }
 
-    loadData()
-  }, [user?.id, wishlistsRepo])
-
-  // Перезагружаем данные при возврате на страницу (например, после добавления вишлиста)
-  useEffect(() => {
-    // Перезагружаем данные только если мы на странице /wishes (не на подстраницах)
-    if (location.pathname === '/wishes' && user?.id && wishlistsRepo) {
-      const loadData = async () => {
-        try {
-          // Загружаем вишлисты пользователя
-          let loadedWishlists: Wishlist[] = []
-          try {
-            const response = await wishlistsRepo.getWishlistsByTelegramId(user.id)
-            if (Array.isArray(response)) {
-              loadedWishlists = response.map((wl: any) => ({
-                id: Number(wl.id) || 0,
-                name: String(wl.name || ''),
-              }))
-            }
-          } catch (err: any) {
-            loadedWishlists = []
-          }
-          setWishlists(loadedWishlists)
-        } catch (err) {
-          // Игнорируем ошибки при перезагрузке
-        }
-      }
-      loadData()
-    }
-  }, [location.pathname, user?.id, wishlistsRepo])
+    loadAllData()
+  }, [user?.id, wishlistsRepo, apiContext?.users, apiContext?.wishes, location.pathname])
 
 
   const userPhotoUrl = user?.photo_url || undefined
 
-  if (!user) {
+  if (!user || isLoading) {
     return (
       <div className="page-container wishes-page">
         <div className="wishes-main-content">
-          <div className="wishes-empty">
-            <p>Ожидание загрузки данных пользователя...</p>
+          <div className="wishes-loading">
+            <p>Загрузка...</p>
           </div>
         </div>
       </div>
@@ -206,7 +163,7 @@ export function WishesPage() {
             </div>
           </div>
           
-          {/* Блок статистики подарков */}
+          {/* Блок статистики подарков - показываем только после загрузки всех данных */}
           {userData && (
             <div className="gifts-stats-section">
               <div 
@@ -252,11 +209,7 @@ export function WishesPage() {
             + Добавить вишлист
           </button>
           
-          {isLoading ? (
-            <div className="wishes-loading">
-              <p>Загрузка...</p>
-            </div>
-          ) : error ? (
+          {error ? (
             <div className="wishes-error">
               <p>Ошибка: {error}</p>
               <button 

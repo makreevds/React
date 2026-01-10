@@ -48,15 +48,18 @@ export function UserProfilePage() {
     }
   }, [webApp, navigate])
 
-  // Загружаем данные пользователя по telegram_id
+  // Загружаем все данные последовательно (сначала пользователя, потом вишлисты)
   useEffect(() => {
-    if (!telegramId || !usersRepo) {
+    if (!telegramId || !usersRepo || !wishlistsRepo) {
       setIsLoading(false)
       return
     }
 
-    const loadUserData = async () => {
+    const loadAllData = async () => {
       try {
+        setIsLoading(true)
+        setError(null)
+
         const telegramIdNum = parseInt(telegramId, 10)
         if (isNaN(telegramIdNum)) {
           setError('Некорректный ID пользователя')
@@ -64,44 +67,15 @@ export function UserProfilePage() {
           return
         }
 
+        // Сначала загружаем данные пользователя
         const userData = await usersRepo.getUserByTelegramId(telegramIdNum)
         console.log('Загружены данные пользователя:', userData)
-        console.log('gifts_given:', userData.gifts_given, 'gifts_received:', userData.gifts_received)
         setViewedUser(userData)
-      } catch (err) {
-        console.error('Ошибка загрузки данных пользователя:', err)
-        setError('Пользователь не найден')
-        setIsLoading(false)
-      }
-    }
 
-    loadUserData()
-  }, [telegramId, usersRepo])
-
-
-  // Загружаем вишлисты пользователя
-  useEffect(() => {
-    if (!telegramId || !viewedUser || !wishlistsRepo) {
-      if (viewedUser === null && !isLoading) {
-        // Пользователь не найден, не загружаем данные
-        return
-      }
-      if (!viewedUser) {
-        return
-      }
-    }
-
-    const loadData = async () => {
-      try {
-        setIsLoading(true)
-        setError(null)
-
-        if (!viewedUser) return
-
-        // Загружаем вишлисты пользователя по telegram_id
+        // Затем загружаем вишлисты пользователя
         let loadedWishlists: Wishlist[] = []
         try {
-          const response = await wishlistsRepo.getWishlistsByTelegramId(viewedUser.telegram_id)
+          const response = await wishlistsRepo.getWishlistsByTelegramId(userData.telegram_id)
           if (Array.isArray(response)) {
             loadedWishlists = response.map((wl: any) => ({
               id: Number(wl.id) || 0,
@@ -109,12 +83,14 @@ export function UserProfilePage() {
             }))
           }
         } catch (err: any) {
+          // Вишлисты могут быть пустыми - это нормально
           loadedWishlists = []
         }
         setWishlists(loadedWishlists)
-      } catch (err: any) {
-        const errorMessage = err?.message || err?.toString() || 'Неизвестная ошибка'
-        setError(errorMessage)
+      } catch (err) {
+        console.error('Ошибка загрузки данных пользователя:', err)
+        setError('Пользователь не найден')
+        setViewedUser(null)
         setWishlists([])
       } finally {
         setTimeout(() => {
@@ -123,11 +99,11 @@ export function UserProfilePage() {
       }
     }
 
-    loadData()
-  }, [telegramId, viewedUser, wishlistsRepo])
+    loadAllData()
+  }, [telegramId, usersRepo, wishlistsRepo])
 
 
-  if (isLoading && !viewedUser) {
+  if (isLoading) {
     return (
       <div className="page-container wishes-page">
         <div className="wishes-main-content">
@@ -139,12 +115,12 @@ export function UserProfilePage() {
     )
   }
 
-  if (error && !viewedUser) {
+  if (error || !viewedUser) {
     return (
       <div className="page-container wishes-page">
         <div className="wishes-main-content">
           <div className="wishes-error">
-            <p>{error}</p>
+            <p>{error || 'Пользователь не найден'}</p>
             <button 
               className="btn-retry" 
               onClick={() => navigate('/friends')}
@@ -155,10 +131,6 @@ export function UserProfilePage() {
         </div>
       </div>
     )
-  }
-
-  if (!viewedUser) {
-    return null
   }
 
   // Используем photo_url из данных пользователя, если оно есть
