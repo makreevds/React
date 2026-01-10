@@ -475,6 +475,7 @@ body.theme-ozon .wishlist-group {
   color: var(--theme-current-hint);
   margin: 0 0 8px 0;
   font-weight: 400;
+  padding-top: 10px;
 }
 
 /* Дата события вишлиста внутри контейнера вишлиста */
