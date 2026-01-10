@@ -11,6 +11,7 @@ export interface Wish {
   wishlist: number
   wishlist_id: number
   wishlist_name?: string
+  wishlist_event_date?: string
   user: number
   user_id: number
   user_telegram_id?: number

@@ -28,6 +28,13 @@ class Wishlist(models.Model):
         help_text='Описание вишлиста'
     )
     
+    event_date = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name='Дата события',
+        help_text='Дата события, к которому приурочен вишлист (например, день рождения)'
+    )
+    
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата создания',

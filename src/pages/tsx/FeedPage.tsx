@@ -309,6 +309,28 @@ export function FeedPage() {
     }
   }
 
+  // Форматируем дату события вишлиста
+  const formatEventDate = (dateString?: string): string | null => {
+    if (!dateString) return null
+    try {
+      const date = new Date(dateString)
+      const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 
+                      'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+      const day = date.getDate()
+      const month = months[date.getMonth()]
+      const year = date.getFullYear()
+      const currentYear = new Date().getFullYear()
+      
+      if (year === currentYear) {
+        return `${day} ${month}`
+      } else {
+        return `${day} ${month} ${year}`
+      }
+    } catch (err) {
+      return null
+    }
+  }
+
   // Группируем подарки по датам, пользователям и вишлистам
   const groupedFeedItems = feedItems.reduce((acc, item) => {
     // Получаем дату без времени для группировки
@@ -319,6 +341,7 @@ export function FeedPage() {
     const userId = item.user.id
     const wishlistId = item.wish.wishlist_id || 0
     const wishlistName = item.wishlistName || 'Без названия'
+    const wishlistEventDate = item.wish.wishlist_event_date
 
     if (!acc[dateKey]) {
       acc[dateKey] = {}
@@ -333,13 +356,14 @@ export function FeedPage() {
       acc[dateKey][userId].wishlists[wishlistId] = {
         id: wishlistId,
         name: wishlistName,
+        event_date: wishlistEventDate,
         wishes: []
       }
     }
     acc[dateKey][userId].wishlists[wishlistId].wishes.push(item.wish)
     
     return acc
-  }, {} as Record<string, Record<number, { user: User; wishlists: Record<number, { id: number; name: string; wishes: Wish[] }> }>>)
+  }, {} as Record<string, Record<number, { user: User; wishlists: Record<number, { id: number; name: string; event_date?: string; wishes: Wish[] }> }>>)
 
   const handleUserClick = (user: User) => {
     navigate(`/user/${user.telegram_id}`)
@@ -502,8 +526,13 @@ export function FeedPage() {
                           className="feed-wishlist-header"
                           onClick={() => handleWishlistClick(wishlistGroup.id, userGroup.user)}
                         >
-                          <span className="feed-wishlist-icon">📋</span>
-                          <span className="feed-wishlist-name">{wishlistGroup.name}</span>
+                          <div className="feed-wishlist-header-left">
+                            <span className="feed-wishlist-icon">📋</span>
+                            <span className="feed-wishlist-name">{wishlistGroup.name}</span>
+                          </div>
+                          {wishlistGroup.event_date && (
+                            <span className="feed-wishlist-event-date">{formatEventDate(wishlistGroup.event_date)}</span>
+                          )}
                         </div>
                         
                         <div className="feed-wishes-list">

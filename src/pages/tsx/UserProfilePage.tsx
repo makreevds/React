@@ -9,6 +9,7 @@ import type { User } from '../../utils/api/users'
 interface Wishlist {
   id: number
   name: string
+  event_date?: string
 }
 
 
@@ -80,6 +81,7 @@ export function UserProfilePage() {
             loadedWishlists = response.map((wl: any) => ({
               id: Number(wl.id) || 0,
               name: String(wl.name || ''),
+              event_date: wl.event_date ? String(wl.event_date) : undefined,
             }))
           }
         } catch (err: any) {
@@ -135,6 +137,28 @@ export function UserProfilePage() {
 
   // Используем photo_url из данных пользователя, если оно есть
   const userPhotoUrl = viewedUser.photo_url || undefined
+
+  // Форматируем дату события
+  const formatEventDate = (dateString?: string): string | null => {
+    if (!dateString) return null
+    try {
+      const date = new Date(dateString)
+      const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 
+                      'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+      const day = date.getDate()
+      const month = months[date.getMonth()]
+      const year = date.getFullYear()
+      const currentYear = new Date().getFullYear()
+      
+      if (year === currentYear) {
+        return `${day} ${month}`
+      } else {
+        return `${day} ${month} ${year}`
+      }
+    } catch (err) {
+      return null
+    }
+  }
 
   return (
     <div className="page-container wishes-page user-profile-page">
@@ -208,6 +232,9 @@ export function UserProfilePage() {
                         <span className="wishlist-name-text">{wishlist.name || 'Без названия'}</span>
                         <span className="wishlist-arrow-icon">→</span>
                       </h4>
+                      {wishlist.event_date && (
+                        <p className="wishlist-event-date">{formatEventDate(wishlist.event_date)}</p>
+                      )}
                     </div>
                   )
                 } catch (err) {

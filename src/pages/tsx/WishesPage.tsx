@@ -7,6 +7,7 @@ import { useApiContext } from '../../contexts/ApiContext'
 interface Wishlist {
   id: number
   name: string
+  event_date?: string
 }
 
 
@@ -44,6 +45,7 @@ export function WishesPage() {
                 return response.map((wl: any) => ({
                   id: Number(wl.id) || 0,
                   name: String(wl.name || ''),
+                  event_date: wl.event_date ? String(wl.event_date) : undefined,
                 }))
               }
               return []
@@ -122,6 +124,28 @@ export function WishesPage() {
 
 
   const userPhotoUrl = user?.photo_url || undefined
+
+  // Форматируем дату события вишлиста
+  const formatEventDate = (dateString?: string): string | null => {
+    if (!dateString) return null
+    try {
+      const date = new Date(dateString)
+      const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 
+                      'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+      const day = date.getDate()
+      const month = months[date.getMonth()]
+      const year = date.getFullYear()
+      const currentYear = new Date().getFullYear()
+      
+      if (year === currentYear) {
+        return `${day} ${month}`
+      } else {
+        return `${day} ${month} ${year}`
+      }
+    } catch (err) {
+      return null
+    }
+  }
 
   if (!user || isLoading) {
     return (
@@ -239,6 +263,9 @@ export function WishesPage() {
                         <span className="wishlist-name-text">{wishlist.name || 'Без названия'}</span>
                         <span className="wishlist-arrow-icon">→</span>
                       </h4>
+                      {wishlist.event_date && (
+                        <p className="wishlist-event-date">{formatEventDate(wishlist.event_date)}</p>
+                      )}
                     </div>
                   )
                 } catch (err) {

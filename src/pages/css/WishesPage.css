@@ -470,6 +470,13 @@ body.theme-ozon .wishlist-group {
   flex: 1;
 }
 
+.wishlist-event-date {
+  font-size: 14px;
+  color: var(--theme-current-hint);
+  margin-top: 6px;
+  font-weight: 400;
+}
+
 .wishlist-toggle-icon {
   font-size: 16px;
   color: var(--theme-current-hint);

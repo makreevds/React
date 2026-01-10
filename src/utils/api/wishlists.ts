@@ -9,6 +9,7 @@ export interface Wishlist {
   user: number
   name: string
   description?: string
+  event_date?: string
   created_at: string
   updated_at: string
   order: number
@@ -18,6 +19,7 @@ export interface Wishlist {
 export interface CreateWishlistRequest {
   name: string
   description?: string
+  event_date?: string
   order?: number
   telegram_id: number
 }
@@ -25,6 +27,7 @@ export interface CreateWishlistRequest {
 export interface UpdateWishlistRequest {
   name?: string
   description?: string
+  event_date?: string
   order?: number
 }
 

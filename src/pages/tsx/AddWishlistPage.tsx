@@ -29,6 +29,7 @@ export function AddWishlistPage() {
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [eventDate, setEventDate] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(isEditMode)
 
@@ -50,6 +51,16 @@ export function AddWishlistPage() {
         const wishlist = await wishlistsRepo.getWishlistById(wishlistIdNum)
         setName(wishlist.name || '')
         setDescription(wishlist.description || '')
+        // Форматируем дату для input[type="date"]
+        if (wishlist.event_date) {
+          const date = new Date(wishlist.event_date)
+          const year = date.getFullYear()
+          const month = String(date.getMonth() + 1).padStart(2, '0')
+          const day = String(date.getDate()).padStart(2, '0')
+          setEventDate(`${year}-${month}-${day}`)
+        } else {
+          setEventDate('')
+        }
       } catch (err) {
         console.error('Ошибка при загрузке вишлиста:', err)
         alert('Не удалось загрузить вишлист')
@@ -127,6 +138,7 @@ export function AddWishlistPage() {
         await wishlistsRepo.updateWishlist(wishlistIdNum, {
           name: name.trim(),
           description: description.trim() || undefined,
+          event_date: eventDate || undefined,
         })
         // Возвращаемся на страницу конкретного вишлиста
         navigate(`/wishes/wishlist/${wishlistIdNum}`)
@@ -143,6 +155,7 @@ export function AddWishlistPage() {
         const newWishlist = await wishlistsRepo.createWishlist({
           name: name.trim(),
           description: description.trim() || undefined,
+          event_date: eventDate || undefined,
           telegram_id: user.id,
         })
         
@@ -255,6 +268,19 @@ export function AddWishlistPage() {
                 onBlur={handleInputBlur}
                 placeholder="(Необязательно)"
                 rows={3}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="wishlist-event-date">Дата события</label>
+              <div className="form-example">Пример: 15 января 2024</div>
+              <input
+                id="wishlist-event-date"
+                type="date"
+                value={eventDate}
+                onChange={(e) => setEventDate(e.target.value)}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
+                placeholder="(Необязательно)"
               />
             </div>
             <div className="page-form-actions">

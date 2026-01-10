@@ -121,7 +121,8 @@
 .feed-wishlist-header {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 12px;
   cursor: pointer;
   transition: transform .2s;
   user-select: none;
@@ -136,12 +137,31 @@
   transform: scale(0.98);
 }
 
+.feed-wishlist-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
 .feed-wishlist-icon {
   font-size: 16px;
+  flex-shrink: 0;
 }
 
 .feed-wishlist-name {
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feed-wishlist-event-date {
+  font-size: 13px;
+  color: var(--theme-current-hint);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .feed-wishes-list {

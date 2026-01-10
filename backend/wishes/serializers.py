@@ -22,6 +22,12 @@ class WishlistSerializer(serializers.ModelSerializer):
         read_only=True
     )
     
+    event_date = serializers.DateField(
+        format='%Y-%m-%d',
+        allow_null=True,
+        required=False
+    )
+    
     class Meta:
         model = Wishlist
         fields = [
@@ -29,6 +35,7 @@ class WishlistSerializer(serializers.ModelSerializer):
             'user',
             'name',
             'description',
+            'event_date',
             'created_at',
             'updated_at',
             'order',
@@ -51,6 +58,7 @@ class WishlistCreateSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'description',
+            'event_date',
             'order',
         ]
         read_only_fields = ['id']
@@ -75,6 +83,7 @@ class WishlistUpdateSerializer(serializers.ModelSerializer):
         fields = [
             'name',
             'description',
+            'event_date',
             'order',
         ]
 
@@ -90,6 +99,13 @@ class WishSerializer(serializers.ModelSerializer):
     wishlist_name = serializers.CharField(
         source='wishlist.name',
         read_only=True
+    )
+    
+    wishlist_event_date = serializers.DateField(
+        source='wishlist.event_date',
+        format='%Y-%m-%d',
+        read_only=True,
+        allow_null=True
     )
     
     user_id = serializers.IntegerField(
@@ -148,6 +164,7 @@ class WishSerializer(serializers.ModelSerializer):
             'wishlist',
             'wishlist_id',
             'wishlist_name',
+            'wishlist_event_date',
             'user',
             'user_id',
             'user_telegram_id',
