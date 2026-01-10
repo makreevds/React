@@ -164,30 +164,35 @@
 }
 
 .feed-item-wish-image-container {
-  position: relative;
+  flex-shrink: 0;
   width: 80px;
   height: 80px;
-  flex-shrink: 0;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background: var(--theme-current-hint-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  background: transparent;
 }
 
 .feed-item-wish-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .feed-item-wish-image-placeholder {
-  display: none;
   width: 100%;
   height: 100%;
+  display: none;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  color: var(--theme-current-hint);
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .feed-item-wish-image-placeholder.show {
@@ -195,10 +200,9 @@
 }
 
 .feed-item-wish-image-placeholder .gift-icon {
-  width: 32px;
-  height: 32px;
-  opacity: 0.5;
-  fill: var(--theme-current-hint);
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .feed-item-wish-content {
