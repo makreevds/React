@@ -16,7 +16,6 @@
 }
 
 .feed-main-content {
-  padding: 20px;
   max-width: 100%;
   margin: 0 auto;
 }
@@ -38,7 +37,7 @@
 .feed-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 .feed-item {
@@ -129,6 +128,7 @@
   user-select: none;
   font-size: 14px;
   color: var(--theme-current-hint);
+  align-items: center;
 }
 
 .feed-item-wishlist:hover {
