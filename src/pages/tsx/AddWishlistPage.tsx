@@ -280,7 +280,6 @@ export function AddWishlistPage() {
                 onChange={(e) => setEventDate(e.target.value)}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder="(Необязательно)"
               />
             </div>
             <div className="page-form-actions">

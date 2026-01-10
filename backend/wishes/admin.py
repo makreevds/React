@@ -28,10 +28,19 @@ class WishlistAdmin(admin.ModelAdmin):
         return obj.wishes.count()
     wishes_count.short_description = 'Количество желаний'
     
+    def formatted_event_date(self, obj):
+        """Форматирует дату события."""
+        if obj.event_date:
+            return obj.event_date.strftime('%d.%m.%Y')
+        return '-'
+    formatted_event_date.short_description = 'Дата события'
+    formatted_event_date.admin_order_field = 'event_date'
+    
     list_display = (
         'id',
         'name',
         'user',
+        'formatted_event_date',
         'wishes_count',
         'order',
         'formatted_created_at',
@@ -39,6 +48,7 @@ class WishlistAdmin(admin.ModelAdmin):
     )
     
     list_filter = (
+        'event_date',
         'created_at',
         'updated_at',
     )
@@ -63,6 +73,7 @@ class WishlistAdmin(admin.ModelAdmin):
                 'user',
                 'name',
                 'description',
+                'event_date',
             )
         }),
         ('Настройки', {

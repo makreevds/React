@@ -999,6 +999,7 @@ html.theme-dark .btn-reserve-active {
 .form-group input[type="text"],
 .form-group input[type="url"],
 .form-group input[type="number"],
+.form-group input[type="date"],
 .form-group textarea,
 .form-group select {
   width: 100%;
@@ -1014,10 +1015,69 @@ html.theme-dark .btn-reserve-active {
 
 
 .form-group input:focus,
+.form-group input[type="date"]:focus,
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
   border-color: var(--tg-theme-button-color, #0088cc);
+}
+
+/* Стили для input[type="date"] чтобы выглядело как обычное поле */
+.form-group input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+/* Иконка календаря в WebKit браузерах */
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.7;
+  cursor: pointer;
+  padding: 2px;
+  margin-left: 4px;
+}
+
+.form-group input[type="date"]::-webkit-inner-spin-button,
+.form-group input[type="date"]::-webkit-clear-button {
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+/* Для Firefox */
+.form-group input[type="date"]::-moz-calendar-picker-indicator {
+  opacity: 0.7;
+  cursor: pointer;
+  padding: 2px;
+  margin-left: 4px;
+}
+
+/* Стили для внутренних элементов поля даты в WebKit */
+.form-group input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+  display: flex;
+  gap: 2px;
+}
+
+.form-group input[type="date"]::-webkit-datetime-edit-text,
+.form-group input[type="date"]::-webkit-datetime-edit-month-field,
+.form-group input[type="date"]::-webkit-datetime-edit-day-field,
+.form-group input[type="date"]::-webkit-datetime-edit-year-field {
+  padding: 0;
+  color: var(--theme-current-text);
+  min-width: auto;
+}
+
+.form-group input[type="date"]:invalid::-webkit-datetime-edit {
+  color: var(--theme-current-hint);
+}
+
+/* Для темной темы - инвертируем иконку календаря */
+html.theme-dark .form-group input[type="date"]::-webkit-calendar-picker-indicator,
+body.theme-dark .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.7;
 }
 
 .form-row {
