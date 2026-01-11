@@ -20,11 +20,9 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -267,9 +265,10 @@
   padding: 16px;
   background: var(--theme-current-bg);
   border-radius: var(--radius-md);
-  transition: transform 0.2s;
+  transition: transform 0.2s ease-out;
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out forwards;
+  cursor: pointer;
 }
 
 .wish-item:nth-child(1) {
@@ -343,6 +342,10 @@ body.theme-dark .wish-item-fulfilled {
 
 .wish-item:hover {
   transform: scale(1.02);
+}
+
+.wish-item:active {
+  transform: scale(0.98);
 }
 
 
@@ -455,7 +458,7 @@ body.theme-dark .wish-item-fulfilled {
   padding: 20px;
   background: var(--theme-current-secondary-bg);
   border-radius: var(--radius-md);
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, transform 0.2s ease-out;
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out 0.2s forwards;
 }
@@ -473,8 +476,16 @@ body.theme-ozon .wishlist-group {
   margin-bottom: 0;
 }
 
+.wishlist-clickable {
+  transition: transform 0.2s ease-out;
+}
+
 .wishlist-clickable:hover {
   transform: scale(1.02);
+}
+
+.wishlist-clickable:active {
+  transform: scale(0.98);
 }
 
 .wishlist-name {
@@ -944,6 +955,7 @@ html.theme-dark .btn-reserve-active {
 
 .btn-edit-wishlist:active:not(:disabled) {
   transform: scale(0.96);
+  background: var(--theme-current-hint-light);
 }
 
 /* Модальные окна */
