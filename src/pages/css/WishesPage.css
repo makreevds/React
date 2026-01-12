@@ -944,7 +944,6 @@ html.theme-dark .btn-reserve-active {
 
 .btn-edit-wishlist:hover:not(:disabled) {
   transform: scale(0.98) !important;
-  background: var(--theme-current-hint-light);
 }
 
 
