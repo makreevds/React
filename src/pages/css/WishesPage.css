@@ -113,9 +113,6 @@
   transform: scale(0.98);
 }
 
-.btn-subscribe-toggle:active:not(:disabled) {
-  transform: scale(0.96);
-}
 
 .btn-subscribe-toggle:disabled {
   opacity: 0.6;
@@ -268,7 +265,9 @@
   transition: transform 0.2s ease-out;
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out forwards;
+  animation-fill-mode: forwards;
   cursor: pointer;
+  transform: scale(1);
 }
 
 .wish-item:nth-child(1) {
@@ -341,12 +340,9 @@ body.theme-dark .wish-item-fulfilled {
 
 
 .wish-item:hover {
-  transform: scale(1.02);
+  transform: scale(1.02) !important;
 }
 
-.wish-item:active {
-  transform: scale(0.98);
-}
 
 
 .user-profile-page .wishes-list .wish-item:last-child {
@@ -461,6 +457,8 @@ body.theme-dark .wish-item-fulfilled {
   transition: box-shadow 0.2s, transform 0.2s ease-out;
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out 0.2s forwards;
+  animation-fill-mode: forwards;
+  transform: scale(1);
 }
 
 html.theme-ozon .wishlist-group,
@@ -481,12 +479,9 @@ body.theme-ozon .wishlist-group {
 }
 
 .wishlist-clickable:hover {
-  transform: scale(1.02);
+  transform: scale(1.02) !important;
 }
 
-.wishlist-clickable:active {
-  transform: scale(0.98);
-}
 
 .wishlist-name {
   font-size: 20px;
@@ -875,14 +870,12 @@ html.theme-dark .btn-reserve-active {
   display: block;
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out 0.1s forwards;
+  animation-fill-mode: forwards;
+  transform: scale(1);
 }
 
 .btn-add-wishlist:hover:not(:disabled) {
-  transform: scale(0.98);
-}
-
-.btn-add-wishlist:active:not(:disabled) {
-  transform: scale(0.96);
+  transform: scale(0.98) !important;
 }
 
 .btn-add-wish {
@@ -907,9 +900,6 @@ html.theme-dark .btn-reserve-active {
   transform: scale(0.98);
 }
 
-.btn-add-wish:active:not(:disabled) {
-  transform: scale(0.96);
-}
 
 .btn-delete-wishlist {
   width: 100%;
@@ -953,10 +943,6 @@ html.theme-dark .btn-reserve-active {
   background: var(--theme-current-hint-light);
 }
 
-.btn-edit-wishlist:active:not(:disabled) {
-  transform: scale(0.96);
-  background: var(--theme-current-hint-light);
-}
 
 /* Модальные окна */
 .modal-overlay {
