@@ -246,7 +246,7 @@ export class WishesRepository {
    * @returns URL загруженного изображения
    */
   async uploadImage(file: File): Promise<string> {
-    const response = await this.client.uploadFile<{ image_url: string; filename: string }>(
+    const response = await this.apiClient.uploadFile<{ image_url: string; filename: string }>(
       '/api/wishes/upload-image/',
       file,
       'image'

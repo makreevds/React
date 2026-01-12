@@ -23,7 +23,6 @@ export function AddWishPage() {
   const [comment, setComment] = useState('')
   const [link, setLink] = useState('')
   const [imageUrl, setImageUrl] = useState('')
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isUploadingImage, setIsUploadingImage] = useState(false)
   const [price, setPrice] = useState('')
@@ -206,7 +205,6 @@ export function AddWishPage() {
       return
     }
 
-    setSelectedFile(file)
     setError(null)
 
     // Создаем превью
@@ -224,7 +222,6 @@ export function AddWishPage() {
         setImageUrl(uploadedUrl)
       } catch (err: any) {
         setError(err?.message || 'Не удалось загрузить изображение')
-        setSelectedFile(null)
         setImagePreview(null)
       } finally {
         setIsUploadingImage(false)
@@ -233,7 +230,6 @@ export function AddWishPage() {
   }
 
   const handleRemoveImage = () => {
-    setSelectedFile(null)
     setImagePreview(null)
     setImageUrl('')
   }
