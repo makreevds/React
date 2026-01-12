@@ -19,7 +19,14 @@ from users.models import User
 import logging
 import os
 from uuid import uuid4
-from PIL import Image
+
+# Опциональный импорт Pillow для обработки изображений
+try:
+    from PIL import Image
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
+    Image = None
 
 logger = logging.getLogger(__name__)
 
@@ -402,28 +409,35 @@ class WishViewSet(viewsets.ModelViewSet):
             file_path = os.path.join(upload_dir, unique_filename)
             
             # Обрабатываем и сохраняем изображение
-            try:
-                img = Image.open(image_file)
-                # Конвертируем в RGB, если нужно (для PNG с прозрачностью)
-                if img.mode in ('RGBA', 'LA', 'P'):
-                    rgb_img = Image.new('RGB', img.size, (255, 255, 255))
-                    if img.mode == 'P':
-                        img = img.convert('RGBA')
-                    rgb_img.paste(img, mask=img.split()[-1] if img.mode in ('RGBA', 'LA') else None)
-                    img = rgb_img
-                elif img.mode != 'RGB':
-                    img = img.convert('RGB')
-                
-                # Изменяем размер, если изображение слишком большое (максимум 2000px по большей стороне)
-                max_dimension = 2000
-                if max(img.size) > max_dimension:
-                    img.thumbnail((max_dimension, max_dimension), Image.Resampling.LANCZOS)
-                
-                # Сохраняем с оптимизацией
-                img.save(file_path, 'JPEG', quality=85, optimize=True)
-            except Exception as e:
-                logger.warning(f'Ошибка при обработке изображения: {e}')
-                # Если обработка не удалась, сохраняем оригинал
+            if HAS_PIL and Image:
+                try:
+                    img = Image.open(image_file)
+                    # Конвертируем в RGB, если нужно (для PNG с прозрачностью)
+                    if img.mode in ('RGBA', 'LA', 'P'):
+                        rgb_img = Image.new('RGB', img.size, (255, 255, 255))
+                        if img.mode == 'P':
+                            img = img.convert('RGBA')
+                        rgb_img.paste(img, mask=img.split()[-1] if img.mode in ('RGBA', 'LA') else None)
+                        img = rgb_img
+                    elif img.mode != 'RGB':
+                        img = img.convert('RGB')
+                    
+                    # Изменяем размер, если изображение слишком большое (максимум 2000px по большей стороне)
+                    max_dimension = 2000
+                    if max(img.size) > max_dimension:
+                        img.thumbnail((max_dimension, max_dimension), Image.Resampling.LANCZOS)
+                    
+                    # Сохраняем с оптимизацией
+                    img.save(file_path, 'JPEG', quality=85, optimize=True)
+                except Exception as e:
+                    logger.warning(f'Ошибка при обработке изображения: {e}')
+                    # Если обработка не удалась, сохраняем оригинал
+                    with open(file_path, 'wb+') as destination:
+                        for chunk in image_file.chunks():
+                            destination.write(chunk)
+            else:
+                # Если Pillow не установлен, сохраняем оригинал
+                logger.warning('Pillow не установлен, изображение сохраняется без обработки')
                 with open(file_path, 'wb+') as destination:
                     for chunk in image_file.chunks():
                         destination.write(chunk)
