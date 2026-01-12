@@ -443,11 +443,14 @@ class WishViewSet(viewsets.ModelViewSet):
                         destination.write(chunk)
             
             # Формируем URL
-            image_url = f"{settings.MEDIA_URL}wish_images/{unique_filename}"
+            media_url = settings.MEDIA_URL
+            if not media_url.startswith('http'):
+                # Если это относительный URL, формируем полный URL
+                image_url = request.build_absolute_uri(f"{media_url}wish_images/{unique_filename}")
+            else:
+                image_url = f"{media_url}wish_images/{unique_filename}"
             
-            # Для production нужно использовать полный URL
-            # В зависимости от вашей конфигурации, может потребоваться:
-            # image_url = request.build_absolute_uri(image_url)
+            logger.info(f'Изображение успешно загружено: {image_url}')
             
             return Response({
                 'image_url': image_url,

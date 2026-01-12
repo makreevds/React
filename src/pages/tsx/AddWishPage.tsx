@@ -219,13 +219,19 @@ export function AddWishPage() {
       setIsUploadingImage(true)
       try {
         const uploadedUrl = await wishesRepo.uploadImage(file)
+        console.log('Изображение загружено, URL:', uploadedUrl)
         setImageUrl(uploadedUrl)
+        // Обновляем превью на загруженное изображение
+        setImagePreview(uploadedUrl)
       } catch (err: any) {
+        console.error('Ошибка загрузки изображения:', err)
         setError(err?.message || 'Не удалось загрузить изображение')
         setImagePreview(null)
       } finally {
         setIsUploadingImage(false)
       }
+    } else {
+      setError('Репозиторий желаний не доступен')
     }
   }
 
@@ -340,11 +346,15 @@ export function AddWishPage() {
                 >
                   {isUploadingImage ? 'Загрузка...' : 'Выбрать изображение с телефона'}
                 </label>
-                {imagePreview && (
+                {(imagePreview || imageUrl) && (
                   <div style={{ position: 'relative', marginTop: '8px' }}>
                     <img
-                      src={imagePreview}
+                      src={imagePreview || imageUrl}
                       alt="Превью"
+                      onError={(e) => {
+                        console.error('Ошибка загрузки изображения:', e)
+                        setError('Не удалось загрузить изображение')
+                      }}
                       style={{
                         width: '100%',
                         maxWidth: '300px',
