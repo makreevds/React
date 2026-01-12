@@ -5,6 +5,7 @@ from rest_framework.request import Request
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.utils import timezone
+from django.conf import settings
 from .models import Wishlist, Wish
 from .serializers import (
     WishlistSerializer,
@@ -16,6 +17,9 @@ from .serializers import (
 )
 from users.models import User
 import logging
+import os
+from uuid import uuid4
+from PIL import Image
 
 logger = logging.getLogger(__name__)
 
@@ -359,4 +363,86 @@ class WishViewSet(viewsets.ModelViewSet):
             return Response(
                 {'error': 'Некорректный wishlist_id'},
                 status=status.HTTP_400_BAD_REQUEST
+            )
+    
+    @action(detail=False, methods=['post'], url_path='upload-image')
+    def upload_image(self, request: Request) -> Response:
+        """Загружает изображение и возвращает URL."""
+        if 'image' not in request.FILES:
+            return Response(
+                {'error': 'Изображение не найдено'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        image_file = request.FILES['image']
+        
+        # Проверяем тип файла
+        allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+        if image_file.content_type not in allowed_types:
+            return Response(
+                {'error': 'Неподдерживаемый тип файла. Разрешены: JPEG, PNG, WebP, GIF'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Проверяем размер файла (максимум 10 МБ)
+        max_size = 10 * 1024 * 1024  # 10 МБ
+        if image_file.size > max_size:
+            return Response(
+                {'error': 'Размер файла превышает 10 МБ'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            # Создаем директорию для изображений, если её нет
+            upload_dir = os.path.join(settings.MEDIA_ROOT, 'wish_images')
+            os.makedirs(upload_dir, exist_ok=True)
+            
+            # Генерируем уникальное имя файла (всегда сохраняем как JPEG после обработки)
+            unique_filename = f"{uuid4().hex}.jpg"
+            file_path = os.path.join(upload_dir, unique_filename)
+            
+            # Обрабатываем и сохраняем изображение
+            try:
+                img = Image.open(image_file)
+                # Конвертируем в RGB, если нужно (для PNG с прозрачностью)
+                if img.mode in ('RGBA', 'LA', 'P'):
+                    rgb_img = Image.new('RGB', img.size, (255, 255, 255))
+                    if img.mode == 'P':
+                        img = img.convert('RGBA')
+                    rgb_img.paste(img, mask=img.split()[-1] if img.mode in ('RGBA', 'LA') else None)
+                    img = rgb_img
+                elif img.mode != 'RGB':
+                    img = img.convert('RGB')
+                
+                # Изменяем размер, если изображение слишком большое (максимум 2000px по большей стороне)
+                max_dimension = 2000
+                if max(img.size) > max_dimension:
+                    img.thumbnail((max_dimension, max_dimension), Image.Resampling.LANCZOS)
+                
+                # Сохраняем с оптимизацией
+                img.save(file_path, 'JPEG', quality=85, optimize=True)
+            except Exception as e:
+                logger.warning(f'Ошибка при обработке изображения: {e}')
+                # Если обработка не удалась, сохраняем оригинал
+                with open(file_path, 'wb+') as destination:
+                    for chunk in image_file.chunks():
+                        destination.write(chunk)
+            
+            # Формируем URL
+            image_url = f"{settings.MEDIA_URL}wish_images/{unique_filename}"
+            
+            # Для production нужно использовать полный URL
+            # В зависимости от вашей конфигурации, может потребоваться:
+            # image_url = request.build_absolute_uri(image_url)
+            
+            return Response({
+                'image_url': image_url,
+                'filename': unique_filename
+            }, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            logger.error(f'Ошибка при загрузке изображения: {e}')
+            return Response(
+                {'error': f'Ошибка при загрузке изображения: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

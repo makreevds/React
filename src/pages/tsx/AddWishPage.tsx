@@ -23,6 +23,9 @@ export function AddWishPage() {
   const [comment, setComment] = useState('')
   const [link, setLink] = useState('')
   const [imageUrl, setImageUrl] = useState('')
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
   const [price, setPrice] = useState('')
   const [currency, setCurrency] = useState('₽')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -186,6 +189,55 @@ export function AddWishPage() {
     }
   }
 
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Проверяем тип файла
+    if (!file.type.startsWith('image/')) {
+      setError('Выберите файл изображения')
+      return
+    }
+
+    // Проверяем размер файла (максимум 10 МБ)
+    const maxSize = 10 * 1024 * 1024 // 10 МБ
+    if (file.size > maxSize) {
+      setError('Размер файла не должен превышать 10 МБ')
+      return
+    }
+
+    setSelectedFile(file)
+    setError(null)
+
+    // Создаем превью
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+
+    // Загружаем файл на сервер
+    if (wishesRepo) {
+      setIsUploadingImage(true)
+      try {
+        const uploadedUrl = await wishesRepo.uploadImage(file)
+        setImageUrl(uploadedUrl)
+      } catch (err: any) {
+        setError(err?.message || 'Не удалось загрузить изображение')
+        setSelectedFile(null)
+        setImagePreview(null)
+      } finally {
+        setIsUploadingImage(false)
+      }
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setSelectedFile(null)
+    setImagePreview(null)
+    setImageUrl('')
+  }
+
   if (isLoading) {
     return (
       <div className="page-container wishes-page">
@@ -268,16 +320,80 @@ export function AddWishPage() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="wish-image">URL изображения</label>
-              <input
-                id="wish-image"
-                type="url"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                onFocus={handleInputFocus}
-                onBlur={handleInputBlur}
-                placeholder="https://... (Не обязательно)"
-              />
+              <label htmlFor="wish-image">Изображение</label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <input
+                  id="wish-image-file"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileSelect}
+                  disabled={isUploadingImage}
+                  style={{ display: 'none' }}
+                />
+                <label
+                  htmlFor="wish-image-file"
+                  style={{
+                    padding: '10px 16px',
+                    background: 'var(--theme-current-hint-light)',
+                    color: 'var(--theme-current-text)',
+                    borderRadius: 'var(--radius-md)',
+                    cursor: isUploadingImage ? 'not-allowed' : 'pointer',
+                    textAlign: 'center',
+                    opacity: isUploadingImage ? 0.6 : 1,
+                  }}
+                >
+                  {isUploadingImage ? 'Загрузка...' : 'Выбрать изображение с телефона'}
+                </label>
+                {imagePreview && (
+                  <div style={{ position: 'relative', marginTop: '8px' }}>
+                    <img
+                      src={imagePreview}
+                      alt="Превью"
+                      style={{
+                        width: '100%',
+                        maxWidth: '300px',
+                        height: 'auto',
+                        borderRadius: 'var(--radius-md)',
+                        border: '1px solid var(--theme-current-hint-light)',
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      style={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        background: 'rgba(0, 0, 0, 0.6)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '32px',
+                        height: '32px',
+                        cursor: 'pointer',
+                        fontSize: '18px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+                <div style={{ fontSize: '12px', color: 'var(--theme-current-hint)', marginTop: '4px' }}>
+                  или
+                </div>
+                <input
+                  id="wish-image"
+                  type="url"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  placeholder="https://... (Не обязательно)"
+                />
+              </div>
             </div>
             <div className="form-row">
               <div className="form-group">

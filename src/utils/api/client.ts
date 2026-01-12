@@ -188,6 +188,79 @@ export class ApiClient {
   async delete<T>(endpoint: string, options?: Omit<RequestOptions, 'method' | 'body'>): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' })
   }
+
+  /**
+   * Загрузка файла (FormData)
+   */
+  async uploadFile<T>(
+    endpoint: string,
+    file: File,
+    fieldName: string = 'file',
+    additionalData?: Record<string, string>
+  ): Promise<T> {
+    const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`
+    
+    const formData = new FormData()
+    formData.append(fieldName, file)
+    
+    if (additionalData) {
+      Object.entries(additionalData).forEach(([key, value]) => {
+        formData.append(key, value)
+      })
+    }
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout)
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          // Не устанавливаем Content-Type для FormData - браузер сделает это автоматически
+          ...Object.fromEntries(
+            Object.entries(this.defaultHeaders).filter(([key]) => 
+              key.toLowerCase() !== 'content-type'
+            )
+          ),
+        },
+        body: formData,
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        const errorData = await this.parseErrorResponse(response)
+        throw new ApiClientError(
+          errorData.message || `HTTP ${response.status}: ${response.statusText}`,
+          errorData.code,
+          response.status
+        )
+      }
+
+      const contentType = response.headers.get('content-type')
+      if (contentType && contentType.includes('application/json')) {
+        return await response.json()
+      }
+
+      return (await response.text()) as unknown as T
+    } catch (error) {
+      clearTimeout(timeoutId)
+      
+      if (error instanceof ApiClientError) {
+        throw error
+      }
+
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          throw new ApiClientError('Запрос превысил время ожидания', 'TIMEOUT', 408)
+        }
+        throw new ApiClientError(`Ошибка сети: ${error.message}`, 'NETWORK_ERROR')
+      }
+
+      throw new ApiClientError('Неизвестная ошибка', 'UNKNOWN_ERROR')
+    }
+  }
 }
 
 /**

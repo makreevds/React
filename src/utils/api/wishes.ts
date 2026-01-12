@@ -239,5 +239,19 @@ export class WishesRepository {
     console.warn('[WishesRepository] Неожиданный формат ответа API:', response)
     return []
   }
+
+  /**
+   * Загружает изображение на сервер
+   * @param file Файл изображения
+   * @returns URL загруженного изображения
+   */
+  async uploadImage(file: File): Promise<string> {
+    const response = await this.client.uploadFile<{ image_url: string; filename: string }>(
+      '/api/wishes/upload-image/',
+      file,
+      'image'
+    )
+    return response.image_url
+  }
 }
 
