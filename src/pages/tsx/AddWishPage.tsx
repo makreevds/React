@@ -188,6 +188,65 @@ export function AddWishPage() {
     }
   }
 
+  /**
+   * Сжимает изображение перед загрузкой
+   */
+  const compressImage = (file: File, maxWidth: number = 2000, quality: number = 0.85): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const img = new Image()
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          let width = img.width
+          let height = img.height
+
+          // Изменяем размер, если изображение слишком большое
+          if (width > maxWidth || height > maxWidth) {
+            if (width > height) {
+              height = (height / width) * maxWidth
+              width = maxWidth
+            } else {
+              width = (width / height) * maxWidth
+              height = maxWidth
+            }
+          }
+
+          canvas.width = width
+          canvas.height = height
+
+          const ctx = canvas.getContext('2d')
+          if (!ctx) {
+            reject(new Error('Не удалось создать контекст canvas'))
+            return
+          }
+
+          ctx.drawImage(img, 0, 0, width, height)
+
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                reject(new Error('Не удалось сжать изображение'))
+                return
+              }
+              const compressedFile = new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now(),
+              })
+              resolve(compressedFile)
+            },
+            'image/jpeg',
+            quality
+          )
+        }
+        img.onerror = () => reject(new Error('Ошибка загрузки изображения'))
+        img.src = e.target?.result as string
+      }
+      reader.onerror = () => reject(new Error('Ошибка чтения файла'))
+      reader.readAsDataURL(file)
+    })
+  }
+
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -198,40 +257,54 @@ export function AddWishPage() {
       return
     }
 
-    // Проверяем размер файла (максимум 10 МБ)
-    const maxSize = 10 * 1024 * 1024 // 10 МБ
-    if (file.size > maxSize) {
-      setError('Размер файла не должен превышать 10 МБ')
-      return
-    }
-
     setError(null)
+    setIsUploadingImage(true)
 
-    // Создаем превью
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      setImagePreview(reader.result as string)
-    }
-    reader.readAsDataURL(file)
+    try {
+      // Создаем превью из оригинального файла
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
 
-    // Загружаем файл на сервер
-    if (wishesRepo) {
-      setIsUploadingImage(true)
-      try {
-        const uploadedUrl = await wishesRepo.uploadImage(file)
-        console.log('Изображение загружено, URL:', uploadedUrl)
-        setImageUrl(uploadedUrl)
-        // Обновляем превью на загруженное изображение
-        setImagePreview(uploadedUrl)
-      } catch (err: any) {
-        console.error('Ошибка загрузки изображения:', err)
-        setError(err?.message || 'Не удалось загрузить изображение')
+      // Сжимаем изображение перед загрузкой
+      const compressedFile = await compressImage(file)
+      console.log(`Размер файла: ${(file.size / 1024 / 1024).toFixed(2)} МБ -> ${(compressedFile.size / 1024 / 1024).toFixed(2)} МБ`)
+
+      // Проверяем размер после сжатия (максимум 5 МБ)
+      const maxSize = 5 * 1024 * 1024 // 5 МБ
+      if (compressedFile.size > maxSize) {
+        setError('Изображение слишком большое даже после сжатия. Попробуйте другое изображение.')
         setImagePreview(null)
-      } finally {
+        setIsUploadingImage(false)
+        return
+      }
+
+      // Загружаем сжатый файл на сервер
+      if (wishesRepo) {
+        try {
+          const uploadedUrl = await wishesRepo.uploadImage(compressedFile)
+          console.log('Изображение загружено, URL:', uploadedUrl)
+          setImageUrl(uploadedUrl)
+          // Обновляем превью на загруженное изображение
+          setImagePreview(uploadedUrl)
+        } catch (err: any) {
+          console.error('Ошибка загрузки изображения:', err)
+          setError(err?.message || 'Не удалось загрузить изображение')
+          setImagePreview(null)
+        } finally {
+          setIsUploadingImage(false)
+        }
+      } else {
+        setError('Репозиторий желаний не доступен')
         setIsUploadingImage(false)
       }
-    } else {
-      setError('Репозиторий желаний не доступен')
+    } catch (err: any) {
+      console.error('Ошибка обработки изображения:', err)
+      setError(err?.message || 'Не удалось обработать изображение')
+      setImagePreview(null)
+      setIsUploadingImage(false)
     }
   }
 

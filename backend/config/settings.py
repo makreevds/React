@@ -202,3 +202,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # Добавьте эту строку
 # Media files (User uploaded files)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Увеличиваем лимиты для загрузки файлов
+DATA_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024  # 20 МБ
+FILE_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024  # 20 МБ
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000
